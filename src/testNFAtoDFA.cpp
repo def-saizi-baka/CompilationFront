@@ -3,7 +3,7 @@ using namespace std;
 
 int main(){
     NFA nfa;
-    fstream fp("input2.txt", ios::in);
+    fstream fp("testNFAtoDFA2.txt", ios::in);
     string line;
     // 设置起始节点与终止节点
     getline(fp, line);
@@ -27,6 +27,7 @@ int main(){
     
     NFA dfa = nfa.toDFA();
     
+    dfa.sortById();
     dfa.toString();
     return 0;
 }

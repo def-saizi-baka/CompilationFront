@@ -74,7 +74,12 @@ class NFA{
         // 设置终止节点
         int setEndNode(int id);
 
+        // 获取起始节点 / 索引
+        int getInitNodeId();
 
+        // 获取终止节点
+        set<int> getEndNodeId();
+        
         // 查找节点, 返回节点索引
         int findNode(int id);
         

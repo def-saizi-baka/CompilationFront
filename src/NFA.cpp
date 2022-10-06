@@ -90,6 +90,27 @@ int NFA::setEndNode(int id){
     return -1;
 }
 
+// 获取起始节点 / 索引
+int NFA::getInitNodeId(){
+    for(auto node : nodeArray){
+        if(node.is_begin){
+            return node.getId();
+        }
+    }
+    return -1;
+}
+
+// 获取终止节点 / 索引
+set<int> NFA::getEndNodeId(){
+    set<int> res;
+    for(auto node : nodeArray){
+        if(node.is_end){
+            res.insert(node.getId());
+        }
+    }
+    return res;
+}
+
 /**
  * @brief 查找节点列表
  * 
@@ -154,6 +175,8 @@ void NFA::toString(){
     cout << "}" << endl;
 
     for(auto node : nodeArray){
+        if(node.is_begin) cout << "(Init) ";
+        if(node.is_end) cout << "(end)";
         node.toString();
     }
 }
@@ -222,8 +245,20 @@ NFA NFA::toDFA(){
         // 获取并弹出当前队列的第一个节点
         set<int> now_set = work_set.front();
         work_set.pop();
+
+        // 防止重复判断
+        bool is_vit = false;
+        for(auto vit : visit_set){
+            if(vit == now_set){
+                is_vit = true;
+                break;
+            }
+        }
+        if(is_vit) continue;
+
+        // 设置为访问过
         visit_set.push_back(now_set);
-        // printSet(now_set);
+        printSet(now_set);
         
         int src_id = dfa_table[now_set];        // 当前集合代表的节点id
 
@@ -235,6 +270,9 @@ NFA NFA::toDFA(){
                 set<int> next_set_any = findNextSet(node_id, ch);
                 next_set.insert(next_set_any.begin(), next_set_any.end());
             }
+            
+            cout << ch << ": ";
+            printSet(next_set);
 
             // 判断非空
             if(next_set.empty()) continue;
@@ -244,6 +282,7 @@ NFA NFA::toDFA(){
             for(auto tmp_set : visit_set){
                 if(tmp_set == next_set){
                     is_visit = true;
+                    dfa.addSrc(src_id, dfa_table[next_set], ch);
                     break;
                 }
             }
@@ -256,9 +295,23 @@ NFA NFA::toDFA(){
             // 下一个集合代表的节点id
             int dst_id = dfa_table[next_set];
             dfa.addSrc(src_id, dst_id, ch);
+
         }
     }
-    // 
+
+    // 设置起始节点与终止节点
+    dfa.setInitNode(0);
+    set<int> nfa_end_node_set = getEndNodeId();
+    for(auto dfa_node_set : dfa_table){
+        for(auto id : dfa_node_set.first){
+            // 集合中有终止节点
+            if(find(nfa_end_node_set.begin(), nfa_end_node_set.end(), id) != nfa_end_node_set.end()){
+                dfa.setEndNode(dfa_node_set.second);
+                break;
+            }
+        }
+    }
+
     return dfa;
 }
     
