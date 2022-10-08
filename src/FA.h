@@ -6,6 +6,7 @@
 #include <stack>
 #include <queue>
 #include <algorithm>
+#include <sstream>
 using namespace std;
 
 
@@ -24,6 +25,7 @@ class VNode {
     private:
         int idx;
         bool isEnd;
+        set<int> endState;
         map<char, set<int>> arcs;
         friend FA;
         friend DFA;
@@ -45,14 +47,14 @@ class FA{
         void mergerFA(stack<FA>& tmp, char op);
         FA(char ch);
 
-        void readRegex(string& regex);
-        void readStr(string& s);
+        void readRegex(string& regex, int endType);
+        void readStr(string& s, int endType);
         void readFile(string& filename);
         void _findEpsilonSet(set<int>& find_res, int node_index);
 
     public:
         FA() {symbolTable.insert(Epsilon_CH);};
-        FA(string& s,int type = READ_REGNEX);
+        FA(string& s,int type = READ_REGNEX, int endType = -1);
         //FA(string& filename,int type);
         
         void mergeFAbyOr(FA& tmp, bool keepEnd = false);

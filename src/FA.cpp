@@ -219,8 +219,13 @@ void FA::showFA()
 	for (int i = 0; i < this->mgraph.size(); i++)
 	{
 		cout << this->mgraph[i].idx;
-		if (this->mgraph[i].isEnd)
-			cout << "(end)\t:\t";
+		if (this->mgraph[i].isEnd){
+			cout << "(end)\t:\t{";
+            for(auto state : this->mgraph[i].endState){
+                cout << state << ' ';
+            }
+            cout << "}\t";
+        }
 		else
 			cout << "\t:\t";
 		for (auto iter = this->mgraph[i].arcs.begin(); iter != this->mgraph[i].arcs.end(); iter++)
@@ -248,18 +253,20 @@ function: 部分字母表符号与正规表达式的符号重复
 void FA::initOP()
 {
 	string ops[] = { "*","(",")","|",".","||" };
-	FA fa(ops[0],READ_STRING);
+    int endTypes[] = {33,44,55,66,77,88};
+	FA fa(ops[0],READ_STRING, endTypes[0]);
 	
 	this->begNode = fa.begNode;
 	this->endNode = fa.endNode;
 	this->mgraph = fa.mgraph;
 	this->mgraph[this->endNode].isEnd = true;
+    this->mgraph[this->endNode].endState.insert(endTypes[0]);
     this->symbolTable.insert(fa.symbolTable.begin(), fa.symbolTable.end());
 
 	int len = 6;
 	for (int i = 1; i < len; i++)
 	{
-		FA tmp(ops[i],READ_STRING);
+		FA tmp(ops[i],READ_STRING, endTypes[i]);
 		this->mergeFAbyOr(tmp, KEEP_END);
 	}
 	//this->showFA();
@@ -269,7 +276,7 @@ void FA::initOP()
 function：parse the regnex string   
 delta	：[0-9][a-z][A-Z][;_:+-*]
 *********************************************/
-void FA::readRegex(string& reg)
+void FA::readRegex(string& reg, int endType)
 {
 	stack<FA> fas;
 	stack<char> op;
@@ -322,6 +329,7 @@ void FA::readRegex(string& reg)
 	this->endNode = fa_tmp.endNode;
 	this->mgraph = fa_tmp.mgraph;
 	this->mgraph[this->endNode].isEnd = true;
+    this->mgraph[this->endNode].endState.insert(endType);       // 添加终止状态标记
     this->symbolTable.insert(fa_tmp.symbolTable.begin(), fa_tmp.symbolTable.end());
 }
 
@@ -342,7 +350,11 @@ void FA::readFile(string& filename)
 
 	string reg;
 	while (getline(fin, reg)) {
-		FA tmp = FA(reg,READ_REGNEX);
+        stringstream ss;
+        int end_type;
+        ss << reg;
+        ss >> reg >> end_type; 
+		FA tmp = FA(reg,READ_REGNEX, end_type);
 		this->mergeFAbyOr(tmp,KEEP_END);
 		//this->showFA();
 	}
@@ -353,7 +365,7 @@ void FA::readFile(string& filename)
 function：no regnex,just normol string
 delta	：{ "*","(",")","|",".","||" }
 *********************************************/
-void FA::readStr(string& s)
+void FA::readStr(string& s, int endType)
 {
 	FA fa(char(*s.begin()));
 	for (auto p = s.begin() + 1; p != s.end(); p++){
@@ -364,6 +376,7 @@ void FA::readStr(string& s)
 	this->endNode = fa.endNode;
 	this->mgraph = fa.mgraph;
 	this->mgraph[this->endNode].isEnd = true;
+    this->mgraph[endNode].endState.insert(endType); // 添加结束状态对应的id
     this->symbolTable.insert(fa.symbolTable.begin(), fa.symbolTable.end());
 }
 
@@ -380,13 +393,13 @@ FA::FA(char ch)
 	mgraph[endNode].isEnd = true;
 }
 
-FA::FA(string& s, int type){
+FA::FA(string& s, int type, int endType){
     symbolTable.insert(Epsilon_CH); // 符号表初始化
 	if (type == READ_REGNEX) {
-		this->readRegex(s);
+		this->readRegex(s, endType);
 	}
 	else if (type == READ_STRING) {
-		this->readStr(s);
+		this->readStr(s, endType);
 	}
 	else if (type == READ_FILE_BY_LINE) {
 		this->readFile(s);
@@ -438,7 +451,10 @@ bool FA::checkStr(const string& in,int& sym_idx,int& err_t){
 			return false;
         }
     }
-	return true;
+    if(this->mgraph[cur].isEnd){
+        return true;
+    }
+	return false;
 }
 
 
@@ -522,10 +538,12 @@ FA FA::toDFA(){
     dfa.begNode = 0;
     for(auto sub_set : dfa_table){
         for(auto index : sub_set.first){
-            if(mgraph[index].isEnd){
+            if(mgraph[index].isEnd && (!mgraph[index].endState.empty())){
                 dfa.mgraph[sub_set.second].isEnd = true;
+                dfa.mgraph[sub_set.second].endState.insert(mgraph[index].endState.begin(),
+                    mgraph[index].endState.end());
                 // cout << "(end): "; 
-                break;
+                // break;
             }
         }
         // cout << sub_set.second << " ";
