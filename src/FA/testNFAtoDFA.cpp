@@ -1,23 +1,23 @@
-ï»¿#include "NFA.h"
+#include "NFA.h"
 using namespace std;
 
 int main(){
     NFA nfa;
     fstream fp("testNFAtoDFA2.txt", ios::in);
     string line;
-    // è®¾ç½®èµ·å§‹èŠ‚ç‚¹ä¸ç»ˆæ­¢èŠ‚ç‚¹
+    // ÉèÖÃÆğÊ¼½ÚµãÓëÖÕÖ¹½Úµã
     getline(fp, line);
     int src_node = atoi(line.c_str());
     getline(fp, line);
     int dst_node = atoi(line.c_str());
-    // è¯»å–æ–‡ä»¶, æ–°å¢èŠ‚ç‚¹ä¸è½¬ç§»å‡½æ•°
+    // ¶ÁÈ¡ÎÄ¼ş, ĞÂÔö½ÚµãÓë×ªÒÆº¯Êı
     while(getline(fp, line)){
-        // åˆ†æè¯»å…¥çš„æ•°æ®
+        // ·ÖÎö¶ÁÈëµÄÊı¾İ
         int src_id, dst_id;
         char trans_ch;
         get_argv(src_id, dst_id, trans_ch, line);
 
-        // æ–°å»ºèŠ‚ç‚¹ / è¾¹
+        // ĞÂ½¨½Úµã / ±ß
         nfa.addSrc(src_id, dst_id, trans_ch);
     }
 

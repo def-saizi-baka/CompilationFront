@@ -1,4 +1,4 @@
-ï»¿#pragma once
+#pragma once
 #include<iostream>
 #include<string>
 #include<vector>
@@ -11,27 +11,27 @@
 
 using namespace std;
 
-// ç”¨#ä»£æ›¿yiboxilong
+// ÓÃ#´úÌæyiboxilong
 #define S3S '#'
 
-// è¯»å–æ–‡ä»¶çš„å‡½æ•°
+// ¶ÁÈ¡ÎÄ¼şµÄº¯Êı
 void get_argv(int& src, int& dst, char &transfer_ch,string input);
 
-/* è½¬ç§»å‡½æ•°(è¾¹) */
+/* ×ªÒÆº¯Êı(±ß) */
 class Vsrc{
     private:
-        int idx;    // è½¬ç§»èŠ‚ç‚¹id
-        char ch;    // è½¬ç§»å­—ç¬¦
+        int idx;    // ×ªÒÆ½Úµãid
+        char ch;    // ×ªÒÆ×Ö·û
     public:
-        // æ„é€ å‡½æ•°
+        // ¹¹Ôìº¯Êı
         Vsrc(int id, int _ch){ idx = id; ch = _ch;}
-        // è·å–
+        // »ñÈ¡
         int getId(){return this->idx;}
         char getCh(){return this->ch;}
 };
 
 
-/* NFAä¸­çš„æ¯ä¸€ä¸ªèŠ‚ç‚¹ */
+/* NFAÖĞµÄÃ¿Ò»¸ö½Úµã */
 class VNode{
     private:
         int id;
@@ -40,63 +40,63 @@ class VNode{
         bool is_begin=false;
         bool is_end=false;
 
-        // æ„é€ å‡½æ•°
+        // ¹¹Ôìº¯Êı
         VNode(int _id, int _dst, char _ch);
         VNode(int _id){ id = _id; }
 
-        // è·å–èŠ‚ç‚¹id
+        // »ñÈ¡½Úµãid
         int getId(){return this->id;};
 
-        // æ·»åŠ ä¸€æ¡è¾¹
+        // Ìí¼ÓÒ»Ìõ±ß
         void addNext(int _dst, char _ch);
 
-        // è¾“å‡º / æ‰“å°æ•´ä¸ªèŠ‚ç‚¹å€¼, è½¬ç§»å‡½æ•°
+        // Êä³ö / ´òÓ¡Õû¸ö½ÚµãÖµ, ×ªÒÆº¯Êı
         void toString();
 
-        //  é‡å†™æ¯”è¾ƒå‡½æ•°
+        //  ÖØĞ´±È½Ïº¯Êı
         bool operator < (VNode &b){ return this->id < b.getId(); }
 
-        // è¿”å›ä¸‹ä¸€ä¸ªé›†åˆ(åªè€ƒè™‘ä¸€æ­¥è½¬ç§»)
+        // ·µ»ØÏÂÒ»¸ö¼¯ºÏ(Ö»¿¼ÂÇÒ»²½×ªÒÆ)
         set<int> nextSet(char trans_ch);
 };
 
-/* NFAç±»å®ç° */
+/* NFAÀàÊµÏÖ */
 class NFA{
     private:
-        vector<VNode> nodeArray;    // èŠ‚ç‚¹åˆ—è¡¨
-        vector<char> symbolTable;   // ç¬¦å·è¡¨
-        set<int> nextAny;           // å¯¹äºæ— æ¡ä»¶è½¬ç§»çš„é€’å½’åˆ¤æ–­
+        vector<VNode> nodeArray;    // ½ÚµãÁĞ±í
+        vector<char> symbolTable;   // ·ûºÅ±í
+        set<int> nextAny;           // ¶ÔÓÚÎŞÌõ¼ş×ªÒÆµÄµİ¹éÅĞ¶Ï
     public:
 
-        // è®¾ç½®èµ·å§‹èŠ‚ç‚¹
+        // ÉèÖÃÆğÊ¼½Úµã
         int setInitNode(int id);
 
-        // è®¾ç½®ç»ˆæ­¢èŠ‚ç‚¹
+        // ÉèÖÃÖÕÖ¹½Úµã
         int setEndNode(int id);
 
-        // è·å–èµ·å§‹èŠ‚ç‚¹ / ç´¢å¼•
+        // »ñÈ¡ÆğÊ¼½Úµã / Ë÷Òı
         int getInitNodeId();
 
-        // è·å–ç»ˆæ­¢èŠ‚ç‚¹
+        // »ñÈ¡ÖÕÖ¹½Úµã
         set<int> getEndNodeId();
         
-        // æŸ¥æ‰¾èŠ‚ç‚¹, è¿”å›èŠ‚ç‚¹ç´¢å¼•
+        // ²éÕÒ½Úµã, ·µ»Ø½ÚµãË÷Òı
         int findNode(int id);
         
-        // æ·»åŠ ä¸€æ¡è½¬ç§»å‡½æ•°, è‡ªåŠ¨æ–°å»ºèŠ‚ç‚¹
+        // Ìí¼ÓÒ»Ìõ×ªÒÆº¯Êı, ×Ô¶¯ĞÂ½¨½Úµã
         int addSrc(int src_id, int dst_id, char transfer_ch);
 
-        //æ’åº
+        //ÅÅĞò
         int sortById();
 
-        // æ‰“å°èŠ‚ç‚¹å’Œè½¬ç§»å‡½æ•°
+        // ´òÓ¡½ÚµãºÍ×ªÒÆº¯Êı
         void toString();
 
-        // æŸ¥æ‰¾ä¸‹ä¸€ä¸ªå­é›†
+        // ²éÕÒÏÂÒ»¸ö×Ó¼¯
         set<int> findNextSet(int node_id, char ch);
 
         void _findNextSet(int node_id);
         
-        // å­é›†æ„é€ æ³•è£…æ¢æˆDFA
+        // ×Ó¼¯¹¹Ôì·¨×°»»³ÉDFA
         NFA toDFA();
     };

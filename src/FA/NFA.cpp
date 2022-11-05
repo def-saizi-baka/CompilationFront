@@ -1,6 +1,6 @@
-ï»¿#include "NFA.h"
+#include "NFA.h"
 
-// æ‰“å°é›†åˆ
+// ´òÓ¡¼¯ºÏ
 void printSet(set<int> s){
     cout << "{";
     for(auto ss : s){
@@ -11,12 +11,12 @@ void printSet(set<int> s){
 
 
 /**
- * @brief åˆ†è§£å­—ç¬¦ä¸²
+ * @brief ·Ö½â×Ö·û´®
  * 
- * @param src  èµ·å§‹èŠ‚ç‚¹id
- * @param dst   ç»ˆæ­¢èŠ‚ç‚¹id
- * @param transfer_ch   è½¬ç§»å­—ç¬¦
- * @param input è¾“å…¥å­—ç¬¦ä¸²
+ * @param src  ÆğÊ¼½Úµãid
+ * @param dst   ÖÕÖ¹½Úµãid
+ * @param transfer_ch   ×ªÒÆ×Ö·û
+ * @param input ÊäÈë×Ö·û´®
  */
 void get_argv(int& src, int& dst, char &transfer_ch,string input){
     stringstream ss;
@@ -26,18 +26,18 @@ void get_argv(int& src, int& dst, char &transfer_ch,string input){
 }
 
 
-// æ„é€ ä¸€ä¸ªèŠ‚ç‚¹, åŒæ—¶å¢åŠ ä¸€æ¡è½¬ç§»å‡½æ•°
+// ¹¹ÔìÒ»¸ö½Úµã, Í¬Ê±Ôö¼ÓÒ»Ìõ×ªÒÆº¯Êı
 VNode::VNode(int _id, int _dst, char _ch){
     id = _id;
     nextNode.push_back(Vsrc(_dst, _ch));
 }
 
-// æ·»åŠ ä¸€æ¡è¾¹
+// Ìí¼ÓÒ»Ìõ±ß
 void VNode::addNext(int _dst, char _ch){
     nextNode.push_back(Vsrc(_dst, _ch));
 }
 
-// è¾“å‡º / æ‰“å°NFAå­—ç¬¦ä¸²
+// Êä³ö / ´òÓ¡NFA×Ö·û´®
 void VNode::toString(){
     cout << this->id << ": "<<endl;
     for(auto node : nextNode){
@@ -45,7 +45,7 @@ void VNode::toString(){
     }
 }
 
-// è¿”å›ä¸‹ä¸€ä¸ªé›†åˆ(åªè€ƒè™‘ä¸€æ­¥è½¬ç§»)
+// ·µ»ØÏÂÒ»¸ö¼¯ºÏ(Ö»¿¼ÂÇÒ»²½×ªÒÆ)
 set<int> VNode::nextSet(char trans_ch){
     set<int> dst;
     for(auto next_node : nextNode){
@@ -56,13 +56,13 @@ set<int> VNode::nextSet(char trans_ch){
     return dst;
 }
 
-/*       NFAéƒ¨åˆ†        */
+/*       NFA²¿·Ö        */
 
 /**
- * @brief è®¾ç½®èµ·å§‹èŠ‚ç‚¹ 
+ * @brief ÉèÖÃÆğÊ¼½Úµã 
  * 
- * @param id èŠ‚ç‚¹id
- * @return æ‰¾åˆ°èŠ‚ç‚¹è¿”å›0, èŠ‚ç‚¹ä¸å­˜åœ¨è¿”å›-1
+ * @param id ½Úµãid
+ * @return ÕÒµ½½Úµã·µ»Ø0, ½Úµã²»´æÔÚ·µ»Ø-1
  */
 int NFA::setInitNode(int id){
     for(uint32_t i=0; i<nodeArray.size(); i++){
@@ -75,10 +75,10 @@ int NFA::setInitNode(int id){
 }
 
 /**
- * @brief è®¾ç½®ç»ˆæ­¢èŠ‚ç‚¹ 
+ * @brief ÉèÖÃÖÕÖ¹½Úµã 
  * 
- * @param id èŠ‚ç‚¹id
- * @return æ‰¾åˆ°èŠ‚ç‚¹è¿”å›0, èŠ‚ç‚¹ä¸å­˜åœ¨è¿”å›-1
+ * @param id ½Úµãid
+ * @return ÕÒµ½½Úµã·µ»Ø0, ½Úµã²»´æÔÚ·µ»Ø-1
  */
 int NFA::setEndNode(int id){
     for(uint32_t i=0; i<nodeArray.size(); i++){
@@ -90,7 +90,7 @@ int NFA::setEndNode(int id){
     return -1;
 }
 
-// è·å–èµ·å§‹èŠ‚ç‚¹ / ç´¢å¼•
+// »ñÈ¡ÆğÊ¼½Úµã / Ë÷Òı
 int NFA::getInitNodeId(){
     for(auto node : nodeArray){
         if(node.is_begin){
@@ -100,7 +100,7 @@ int NFA::getInitNodeId(){
     return -1;
 }
 
-// è·å–ç»ˆæ­¢èŠ‚ç‚¹ / ç´¢å¼•
+// »ñÈ¡ÖÕÖ¹½Úµã / Ë÷Òı
 set<int> NFA::getEndNodeId(){
     set<int> res;
     for(auto node : nodeArray){
@@ -112,10 +112,10 @@ set<int> NFA::getEndNodeId(){
 }
 
 /**
- * @brief æŸ¥æ‰¾èŠ‚ç‚¹åˆ—è¡¨
+ * @brief ²éÕÒ½ÚµãÁĞ±í
  * 
  * @param id 
- * @return èŠ‚ç‚¹ç´¢å¼•, æ‰¾ä¸åˆ°è¿”å›-1
+ * @return ½ÚµãË÷Òı, ÕÒ²»µ½·µ»Ø-1
  */
 int NFA::findNode(int id){
     for(int i=0; i<nodeArray.size(); i++){
@@ -127,17 +127,17 @@ int NFA::findNode(int id){
 }
 
 /**
- * @brief æ·»åŠ ä¸€æ¡è½¬ç§»å‡½æ•°, å¹¶è‡ªåŠ¨æ–°å»ºèŠ‚ç‚¹
+ * @brief Ìí¼ÓÒ»Ìõ×ªÒÆº¯Êı, ²¢×Ô¶¯ĞÂ½¨½Úµã
  * 
- * @param src_id èµ·å§‹èŠ‚ç‚¹
- * @param dst_id ç»ˆæ­¢èŠ‚ç‚¹
- * @param transfer_ch è½¬ç§»å­—ç¬¦
+ * @param src_id ÆğÊ¼½Úµã
+ * @param dst_id ÖÕÖ¹½Úµã
+ * @param transfer_ch ×ªÒÆ×Ö·û
  */
 int NFA::addSrc(int src_id, int dst_id, char transfer_ch){
-    // æŸ¥æ‰¾ç»“ç‚¹
+    // ²éÕÒ½áµã
     int src_index = findNode(src_id);
     int dst_index = findNode(dst_id);
-    // æ²¡æ‰¾åˆ°å°±æ–°å»ºèŠ‚ç‚¹
+    // Ã»ÕÒµ½¾ÍĞÂ½¨½Úµã
     if(dst_index < 0){
         nodeArray.push_back(VNode(dst_id));
     }
@@ -148,7 +148,7 @@ int NFA::addSrc(int src_id, int dst_id, char transfer_ch){
         nodeArray[src_index].addNext(dst_id, transfer_ch);
     }
 
-    // æ·»åŠ ç¬¦å·è¡¨
+    // Ìí¼Ó·ûºÅ±í
     if(find(symbolTable.begin(), symbolTable.end(), transfer_ch)==symbolTable.end()){
         symbolTable.push_back(transfer_ch);
     }
@@ -157,7 +157,7 @@ int NFA::addSrc(int src_id, int dst_id, char transfer_ch){
 
 
 /**
- * @brief é€šè¿‡èŠ‚ç‚¹IDè¿›è¡Œæ’åº, ä¿è¯NFAèŠ‚ç‚¹æ•°ç»„ä¸­çš„ç´¢å¼•ä¸èŠ‚ç‚¹idä¸€è‡´
+ * @brief Í¨¹ı½ÚµãID½øĞĞÅÅĞò, ±£Ö¤NFA½ÚµãÊı×éÖĞµÄË÷ÒıÓë½ÚµãidÒ»ÖÂ
  */
 int NFA::sortById(){
     sort(nodeArray.begin(), nodeArray.end());
@@ -165,7 +165,7 @@ int NFA::sortById(){
 }
 
 /**
- * @brief è¾“å‡ºå„ä¸ªèŠ‚ç‚¹ä¿¡æ¯
+ * @brief Êä³ö¸÷¸ö½ÚµãĞÅÏ¢
  */
 void NFA::toString(){
     cout << "{ ";
@@ -182,17 +182,17 @@ void NFA::toString(){
 }
 
 /**
- * @brief å½“å‰èŠ‚ç‚¹è¾“å…¥chåèƒ½åˆ°è¾¾çš„å­é›†
+ * @brief µ±Ç°½ÚµãÊäÈëchºóÄÜµ½´ïµÄ×Ó¼¯
  * 
- * @param node_id èŠ‚ç‚¹id
- * @param ch    è½¬ç§»å­—ç¬¦
- * @return èƒ½åˆ°è¾¾çš„é›†åˆ
+ * @param node_id ½Úµãid
+ * @param ch    ×ªÒÆ×Ö·û
+ * @return ÄÜµ½´ïµÄ¼¯ºÏ
  */
 set<int> NFA::findNextSet(int node_id, char ch){
-    nextAny.clear();    // æ¸…ç©ºé€’å½’ç”¨çš„ç»“æœå­é›†
-    // å½“å‰èŠ‚ç‚¹è¾“å…¥chåèƒ½åˆ°è¾¾çš„èŠ‚ç‚¹é›†åˆ
+    nextAny.clear();    // Çå¿Õµİ¹éÓÃµÄ½á¹û×Ó¼¯
+    // µ±Ç°½ÚµãÊäÈëchºóÄÜµ½´ïµÄ½Úµã¼¯ºÏ
     set<int> next_set_ch = nodeArray[node_id].nextSet(ch);
-    // å½“å‰è¾“å…¥chåçš„èŠ‚ç‚¹é›†åˆèƒ½æ— æ¡ä»¶è½¬ç§»åˆ°è¾¾çš„èŠ‚ç‚¹
+    // µ±Ç°ÊäÈëchºóµÄ½Úµã¼¯ºÏÄÜÎŞÌõ¼ş×ªÒÆµ½´ïµÄ½Úµã
     for(auto next_node_id : next_set_ch){
         _findNextSet(next_node_id);
     }
@@ -200,53 +200,53 @@ set<int> NFA::findNextSet(int node_id, char ch){
 }
 
 void NFA::_findNextSet(int node_id){
-    // å…ˆæŸ¥æ‰¾å½“å‰èŠ‚ç‚¹æ˜¯å¦å·²ç»æœç´¢è¿‡
+    // ÏÈ²éÕÒµ±Ç°½ÚµãÊÇ·ñÒÑ¾­ËÑË÷¹ı
     for(auto id : nextAny){
         if(id == node_id) return;
     }
-    // æ²¡æœ‰è¢«æœè¿‡, ç›´æ¥pushè¿›å»
+    // Ã»ÓĞ±»ËÑ¹ı, Ö±½Ópush½øÈ¥
     nextAny.insert(node_id);
-    // æŸ¥æ‰¾å½“å‰èŠ‚ç‚¹çš„æ— æ¡ä»¶è½¬ç§»
+    // ²éÕÒµ±Ç°½ÚµãµÄÎŞÌõ¼ş×ªÒÆ
     set<int> now_next_any = nodeArray[node_id].nextSet(S3S);
-    // æ¥ç€é€’å½’å‘ä¸‹æŸ¥è¯¢ä¸‹å»
+    // ½Ó×Åµİ¹éÏòÏÂ²éÑ¯ÏÂÈ¥
     for(auto id : now_next_any){
         _findNextSet(id);
     }
 }
 
 /**
- * @brief å½“å‰å·²ç»æ’å¥½åºèŠ‚ç‚¹çš„NFAè½¬æ¢æˆDFA
+ * @brief µ±Ç°ÒÑ¾­ÅÅºÃĞò½ÚµãµÄNFA×ª»»³ÉDFA
  */
 NFA NFA::toDFA(){
-    // å·²ç»åˆå¹¶çš„èŠ‚ç‚¹
+    // ÒÑ¾­ºÏ²¢µÄ½Úµã
     vector<set<int>> visit_set;
-    // å·¥ä½œé˜Ÿåˆ—
+    // ¹¤×÷¶ÓÁĞ
     queue<set<int>> work_set;
-    // æ„é€ DFAçš„èŠ‚ç‚¹è¡¨ç´¢å¼•
+    // ¹¹ÔìDFAµÄ½Úµã±íË÷Òı
     map<set<int>, int> dfa_table;
-    // æ„é€ å­˜æ”¾DFAçš„ç±»
+    // ¹¹Ôì´æ·ÅDFAµÄÀà
     NFA dfa;
     
-    // æ„é€ åˆå§‹èŠ‚ç‚¹é›†åˆ
+    // ¹¹Ôì³õÊ¼½Úµã¼¯ºÏ
     set<int> init_set;
     for(auto node : nodeArray){
         if(node.is_begin){
             init_set.insert(node.getId());
-            // å¯»æ‰¾æ— çŠ¶æ€èŠ‚ç‚¹
+            // Ñ°ÕÒÎŞ×´Ì¬½Úµã
             set<int> tmp = findNextSet(node.getId(), S3S);
             init_set.insert(tmp.begin(), tmp.end());
             break;
         }
     }
     work_set.push(init_set);
-    dfa_table.insert({init_set, dfa_table.size()}); // æ’å…¥åˆ°ç»“æœé›†åˆ
+    dfa_table.insert({init_set, dfa_table.size()}); // ²åÈëµ½½á¹û¼¯ºÏ
 
     while(!work_set.empty()){
-        // è·å–å¹¶å¼¹å‡ºå½“å‰é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªèŠ‚ç‚¹
+        // »ñÈ¡²¢µ¯³öµ±Ç°¶ÓÁĞµÄµÚÒ»¸ö½Úµã
         set<int> now_set = work_set.front();
         work_set.pop();
 
-        // é˜²æ­¢é‡å¤åˆ¤æ–­
+        // ·ÀÖ¹ÖØ¸´ÅĞ¶Ï
         bool is_vit = false;
         for(auto vit : visit_set){
             if(vit == now_set){
@@ -256,17 +256,17 @@ NFA NFA::toDFA(){
         }
         if(is_vit) continue;
 
-        // è®¾ç½®ä¸ºè®¿é—®è¿‡
+        // ÉèÖÃÎª·ÃÎÊ¹ı
         visit_set.push_back(now_set);
         printSet(now_set);
         
-        int src_id = dfa_table[now_set];        // å½“å‰é›†åˆä»£è¡¨çš„èŠ‚ç‚¹id
+        int src_id = dfa_table[now_set];        // µ±Ç°¼¯ºÏ´ú±íµÄ½Úµãid
 
-        // æ ¹æ®å­—ç¬¦è¡¨å»è½¬æ¢
-        for(auto ch : symbolTable){             // è½¬ç§»æ¡ä»¶
-            if(ch == S3S) continue;             // è·³è¿‡æ— æ¡ä»¶è½¬ç§»ç¬¦å·
+        // ¸ù¾İ×Ö·û±íÈ¥×ª»»
+        for(auto ch : symbolTable){             // ×ªÒÆÌõ¼ş
+            if(ch == S3S) continue;             // Ìø¹ıÎŞÌõ¼ş×ªÒÆ·ûºÅ
             set<int> next_set;
-            for(auto node_id : now_set){       // æŸ¥æ‰¾å½“å‰èŠ‚ç‚¹é›†æŸ¥æ‰¾èŠ‚ç‚¹id
+            for(auto node_id : now_set){       // ²éÕÒµ±Ç°½Úµã¼¯²éÕÒ½Úµãid
                 set<int> next_set_any = findNextSet(node_id, ch);
                 next_set.insert(next_set_any.begin(), next_set_any.end());
             }
@@ -274,10 +274,10 @@ NFA NFA::toDFA(){
             cout << ch << ": ";
             printSet(next_set);
 
-            // åˆ¤æ–­éç©º
+            // ÅĞ¶Ï·Ç¿Õ
             if(next_set.empty()) continue;
 
-            // åˆ¤æ–­æ²¡æœ‰è¢«æ‰¾åˆ°
+            // ÅĞ¶ÏÃ»ÓĞ±»ÕÒµ½
             bool is_visit = false;
             for(auto tmp_set : visit_set){
                 if(tmp_set == next_set){
@@ -288,23 +288,23 @@ NFA NFA::toDFA(){
             }
             if(is_visit) continue;
 
-            // æ·»åŠ åˆ°å·¥ä½œé˜Ÿåˆ—
+            // Ìí¼Óµ½¹¤×÷¶ÓÁĞ
             work_set.push(next_set);
-            dfa_table.insert({next_set, dfa_table.size()}); // æ’å…¥åˆ°ç»“æœé›†åˆ
+            dfa_table.insert({next_set, dfa_table.size()}); // ²åÈëµ½½á¹û¼¯ºÏ
 
-            // ä¸‹ä¸€ä¸ªé›†åˆä»£è¡¨çš„èŠ‚ç‚¹id
+            // ÏÂÒ»¸ö¼¯ºÏ´ú±íµÄ½Úµãid
             int dst_id = dfa_table[next_set];
             dfa.addSrc(src_id, dst_id, ch);
 
         }
     }
 
-    // è®¾ç½®èµ·å§‹èŠ‚ç‚¹ä¸ç»ˆæ­¢èŠ‚ç‚¹
+    // ÉèÖÃÆğÊ¼½ÚµãÓëÖÕÖ¹½Úµã
     dfa.setInitNode(0);
     set<int> nfa_end_node_set = getEndNodeId();
     for(auto dfa_node_set : dfa_table){
         for(auto id : dfa_node_set.first){
-            // é›†åˆä¸­æœ‰ç»ˆæ­¢èŠ‚ç‚¹
+            // ¼¯ºÏÖĞÓĞÖÕÖ¹½Úµã
             if(find(nfa_end_node_set.begin(), nfa_end_node_set.end(), id) != nfa_end_node_set.end()){
                 dfa.setEndNode(dfa_node_set.second);
                 break;

@@ -13,15 +13,15 @@ const string path_operator = "./operator_symbol.txt";
 const string path_delimiter = "./delimiter.txt";
 
 enum class Type {
-	identification, //æ ‡è¯†ç¬¦
-	const_number_int, //å¸¸æ•°
+	identification, //±êÊ¶·û
+	const_number_int, //³£Êı
 	const_number_double,
 	const_number_char,
 	const_number_str,
-	keywords, //å…³é”®å­—
-	operator_symbol, //è¿ç®—ç¬¦
-	delimiter, //ç•Œç¬¦
-	none //é»˜è®¤æ— ç±»å‹
+	keywords, //¹Ø¼ü×Ö
+	operator_symbol, //ÔËËã·û
+	delimiter, //½ç·û
+	none //Ä¬ÈÏÎŞÀàĞÍ
 };
 
 ostream& operator<<(ostream& out, const Type t);
@@ -29,7 +29,7 @@ ostream& operator<<(ostream& out, const Type t);
 typedef struct {
 	string name;
 	string type;
-	//è¿™é‡Œåˆ°æ—¶å€™è¿˜è¦ç»™å…·ä½“çš„å€¼ç•™ä¸€ä¸ªä½ç½®
+	//ÕâÀïµ½Ê±ºò»¹Òª¸ø¾ßÌåµÄÖµÁôÒ»¸öÎ»ÖÃ
 }id;
 
 typedef struct {
@@ -54,7 +54,7 @@ typedef struct {
 		long double nameLD;
 	}name;
 	string type;
-	//è¿™é‡Œåˆ°æ—¶å€™è¿˜è¦ç»™å…·ä½“çš„å€¼ç•™ä¸€ä¸ªä½ç½®
+	//ÕâÀïµ½Ê±ºò»¹Òª¸ø¾ßÌåµÄÖµÁôÒ»¸öÎ»ÖÃ
 }idDouble;
 
 typedef struct {
@@ -64,13 +64,13 @@ typedef struct {
 		wchar_t nameW;
 	}name;
 	string type;
-	//è¿™é‡Œåˆ°æ—¶å€™è¿˜è¦ç»™å…·ä½“çš„å€¼ç•™ä¸€ä¸ªä½ç½®
+	//ÕâÀïµ½Ê±ºò»¹Òª¸ø¾ßÌåµÄÖµÁôÒ»¸öÎ»ÖÃ
 }idChar;
 
 typedef struct {
 	string name;
 	string type;
-	//è¿™é‡Œåˆ°æ—¶å€™è¿˜è¦ç»™å…·ä½“çš„å€¼ç•™ä¸€ä¸ªä½ç½®
+	//ÕâÀïµ½Ê±ºò»¹Òª¸ø¾ßÌåµÄÖµÁôÒ»¸öÎ»ÖÃ
 }idStr;
 
 
@@ -99,14 +99,14 @@ public:
 	virtual bool insert(const input& t) { return true; };
 };
 
-//è¿™æ˜¯æ ‡è¯†ç¬¦çš„èŠ‚ç‚¹ç±»å‹
+//ÕâÊÇ±êÊ¶·ûµÄ½ÚµãÀàĞÍ
 class identificationInfo : public info
 {
 	friend class symbolTable;
 private:
 	map<int,id> symbols;
 public:
-	identificationInfo() :info(string("æ ‡è¯†ç¬¦"), Type::identification) {};
+	identificationInfo() :info(string("±êÊ¶·û"), Type::identification) {};
 	identificationInfo(const info t) :info(t) {};
 	identificationInfo(const identificationInfo& t) : info(t) {};	
 	int hashf(string& name);
@@ -114,7 +114,7 @@ public:
 	virtual bool insert(const input& t);
 };
 
-//å¸¸æ•°çš„èŠ‚ç‚¹ç±»å‹
+//³£ÊıµÄ½ÚµãÀàĞÍ
 
 class intInfo : public info
 {
@@ -124,7 +124,7 @@ private:
 public:
 	string hashf(idInt);
 	intInfo(const info t) :info(t) {};
-	intInfo() :info("æ•´å‹", Type::const_number_int) {};
+	intInfo() :info("ÕûĞÍ", Type::const_number_int) {};
 	intInfo(const intInfo& t) :info(t) {};
 	virtual void print()const;
 	virtual bool insert(const input& t);
@@ -139,7 +139,7 @@ private:
 public:
 	string hashf(idDouble);
 	doubleInfo(const info t) :info(t) {};
-	doubleInfo() :info("æµ®ç‚¹å‹", Type::const_number_double) {};
+	doubleInfo() :info("¸¡µãĞÍ", Type::const_number_double) {};
 	doubleInfo(const intInfo& t) :info(t) {};
 	virtual void print()const;
 	virtual bool insert(const input& t);
@@ -154,7 +154,7 @@ private:
 public:
 	string hashf(idChar);
 	charInfo(const info t) :info(t) {};
-	charInfo() :info("å­—ç¬¦å‹", Type::const_number_char) {};
+	charInfo() :info("×Ö·ûĞÍ", Type::const_number_char) {};
 	charInfo(const intInfo& t) :info(t) {};
 	virtual void print()const;
 	virtual bool insert(const input& t);
@@ -169,7 +169,7 @@ private:
 public:
 	string&& hashf(idStr);
 	strInfo(const info t) :info(t) {};
-	strInfo() :info("å­—ç¬¦ä¸²å‹", Type::const_number_str) {};
+	strInfo() :info("×Ö·û´®ĞÍ", Type::const_number_str) {};
 	strInfo(const intInfo& t) :info(t) {};
 	virtual void print() const;
 	virtual bool insert(const input& t);

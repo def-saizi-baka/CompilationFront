@@ -39,8 +39,8 @@ class FA{
     protected:
         int begNode;
         int endNode;
-        vector<VNode> mgraph;       // èŠ‚ç‚¹è¡¨
-        set<char>  symbolTable;  // å­—æ¯è¡¨
+        vector<VNode> mgraph;       // ½Úµã±í
+        set<char>  symbolTable;  // ×ÖÄ¸±í
 
         static map<char, int> pri_op;
         void initOP();
@@ -63,11 +63,11 @@ class FA{
 
         void showFA();
         
-        // æŸ¥æ‰¾ç´¢å¼•ä¸ºsrc_idèŠ‚ç‚¹è¾“å…¥trans_chåè½¬ç§»èƒ½åˆ°çš„èŠ‚ç‚¹é›†åˆ
+        // ²éÕÒË÷ÒıÎªsrc_id½ÚµãÊäÈëtrans_chºó×ªÒÆÄÜµ½µÄ½Úµã¼¯ºÏ
         set<int> findNextNode(int src_id, char trans_ch);
 
         FA toDFA();
-        // æ£€æŸ¥ä¸²æ˜¯å¦èƒ½è¢«æ¥æ”¶
+        // ¼ì²é´®ÊÇ·ñÄÜ±»½ÓÊÕ
         bool checkStr(const string& in,int& sym_idx,int& err_t);
 
 };

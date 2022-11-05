@@ -7,7 +7,10 @@ using namespace std;
 static string::size_type min(string::size_type a, string::size_type b, string::size_type c);
 
 enum class InputState{
-	CORRECT,END_OF_FILE,NO_CLOSED_COMMENT,ERROR_COMMENT
+	CORRECT,
+    END_OF_FILE,
+    NO_CLOSED_COMMENT,
+    ERROR_COMMENT
 };
 
 class InputBuffer

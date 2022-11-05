@@ -16,17 +16,15 @@ int main()
     dfa.showFA();
     int sys_idx, err_idx;
     string test[] = {
-        "000", 
-        "(", 
-        ")", 
-        "*", 
-        "111", 
-        "",
-        "||"
+        "inti", 
+        "int",
+        "int  a++  ",
+        "main()",
+        "main"
     };
     for(auto ss : test){
-        cout << ss << ": ";
-        cout << dfa.checkStr(ss, sys_idx, err_idx) << endl;
+        cout << ss << ": " << endl;
+        dfa.checkStr(ss, sys_idx, err_idx);
     }
 	return 0;
 }

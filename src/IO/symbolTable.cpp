@@ -40,16 +40,16 @@ bool symbolTable::insert(const input& t)
 		return symbolTables[(int)Type::identification]->insert(t);
 	}
 	else {
-		cerr << "æ‰€æŒ‡å®šçš„ç±»åž‹æ— æ³•æ’å…¥" << endl;
+		cerr << "ËùÖ¸¶¨µÄÀàÐÍÎÞ·¨²åÈë" << endl;
 		return false;
-		//å…¶ä»–ä¸œè¥¿ä¸æ˜¯åŠ¨æ€çš„ï¼Œè¿™é‡Œä¸å…è®¸æ’å…¥
+		//ÆäËû¶«Î÷²»ÊÇ¶¯Ì¬µÄ£¬ÕâÀï²»ÔÊÐí²åÈë
 	}
 }
 
 void symbolTable::print()
 {
-	cout << "ç¬¦å·è¡¨\n";
-	cout << "åç§°" << "\t" << "ç±»åž‹\n";
+	cout << "·ûºÅ±í\n";
+	cout << "Ãû³Æ" << "\t" << "ÀàÐÍ\n";
 	for (const auto& t : this->symbolTables) {
 		t.second->print();
 		/*
@@ -96,13 +96,13 @@ symbolTable::symbolTable()
 	ifstream fin;
 	fin.open(path_keyword);
 	if (!fin.is_open()) {
-		cerr << path_keyword << "è¯¥è·¯å¾„ä¸‹æ²¡æœ‰é…ç½®æ–‡ä»¶\n";
+		cerr << path_keyword << "¸ÃÂ·¾¶ÏÂÃ»ÓÐÅäÖÃÎÄ¼þ\n";
 		return;
 	}
 
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
-		ssm << temp;//å…¨éƒ¨æ”¾ä¸‹åŽ»
+		ssm << temp;//È«²¿·ÅÏÂÈ¥
 		ssm >> content;
 		ssm >> id;
 		ssm.clear();
@@ -112,12 +112,12 @@ symbolTable::symbolTable()
 
 	fin.open(path_operator);
 	if (!fin.is_open()) {
-		cerr << path_operator << "è¯¥è·¯å¾„ä¸‹æ²¡æœ‰é…ç½®æ–‡ä»¶\n";
+		cerr << path_operator << "¸ÃÂ·¾¶ÏÂÃ»ÓÐÅäÖÃÎÄ¼þ\n";
 		return;
 	}
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
-		ssm << temp;//å…¨éƒ¨æ”¾ä¸‹åŽ»
+		ssm << temp;//È«²¿·ÅÏÂÈ¥
 		ssm >> content;
 		ssm >> id;
 		ssm.clear();
@@ -127,12 +127,12 @@ symbolTable::symbolTable()
 
 	fin.open(path_delimiter);
 	if (!fin.is_open()) {
-		cerr << path_delimiter << "è¯¥è·¯å¾„ä¸‹æ²¡æœ‰é…ç½®æ–‡ä»¶\n";
+		cerr << path_delimiter << "¸ÃÂ·¾¶ÏÂÃ»ÓÐÅäÖÃÎÄ¼þ\n";
 		return;
 	}
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
-		ssm << temp;//å…¨éƒ¨æ”¾ä¸‹åŽ»
+		ssm << temp;//È«²¿·ÅÏÂÈ¥
 		ssm >> content;
 		ssm >> id;
 		ssm.clear();
@@ -152,7 +152,7 @@ int identificationInfo::hashf(string& name)
 
 void identificationInfo::print()const
 {
-	cout << "æ ‡è¯†ç¬¦è¡¨\n";
+	cout << "±êÊ¶·û±í\n";
 	for (const auto& t : this->symbols) {
 		cout << t.second.name << "\t" << t.second.type << endl;
 	}
@@ -169,7 +169,7 @@ bool identificationInfo::insert(const input& t)
 		return true;
 	}
 	else {
-		cerr << "æ’å…¥å¤±è´¥ï¼Œå·²å­˜åœ¨key=" << key << endl;
+		cerr << "²åÈëÊ§°Ü£¬ÒÑ´æÔÚkey=" << key << endl;
 		return false;
 	}
 }
@@ -211,7 +211,7 @@ string intInfo::hashf(idInt t)
 
 void intInfo::print()const
 {
-	cout << "æ•´åž‹å¸¸æ•°è¡¨\n";
+	cout << "ÕûÐÍ³£Êý±í\n";
 	for (const auto& t : this->symbols) {
 		if (t.second.type == "bool") {
 			cout << t.second.name.nameBool;
@@ -280,7 +280,7 @@ bool intInfo::insert(const input& t)
 		return true;
 	}
 	else {
-		cerr << "æ’å…¥å¤±è´¥" << endl;
+		cerr << "²åÈëÊ§°Ü" << endl;
 		return false;
 	};
 }
@@ -304,7 +304,7 @@ string doubleInfo::hashf(idDouble t)
 
 void doubleInfo::print()const
 {
-	cout << "æµ®ç‚¹å¸¸æ•°è¡¨\n";
+	cout << "¸¡µã³£Êý±í\n";
 	for (const auto& t : this->symbols) {
 		if (t.second.type == "double") {
 			cout << t.second.name.nameD;
@@ -338,7 +338,7 @@ bool doubleInfo::insert(const input& t)
 		return true;
 	}
 	else {
-		cerr << "æ’å…¥å¤±è´¥" << endl;
+		cerr << "²åÈëÊ§°Ü" << endl;
 		return false;
 	};
 }
@@ -362,7 +362,7 @@ string charInfo::hashf(idChar t)
 
 void charInfo::print()const
 {
-	cout << "å­—ç¬¦å¸¸æ•°è¡¨\n";
+	cout << "×Ö·û³£Êý±í\n";
 	for (const auto& t : this->symbols) {
 		if (t.second.type == "char") {
 			cout << t.second.name.name;
@@ -396,7 +396,7 @@ bool charInfo::insert(const input& t)
 		return true;
 	}
 	else {
-		cerr << "æ’å…¥å¤±è´¥" << endl;
+		cerr << "²åÈëÊ§°Ü" << endl;
 		return false;
 	};
 }
@@ -408,7 +408,7 @@ string&& strInfo::hashf(idStr i)
 
 void strInfo::print()const
 {
-	cout << "å­—ç¬¦ä¸²å¸¸æ•°è¡¨\n";
+	cout << "×Ö·û´®³£Êý±í\n";
 	for (const auto& t : this->symbols) {
 		cout << t.second.name;
 		cout << "\t" << t.second.type << endl;
@@ -426,7 +426,7 @@ bool strInfo::insert(const input& t)
 		return true;
 	}
 	else {
-		cerr << "æ’å…¥å¤±è´¥" << endl;
+		cerr << "²åÈëÊ§°Ü" << endl;
 		return false;
 	};
 }
@@ -434,23 +434,23 @@ bool strInfo::insert(const input& t)
 ostream& operator<<(ostream& out, const Type t)
 {
 	if (t == Type::const_number_int)
-		out << "æ•´åž‹å¸¸æ•°";
+		out << "ÕûÐÍ³£Êý";
 	else if (t == Type::const_number_double)
-		out << "æµ®ç‚¹åž‹å¸¸æ•°";
+		out << "¸¡µãÐÍ³£Êý";
 	else if (t == Type::const_number_char)
-		out << "å­—ç¬¦åž‹å¸¸æ•°";
+		out << "×Ö·ûÐÍ³£Êý";
 	else if (t == Type::const_number_str)
-		out << "å­—ç¬¦ä¸²åž‹å¸¸æ•°";
+		out << "×Ö·û´®ÐÍ³£Êý";
 	else if (t == Type::delimiter)
-		out << "ç•Œç¬¦";
+		out << "½ç·û";
 	else if (t == Type::identification)
-		out << "æ ‡è¯†ç¬¦";
+		out << "±êÊ¶·û";
 	else if (t == Type::keywords)
-		out << "å…³é”®å­—";
+		out << "¹Ø¼ü×Ö";
 	else if (t == Type::operator_symbol)
-		out << "è¿ç®—ç¬¦";
+		out << "ÔËËã·û";
 	else
 		out << "NONE";
 	return out;
-	// TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
+	// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
 }
