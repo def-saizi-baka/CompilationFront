@@ -124,7 +124,7 @@ void InputBuffer::reset()
 	this->line = 0;
 	this->buffer.clear();
 	this->fin.clear();
-	this->fin.seekg(ios::beg, 0);//回起始位置
+	this->fin.seekg(0, ios::beg);//回起始位置
 }
 
 bool InputBuffer::open(const string& path)
