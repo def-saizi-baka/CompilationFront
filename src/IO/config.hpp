@@ -18,41 +18,6 @@ namespace Config {
 	const int end_int = -2;
 };
 
-static void get_phases_list(vector<int>& res, config& config, string input)
-{
-	size_t i, j;
-	bool flag = false;
-	for (i = j = 0; j < input.size(); j++) {
-		if (input[i] == '<' && flag == false) {
-			j = i;
-			flag = true;
-		}
-		else if (input[i] == '>' && flag == true) {
-			flag = false;
-			if (j < i + 2)
-				continue;
-			else {
-				string temp = input.substr(i + 1, j - i - 1);//得到状态名
-				stringstream ssm;
-				ssm << temp;
-				ssm >> temp;
-				//以上这些操作是避免去除空格
-				auto iter_stop = config.get_stop_symbols().find(temp);
-				if (iter_stop != config.get_stop_symbols().end())
-					res.push_back(iter_stop->second);
-				else {
-					auto iter_unstop = config.get_unstop_symbols().find(temp);
-					if (iter_unstop != config.get_unstop_symbols().end())
-						res.push_back(iter_unstop->second);
-					else {
-						config.log(string("[ERROR] 没有这个状态 ") + temp);
-					}
-				}
-			}
-		}
-	}
-};
-
 class config
 {
 public:
@@ -65,6 +30,8 @@ public:
 	const map<string, int>& get_operators()const;
 	const map<string, int>& get_delimiters()const;
 	const vector<pair<int, vector<int>>>& get_grammar()const { return this->grammar; };
+	const map<string, int>& get_symbols() const { return this->dic_symbols.symbols; };
+	map<int, string>& get__symbols(){ return this->dic_symbols._symbols; };
 private:
 	struct {
 		map<string, int> stop_symbols;
@@ -73,11 +40,47 @@ private:
 		map<string, int> operators;
 		map<string, int> delimiters;
 		map<string, int> symbols;
+		map<int, string> _symbols;
 		string end = Config::end; //用作归约的终止符
 	}dic_symbols; //符号字典，把每一个符号映射到一个int值 
 	vector<pair<int, vector<int>>> grammar;//所有文法表
 	ofstream logFile;
 };
+
+static void get_phases_list(vector<int>& res, config& con, string input)
+{
+	size_t i, j;
+	bool flag = false;
+	for (i = j = 0; j < input.size(); j++) {
+		if (input[j] == '<' && flag == false) {
+			i = j;
+			flag = true;
+		}
+		else if (input[j] == '>' && flag == true) {
+			flag = false;
+			if (j < i + 2)
+				continue;
+			else {
+				string temp = input.substr(i + 1, j - i - 1);//得到状态名
+				temp.erase(0, temp.find_first_not_of(" "));
+				temp.erase(temp.find_last_not_of(" ") + 1);
+				//以上这些操作是避免去除空格
+				auto iter_stop = con.get_stop_symbols().find(temp);
+				if (iter_stop != con.get_stop_symbols().end())
+					res.push_back(iter_stop->second);
+				else {
+					auto iter_unstop = con.get_unstop_symbols().find(temp);
+					if (iter_unstop != con.get_unstop_symbols().end())
+						res.push_back(iter_unstop->second);
+					else {
+						con.log(string("[ERROR] 没有这个状态 ") + temp);
+					}
+				}
+			}
+		}
+	}
+};
+
 
 inline config::config()
 {
@@ -88,6 +91,7 @@ inline config::config()
 	int id;
 
 	fin.open(Config::path_keyword, ios::in);
+	bool debug = fin.is_open();
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
@@ -98,6 +102,7 @@ inline config::config()
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.keywords[content] = id;
 		this->dic_symbols.symbols[content] = id;
+		this->dic_symbols._symbols[id] = content;
 	}
 	fin.close();
 
@@ -112,6 +117,7 @@ inline config::config()
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.delimiters[content] = id;
 		this->dic_symbols.symbols[content] = id;
+		this->dic_symbols._symbols[id] = content;
 	}
 	fin.close();
 
@@ -126,6 +132,7 @@ inline config::config()
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.operators[content] = id;
 		this->dic_symbols.symbols[content] = id;
+		this->dic_symbols._symbols[id] = content;
 	}
 	fin.close();
 
@@ -139,9 +146,11 @@ inline config::config()
 		ssm.clear();
 		this->dic_symbols.unstop_symbols[content] = id;
 		this->dic_symbols.symbols[content] = id;
+		this->dic_symbols._symbols[id] = content;
 	}
 	fin.close();
 	this->dic_symbols.symbols[this->dic_symbols.end] = Config::end_int; //加上栈底符号
+	this->dic_symbols._symbols[Config::end_int] = this->dic_symbols.end;
 
 	logFile.open(Config::log_path, ios::out);
 	assert(logFile.is_open());
@@ -157,7 +166,7 @@ inline config::config()
 		}
 		//切分字符串
 		string src = temp.substr(0, pos); //起始状态
-		string des = temp.substr(pos); //到达状态
+		string des = temp.substr(pos + 2); //到达状态
 		vector<int> src_list, des_list;
 		get_phases_list(src_list, *this, src);
 		get_phases_list(des_list, *this, des);
