@@ -16,6 +16,7 @@ using namespace std;
 #define READ_REGNEX			2
 #define READ_STRING			3
 #define KEEP_END		true
+#define READ_SYMBOLTABLE     4
 
 
 class FA;
@@ -53,12 +54,12 @@ class FA{
         void readRegex(string& regex, int endType);
         void readStr(string& s, int endType);
         void readFile(string& filename);
+        void readSymolTable();
         void _findEpsilonSet(set<int>& find_res, int node_index);
 
     public:
         FA();
         FA(string& s,int type = READ_REGNEX, int endType = -1);
-        //FA(string& filename,int type);
         
         void mergeFAbyOr(FA& tmp, bool keepEnd = false);
         void mergeFAbyLink(FA& tmp);

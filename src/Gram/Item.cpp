@@ -232,14 +232,17 @@ void CFG::buildClosures(){
         Closure builtClosure(*this, waitExtendedClosure.getFamily());
 
         // debug
-        builtClosure.printClosure();
+        int source = this->closures.size();
+        if(this->debug){
+            cout << "ClosureID: " << source << endl;
+            builtClosure.printClosure();
+        }
 
         // 保存转移结果
         this->closures.push_back(builtClosure);
         transRes.push_back(set<pair<int, int>>{closureFrom});
         this->closuresRelation.push_back(set< pair<int, int> >{});
 
-        int source = this->closures.size()-1;
         // 非终结符
         for(auto nonTerSys: nonTerSysboms){
             set<Item> gotoRes = builtClosure.GO(nonTerSys.second);
@@ -264,11 +267,26 @@ void CFG::buildClosures(){
     int i=0;
     for(auto trans : transRes){
         for(auto tranPair : trans){
-            this->closuresRelation[tranPair.first].insert({tranPair.second, i});
+            if(tranPair.first!=0 || tranPair.second!=0)
+                this->closuresRelation[tranPair.first].insert({tranPair.second, i});
         }
         i++;
     }
+
+    // 输出闭包之间关系
+    if(this->debug){
+        cout << "闭包关系: " << endl;
+        for(uint32_t i = 0; i<this->closuresRelation.size(); i++){
+            cout << i << ": ";
+            for(auto tran : this->closuresRelation[i]){
+                cout << "<" << tran.first << ", " << tran.second << "> ";
+            }
+            cout << endl;
+        }
+    }
+    // cout << endl;
 }
+
 
 void CFG::buildAnalysisTable(){
     // 根据闭包关系构建action / goto表
@@ -292,6 +310,31 @@ void CFG::buildAnalysisTable(){
             }
         }
     }
+
+    // debug
+
+    if(this->debug){
+        cout << endl;
+        for(auto analysisItem : this->analysisTable){
+            cout << "State: " << analysisItem.first << endl;
+            sort(analysisItem.second.begin(), analysisItem.second.end());
+            cout << "\taction: ";
+            uint32_t i = 0;
+            for(; i<analysisItem.second.size(); i++){
+                if(analysisItem.second[i].first>1000) break;
+                cout << "<" << analysisItem.second[i].first << ", " << analysisItem.second[i].second << "> ";
+            }
+            cout << endl;
+            cout << "\tgoto: ";
+            if(i<analysisItem.second.size()){
+                for(; i<analysisItem.second.size(); i++){
+                    cout << "<" << analysisItem.second[i].first << ", " << analysisItem.second[i].second << "> ";
+                }
+            }
+            cout<<"\n"<<endl;
+        }
+    }
+
 }
 
 void CFG::showCFG()
@@ -346,7 +389,7 @@ void CFG::formFirstSet()
 	map<std::string, int> symbols = con.get_symbols();
     
 	bool flag = true;
-	int times = 0;
+	// int times = 0;
 	while (flag) {
 		flag = false;
         for(auto symbol : symbols){
@@ -360,22 +403,22 @@ void CFG::formFirstSet()
 				} 
 			}           
         }
-		cout<<times<<"轮"<<endl;
-		for(auto symbol : symbols)
-		{
-			if(!firstSet[symbol.second].isSure() && leftToGramIndex[symbol.second].size()!=0)
-			{
-				cout<<symbol.second<<"\t: \t"<<endl;
-				for (auto iter: leftToGramIndex[symbol.second])
-				{
-					cout<<"\t\t";
-					initGram[iter].showGram();
-				}
-				cout<<endl;
-			}
-			cout<<endl;
-		}
-		times++;
+		// cout<<times<<"轮"<<endl;
+		// for(auto symbol : symbols)
+		// {
+		// 	if(!firstSet[symbol.second].isSure() && leftToGramIndex[symbol.second].size()!=0)
+		// 	{
+		// 		cout<<symbol.second<<"\t: \t"<<endl;
+		// 		for (auto iter: leftToGramIndex[symbol.second])
+		// 		{
+		// 			cout<<"\t\t";
+		// 			initGram[iter].showGram();
+		// 		}
+		// 		cout<<endl;
+		// 	}
+		// 	cout<<endl;
+		// }
+		// times++;
 	}
 
 }

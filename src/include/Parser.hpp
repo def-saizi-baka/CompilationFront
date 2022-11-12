@@ -55,8 +55,8 @@ vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<p
 		}
 		else if (next < 0) {//action表里面小于0代表需要归约
 			int temp = abs(next);//找到要归约到的状态
-			size_t size = con.get_grammar()[temp].second.size();//找到需要出栈的字符的数目
-			for (size_t j = size - 1; j >= 0; j--) {
+			int size = con.get_grammar()[temp].second.size();//找到需要出栈的字符的数目
+			for (int j = size - 1; j >= 0; j--) {
 				int t_sign = signs.top();
 				int t_status = status.back();
 				if (con.get_grammar()[temp].second[j] != t_sign) {//这种就是错误发生
@@ -101,7 +101,7 @@ int parser::find_action(const map<int, vector<pair<int, int>>>& action, int stat
 		return parser_config::ERROR;
 	}
 	for (const auto& item : (iter->second)) {
-		if (item.first == status) {
+		if (item.first == sign) {
 			con.log("[INFO] 成功在action表中找到状态转移信息，当前状态唯一标识符为：" + to_string(status));
 			return item.second;
 		}
@@ -119,7 +119,7 @@ int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status,
 		return parser_config::ERROR;
 	}
 	for (const auto& item : (iter->second)) {
-		if (item.first == status) {
+		if (item.first == sign) {
 			con.log("[INFO] 成功在goto表中找到状态转移信息，当前状态唯一标识符为：" + to_string(status));
 			return item.second;
 		}

@@ -8,8 +8,8 @@
 config con;
 
 int main(){
-    // string filename = "./FA/regex.txt";
-	// FA fa(filename, READ_FILE_BY_LINE);
+    // string path = "dfghjk";
+	// FA fa(path, READ_SYMBOLTABLE);
     // FA dfa = fa.toDFA();
     // dfa.saveDFA("dfamodel");
     int sys_idx, err_idx;
@@ -37,6 +37,7 @@ int main(){
 
     CFG cfg;
         // 初始化项目
+    cfg.setDebug();
     cfg.initItems();
     cfg.initLRItems();
 	cfg.formFirstSet();
@@ -46,5 +47,6 @@ int main(){
     
     parser Pa;
     Pa.analysis(tokens, analysisTable);
+    
 
 }

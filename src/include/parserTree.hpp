@@ -51,7 +51,7 @@ void parserTree::reduction(pair<int, vector<int>> grammar)
 	try {
 		node* root = new node;
 		root->symbol = grammar.first;
-		for (size_t i = grammar.second.size() - 1; i >= 0; i--) {
+		for (int i = grammar.second.size() - 1; i >= 0; i--) {
 			node* temp = this->roots.back();
 
 			if (grammar.second[i] == temp->symbol) {//这里就是对应上了

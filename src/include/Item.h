@@ -118,6 +118,7 @@ class CFG{
         //map<int, set<int>> firstSet;			// 保存全部非终结符的FIRST集,
         map<int, FIRST> firstSet;
         int begState;							// 初始终结符的状态
+        bool debug = false;                     // 调试模式
 
         void formFirstSet(int value);			// 求取某个符号的非终结符,主要是用于生成firstSet
     public:
@@ -128,7 +129,7 @@ class CFG{
         void initLRItems();										// 生成所有LR(0)项目
         void formFirstSet();									// 生成所有符号的First集
 
-
+        void setDebug(){this->debug = true;}                    // 设置输出全部内容
         set<int> getFirstSet(int value);						// 获取单个非终结符的FIRST集
         set<int> getFirstSet(vector<int> gramStr);					// 获取某个串的非终结符
         map<int, std::vector<std::pair<int, int>>> getAnalysisTable(){return this->analysisTable;}
