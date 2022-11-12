@@ -31,16 +31,19 @@ class VNode {
         friend DFA;
     public:
         VNode(int idx);
+        VNode();
         void setEdge(char ch, int idx);
         void setEdge(char ch, set<int> idx_set);
+        void saveNode(ofstream& fout);
+        void loadNode(ifstream& fin);
 };
 
 class FA{
     protected:
         int begNode;
         int endNode;
-        vector<VNode> mgraph;       // ½Úµã±í
-        set<char>  symbolTable;  // ×ÖÄ¸±í
+        vector<VNode> mgraph;       // èŠ‚ç‚¹è¡¨
+        set<char>  symbolTable;    // å­—æ¯è¡¨
 
         static map<char, int> pri_op;
         void initOP();
@@ -53,7 +56,7 @@ class FA{
         void _findEpsilonSet(set<int>& find_res, int node_index);
 
     public:
-        FA() {symbolTable.insert(Epsilon_CH);};
+        FA();
         FA(string& s,int type = READ_REGNEX, int endType = -1);
         //FA(string& filename,int type);
         
@@ -63,12 +66,18 @@ class FA{
 
         void showFA();
         
-        // ²éÕÒË÷ÒıÎªsrc_id½ÚµãÊäÈëtrans_chºó×ªÒÆÄÜµ½µÄ½Úµã¼¯ºÏ
+        // æŸ¥æ‰¾ç´¢å¼•ä¸ºsrc_idèŠ‚ç‚¹è¾“å…¥trans_chåè½¬ç§»èƒ½åˆ°çš„èŠ‚ç‚¹é›†åˆ
         set<int> findNextNode(int src_id, char trans_ch);
 
         FA toDFA();
-        // ¼ì²é´®ÊÇ·ñÄÜ±»½ÓÊÕ
-        bool checkStr(const string& in,int& sym_idx,int& err_t);
+        // æ£€æŸ¥ä¸²æ˜¯å¦èƒ½è¢«æ¥æ”¶
+        vector<int> checkStr(const string& in,int& sym_idx,int& err_t);
+
+        // ä¿å­˜FA
+        void saveDFA(const string& model_file);
+
+        // åŠ è½½FA
+        void loadDFA(const string& model_file);
 
 };
 
@@ -78,6 +87,5 @@ class DFA: public FA{
     public:
         DFA(string reg, int type = READ_REGNEX);
         bool checkStr(string& in,int& sym_idx,int& err_t);
-
 };
 

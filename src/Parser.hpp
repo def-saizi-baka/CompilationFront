@@ -5,7 +5,7 @@
 #include <fstream>
 #include <string>
 #include <cassert>
-#include "config.hpp"
+#include "./IO/config.hpp"
 #include <stack>
 #include <cmath>
 #include "parserTree.hpp"
@@ -32,57 +32,57 @@ private:
 };
 
 /// <summary>
-/// Ö÷¿Ø³ÌĞò£¬ÒÆ½ø¹éÔ¼
+/// ä¸»æ§ç¨‹åºï¼Œç§»è¿›å½’çº¦
 /// </summary>
-/// <param name="token"></param> ÒÔ×´Ì¬Î¨Ò»±êÊ¶·ûµÄĞòÁĞ×÷ÎªÊäÈë
-/// <param name="action"></param> action±í
-/// <param name="_goto"></param> goto±í£¬ÎªÁË±ÜÃâgoto¹Ø¼ü×Ö³åÍ»
-/// <returns></returns> ·µ»ØÓÒÖµÒıÓÃ£¬ÊÇÒ»¸ö·ÖÎöµÃµ½µÄ×´Ì¬ĞòÁĞ
+/// <param name="token"></param> ä»¥çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦çš„åºåˆ—ä½œä¸ºè¾“å…¥
+/// <param name="action"></param> actionè¡¨
+/// <param name="_goto"></param> gotoè¡¨ï¼Œä¸ºäº†é¿å…gotoå…³é”®å­—å†²çª
+/// <returns></returns> è¿”å›å³å€¼å¼•ç”¨ï¼Œæ˜¯ä¸€ä¸ªåˆ†æå¾—åˆ°çš„çŠ¶æ€åºåˆ—
 vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& analysisTable)
 {
 	stack<int> signs;
 	vector<int> status;
 	signs.push(Config::end_int);
-	status.push_back(0);//´ÓµÚ0¸ö×´Ì¬¿ªÊ¼
+	status.push_back(0);//ä»ç¬¬0ä¸ªçŠ¶æ€å¼€å§‹
 	for (unsigned idx = 0; idx < token.size();) {
 		int next = find(analysisTable, status.back(), token[idx], true);
 		if (next == parser_config::ERROR) {
-			con.log("[ERROR] ÒÆ½øÊ§°Ü£¬µ±Ç°·ÖÎöµ½µÄ·ûºÅÎ¨Ò»±êÊ¶·ûÎª£º" + to_string(idx));
+			con.log("[ERROR] ç§»è¿›å¤±è´¥ï¼Œå½“å‰åˆ†æåˆ°çš„ç¬¦å·å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(idx));
 			return move(status);
 		}
-		else if (next > 0 && next != parser_config::ACCEPT) {//action±íÀïÃæ´óÓÚ0´ú±íĞèÒªÒÆ½ø
+		else if (next > 0 && next != parser_config::ACCEPT) {//actionè¡¨é‡Œé¢å¤§äº0ä»£è¡¨éœ€è¦ç§»è¿›
 			status.push_back(next);
-			signs.push(token[idx]);//·ûºÅÈëÕ»
+			signs.push(token[idx]);//ç¬¦å·å…¥æ ˆ
 			tree.in(token[idx]);
-			idx++;//¼ÌĞø¶ÁÏÂÒ»¸ö×´Ì¬
+			idx++;//ç»§ç»­è¯»ä¸‹ä¸€ä¸ªçŠ¶æ€
 		}
-		else if (next < 0) {//action±íÀïÃæĞ¡ÓÚ0´ú±íĞèÒª¹éÔ¼
-			int temp = abs(next);//ÕÒµ½Òª¹éÔ¼µ½µÄ×´Ì¬
-			size_t size = con.get_grammar()[temp].second.size();//ÕÒµ½ĞèÒª³öÕ»µÄ×Ö·ûµÄÊıÄ¿
+		else if (next < 0) {//actionè¡¨é‡Œé¢å°äº0ä»£è¡¨éœ€è¦å½’çº¦
+			int temp = abs(next);//æ‰¾åˆ°è¦å½’çº¦åˆ°çš„çŠ¶æ€
+			size_t size = con.get_grammar()[temp].second.size();//æ‰¾åˆ°éœ€è¦å‡ºæ ˆçš„å­—ç¬¦çš„æ•°ç›®
 			for (size_t j = size - 1; j >= 0; j--) {
 				int t_sign = signs.top();
 				int t_status = status.back();
-				if (con.get_grammar()[temp].second[j] != t_sign) {//ÕâÖÖ¾ÍÊÇ´íÎó·¢Éú
-					string message = "[ERROR] ¹éÔ¼²úÉú´íÎó£¬Çë¼ì²éÊäÈë£¬µ±Ç°ÎÄ·¨Éú³ÉÊ½ÖĞÇ°\
-							¿´µÃµ½µÄ·ûºÅÎ¨Ò»±êÊ¶ºÅÊÇ£º";
+				if (con.get_grammar()[temp].second[j] != t_sign) {//è¿™ç§å°±æ˜¯é”™è¯¯å‘ç”Ÿ
+					string message = "[ERROR] å½’çº¦äº§ç”Ÿé”™è¯¯ï¼Œè¯·æ£€æŸ¥è¾“å…¥ï¼Œå½“å‰æ–‡æ³•ç”Ÿæˆå¼ä¸­å‰\
+							çœ‹å¾—åˆ°çš„ç¬¦å·å”¯ä¸€æ ‡è¯†å·æ˜¯ï¼š";
 					message += to_string(con.get_grammar()[temp].second[j]);
-					message += "£¬µ«ÊÇÊäÈëµÄ·ûºÅµÄÎ¨Ò»±êÊ¶ºÅÊÇ£º" + to_string(t_sign);
+					message += "ï¼Œä½†æ˜¯è¾“å…¥çš„ç¬¦å·çš„å”¯ä¸€æ ‡è¯†å·æ˜¯ï¼š" + to_string(t_sign);
 					con.log(message);
 				}
 				signs.pop();
 				status.pop_back();
 			}
-			signs.push(con.get_grammar()[temp].first); //Ê×ÏÈÊÇ¹éÔ¼µÃµ½·ûºÅÑ¹Õ»
+			signs.push(con.get_grammar()[temp].first); //é¦–å…ˆæ˜¯å½’çº¦å¾—åˆ°ç¬¦å·å‹æ ˆ
 			next = find(analysisTable, status.back(), signs.top(), false);
 			status.push_back(next);
-			tree.reduction(con.get_grammar()[temp]);//¹éÔ¼Óï·¨Ê÷
+			tree.reduction(con.get_grammar()[temp]);//å½’çº¦è¯­æ³•æ ‘
 		}
 		else if (next == parser_config::ACCEPT) {
-			con.log("[INFO] ³É¹¦Íê³ÉÊäÈë´®µÄÒÆ½ø¹éÔ¼·ÖÎö");
+			con.log("[INFO] æˆåŠŸå®Œæˆè¾“å…¥ä¸²çš„ç§»è¿›å½’çº¦åˆ†æ");
 			return move(status);
 		}
 		else {
-			con.log("[ERROR] ÒÆ½ø¹éÔ¼·ÖÎö´íÎó£¬Çë¼ì²éaction±íºÍgoto±í");
+			con.log("[ERROR] ç§»è¿›å½’çº¦åˆ†æé”™è¯¯ï¼Œè¯·æ£€æŸ¥actionè¡¨å’Œgotoè¡¨");
 			return move(status);
 		}
 	}
@@ -90,26 +90,26 @@ vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<p
 }
 
 /// <summary>
-/// ²éÕÒaction±í
+/// æŸ¥æ‰¾actionè¡¨
 /// </summary>
-/// <param name="action"></param> action±í
-/// <param name="status"></param> µ±Ç°×´Ì¬
-/// <param name="sign"></param> Ç°¿´µÄ·ûºÅ
-/// <returns></returns> ¸ÃÈ¥ÍùµÄ×´Ì¬ºÅ
+/// <param name="action"></param> actionè¡¨
+/// <param name="status"></param> å½“å‰çŠ¶æ€
+/// <param name="sign"></param> å‰çœ‹çš„ç¬¦å·
+/// <returns></returns> è¯¥å»å¾€çš„çŠ¶æ€å·
 int parser::find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign)
 {
 	auto iter = action.find(status);
 	if (iter == action.end()) {
-		con.log("[ERROR] µ±Ç°×´Ì¬ÔÚaction±íÖĞÎŞ·¨ÕÒµ½£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
+		con.log("[ERROR] å½“å‰çŠ¶æ€åœ¨actionè¡¨ä¸­æ— æ³•æ‰¾åˆ°ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
 		return parser_config::ERROR;
 	}
 	for (const auto& item : (iter->second)) {
 		if (item.first == status) {
-			con.log("[INFO] ³É¹¦ÔÚaction±íÖĞÕÒµ½×´Ì¬×ªÒÆĞÅÏ¢£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
+			con.log("[INFO] æˆåŠŸåœ¨actionè¡¨ä¸­æ‰¾åˆ°çŠ¶æ€è½¬ç§»ä¿¡æ¯ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
 			return item.second;
 		}
 	}
-	con.log("[ERROR] µ±Ç°×´Ì¬ÏÂaction±íÖĞÃ»ÓĞ½ÓÊÜµ±Ç°Ç°¿´·ûºÅµÄ±íÏî£¬µ±Ç°Ç°¿´·ûºÅÎ¨Ò»±êÊ¶·ûÎª"
+	con.log("[ERROR] å½“å‰çŠ¶æ€ä¸‹actionè¡¨ä¸­æ²¡æœ‰æ¥å—å½“å‰å‰çœ‹ç¬¦å·çš„è¡¨é¡¹ï¼Œå½“å‰å‰çœ‹ç¬¦å·å”¯ä¸€æ ‡è¯†ç¬¦ä¸º"
 		+ to_string(sign));
 	return parser_config::ERROR;
 }
@@ -118,16 +118,16 @@ int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status,
 {
 	auto iter = _goto.find(status);
 	if (iter == _goto.end()) {
-		con.log("[ERROR] µ±Ç°×´Ì¬ÔÚgoto±íÖĞÎŞ·¨ÕÒµ½£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
+		con.log("[ERROR] å½“å‰çŠ¶æ€åœ¨gotoè¡¨ä¸­æ— æ³•æ‰¾åˆ°ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
 		return parser_config::ERROR;
 	}
 	for (const auto& item : (iter->second)) {
 		if (item.first == status) {
-			con.log("[INFO] ³É¹¦ÔÚgoto±íÖĞÕÒµ½×´Ì¬×ªÒÆĞÅÏ¢£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
+			con.log("[INFO] æˆåŠŸåœ¨gotoè¡¨ä¸­æ‰¾åˆ°çŠ¶æ€è½¬ç§»ä¿¡æ¯ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
 			return item.second;
 		}
 	}
-	con.log("[ERROR] µ±Ç°×´Ì¬ÏÂgoto±íÖĞÃ»ÓĞ½ÓÊÜµ±Ç°Ç°¿´·ûºÅµÄ±íÏî£¬µ±Ç°Ç°¿´·ûºÅÎ¨Ò»±êÊ¶·ûÎª"
+	con.log("[ERROR] å½“å‰çŠ¶æ€ä¸‹gotoè¡¨ä¸­æ²¡æœ‰æ¥å—å½“å‰å‰çœ‹ç¬¦å·çš„è¡¨é¡¹ï¼Œå½“å‰å‰çœ‹ç¬¦å·å”¯ä¸€æ ‡è¯†ç¬¦ä¸º"
 		+ to_string(sign));
 	return parser_config::ERROR;
 }

@@ -1,13 +1,13 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "config.hpp"
+#include "IO/config.hpp"
 #include "json/json.h"
 extern config con;
 using namespace std;
 
 struct node{
-	int symbol = -1;//Ä¬ÈÏ-1´ú±íÃ»ÓĞ·ûºÅ
+	int symbol = -1;//é»˜è®¤-1ä»£è¡¨æ²¡æœ‰ç¬¦å·
 	int num = 0;
 	vector<node*> kids;
 };
@@ -15,8 +15,8 @@ struct node{
 class parserTree
 {
 public:
-	void in(int symbol); //ÒÆ½ø
-	void reduction(pair<int, vector<int>> grammar);//¹éÔ¼
+	void in(int symbol); //ç§»è¿›
+	void reduction(pair<int, vector<int>> grammar);//å½’çº¦
 	void end();
 	void to_json(string name);
 	void traverse(node* root, void (*visit)(int symbol));
@@ -28,9 +28,9 @@ private:
 };
 
 /// <summary>
-/// ÒÆ½ø£¬¾Í°ÑÒ»¸ö½Úµã·Åµ½½ÚµãÕ»ÀïÃæ£¬ÕâÀïÓÃvector´úÌæÕ»À´Ê¹ÓÃÁË
+/// ç§»è¿›ï¼Œå°±æŠŠä¸€ä¸ªèŠ‚ç‚¹æ”¾åˆ°èŠ‚ç‚¹æ ˆé‡Œé¢ï¼Œè¿™é‡Œç”¨vectorä»£æ›¿æ ˆæ¥ä½¿ç”¨äº†
 /// </summary>
-/// <param name="symbol"></param> ÒÆ½øµÄ·ûºÅµÄÎ¨Ò»±êÊ¶·û
+/// <param name="symbol"></param> ç§»è¿›çš„ç¬¦å·çš„å”¯ä¸€æ ‡è¯†ç¬¦
 void parserTree::in(int symbol)
 {
 	try {
@@ -43,9 +43,9 @@ void parserTree::in(int symbol)
 	}
 }
 /// <summary>
-/// ¹éÔ¼£¬Íê³ÉÓï·¨Ê÷µÄ±ä»¯
+/// å½’çº¦ï¼Œå®Œæˆè¯­æ³•æ ‘çš„å˜åŒ–
 /// </summary>
-/// <param name="grammar"></param>²ÎÊıÊÇÒ»¸öÓï·¨Éú³ÉÊ½ 
+/// <param name="grammar"></param>å‚æ•°æ˜¯ä¸€ä¸ªè¯­æ³•ç”Ÿæˆå¼ 
 void parserTree::reduction(pair<int, vector<int>> grammar)
 {
 	try {
@@ -54,15 +54,15 @@ void parserTree::reduction(pair<int, vector<int>> grammar)
 		for (size_t i = grammar.second.size() - 1; i >= 0; i--) {
 			node* temp = this->roots.back();
 
-			if (grammar.second[i] == temp->symbol) {//ÕâÀï¾ÍÊÇ¶ÔÓ¦ÉÏÁË
+			if (grammar.second[i] == temp->symbol) {//è¿™é‡Œå°±æ˜¯å¯¹åº”ä¸Šäº†
 				this->roots.pop_back();
 				root->num++;
 				root->kids.insert(root->kids.begin(), root);
 			}
 			else {
-				string message = "[ERROR] Éú³ÉÓï·¨·ÖÎöÊ÷ \
-					¹ı³ÌÖĞ£¬·¢ÏÖĞè¹éÔ¼·ûºÅºÍÓï·¨Éú³ÉÊ½²»Æ¥Åä,¸ÃÓï·¨Éú³ÉÊ½Îª£º";
-				message += to_string(grammar.first) + " ¡ú ";
+				string message = "[ERROR] ç”Ÿæˆè¯­æ³•åˆ†ææ ‘ \
+					è¿‡ç¨‹ä¸­ï¼Œå‘ç°éœ€å½’çº¦ç¬¦å·å’Œè¯­æ³•ç”Ÿæˆå¼ä¸åŒ¹é…,è¯¥è¯­æ³•ç”Ÿæˆå¼ä¸ºï¼š";
+				message += to_string(grammar.first) + " â†’ ";
 				for (const auto& t : grammar.second) {
 					message += to_string(t);
 					message += "|";
@@ -79,54 +79,54 @@ void parserTree::reduction(pair<int, vector<int>> grammar)
 }
 
 /// <summary>
-/// ¸Ãº¯ÊıµÄ×÷ÓÃÊÇÈ·¶¨¹éÔ¼³É¹¦£¬²¢ÇÒ×öÒ»ÏÂÅĞ¶Ï
+/// è¯¥å‡½æ•°çš„ä½œç”¨æ˜¯ç¡®å®šå½’çº¦æˆåŠŸï¼Œå¹¶ä¸”åšä¸€ä¸‹åˆ¤æ–­
 /// </summary>
 void parserTree::end()
 {
 	if (this->roots.size() == 1) {
 		this->root = this->roots[0];
 	}
-	else { //ÕâÑù¾ÍËµÃ÷Ã»ÓĞ¹éÔ¼³ÉÒ»¿ÃÓï·¨Ê÷
-		con.log("[ERROR] Ã»ÓĞ³É¹¦¹éÔ¼³ÉÒ»¸öÓï·¨Ê÷£¬¿ÉÄÜÊÇÊäÈëÎÄ·¨ÓĞÎóµÈÎÊÌâ\
-			£¬Çë¼ì²éÇ°ÃæµÄ±¨´í");
+	else { //è¿™æ ·å°±è¯´æ˜æ²¡æœ‰å½’çº¦æˆä¸€æ£µè¯­æ³•æ ‘
+		con.log("[ERROR] æ²¡æœ‰æˆåŠŸå½’çº¦æˆä¸€ä¸ªè¯­æ³•æ ‘ï¼Œå¯èƒ½æ˜¯è¾“å…¥æ–‡æ³•æœ‰è¯¯ç­‰é—®é¢˜\
+			ï¼Œè¯·æ£€æŸ¥å‰é¢çš„æŠ¥é”™");
 	}
 }
 
 static int saveToFile(const string& file_name, const Json::Value& value)
 {
-	ofstream ofs; //±ê×¼Êä³öÁ÷
-	ofs.open(file_name); //´´½¨ÎÄ¼ş
+	ofstream ofs; //æ ‡å‡†è¾“å‡ºæµ
+	ofs.open(file_name); //åˆ›å»ºæ–‡ä»¶
 	if (!ofs.is_open())
 	{
-		con.log("[ERROR] Î´ÄÜ´´½¨jsonÎÄ¼ş.");
+		con.log("[ERROR] æœªèƒ½åˆ›å»ºjsonæ–‡ä»¶.");
 		return -1;
 	}
-	ofs << value.toStyledString(); //Êä³ö
+	ofs << value.toStyledString(); //è¾“å‡º
 	ofs.close();
 	return 0;
 }
 
 
 /// <summary>
-/// ½«Ê÷×ª»¯Îªjson¸ñÊ½
+/// å°†æ ‘è½¬åŒ–ä¸ºjsonæ ¼å¼
 /// </summary>
 void parserTree::to_json(string name)
 {
 	if (root == nullptr) {
-		con.log("[ERROR] Óï·¨·ÖÎöÊ÷Îª¿Õ£¬ÎŞ·¨¹¹½¨Ê÷");
+		con.log("[ERROR] è¯­æ³•åˆ†ææ ‘ä¸ºç©ºï¼Œæ— æ³•æ„å»ºæ ‘");
 		return;
 	}
 	Json::Value value = build_tree(this->root);
 	con.log(value.toStyledString());
 	if (saveToFile(name, value) != 0)
-		con.log("[ERROR] ±£´æÎªjsonÎÄ¼şÊ§°Ü.");
+		con.log("[ERROR] ä¿å­˜ä¸ºjsonæ–‡ä»¶å¤±è´¥.");
 	else
-		con.log("[INFO] ±£´æÎªjsonÎÄ¼ş³É¹¦.");
+		con.log("[INFO] ä¿å­˜ä¸ºjsonæ–‡ä»¶æˆåŠŸ.");
 }
 
 void parserTree::traverse(node* root, void (*visit)(int symbol))
 {
-	//Ê×ÏÈ·ÃÎÊ¸ù½Úµã
+	//é¦–å…ˆè®¿é—®æ ¹èŠ‚ç‚¹
 	visit(root->symbol);
 	for (const auto& t : root->kids) {
 		traverse(t, visit);

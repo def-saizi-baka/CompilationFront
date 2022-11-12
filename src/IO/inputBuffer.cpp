@@ -11,7 +11,7 @@ InputBuffer::InputBuffer(const string& path)
 	this->path = path;
 	fin.open(path, ios::in);
 	if (!fin.is_open()) {
-		cerr << "Î´ÄÜ´ò¿ªÎÄ¼ş" << path << endl;
+		cerr << "æœªèƒ½æ‰“å¼€æ–‡ä»¶" << path << endl;
 		return;
 	}
 	this->isExegesis = false;
@@ -22,15 +22,15 @@ InputState InputBuffer::readline()
 {
 	string sline;
 	if (fin.peek() != EOF)
-		getline(fin, sline);//×¢Òâgetline¶ÁÈ¡ºó×ÔÈ»Ã»ÓĞ»»ĞĞ·ûÁË
-	else { //×¢Òâµ½½ØÖ¹Î»ÖÃ»¹¶ÁÈëµÄ»°£¬Òª¸øÓèÒ»¸ö´íÎó
+		getline(fin, sline);//æ³¨æ„getlineè¯»å–åè‡ªç„¶æ²¡æœ‰æ¢è¡Œç¬¦äº†
+	else { //æ³¨æ„åˆ°æˆªæ­¢ä½ç½®è¿˜è¯»å…¥çš„è¯ï¼Œè¦ç»™äºˆä¸€ä¸ªé”™è¯¯
 		if (this->isExegesis == false)
 			return InputState::END_OF_FILE;
 		else
-			return InputState::NO_CLOSED_COMMENT;//Î´±ÕºÏµÄ×¢ÊÍ
+			return InputState::NO_CLOSED_COMMENT;//æœªé—­åˆçš„æ³¨é‡Š
 	}
-	line++; //ÕÒ´íÎóÓÃµÄ£¬¼ÙÈçÒª±¨´íÎóÌáÊ¾£¬Õâ¸ö±äÁ¿¿ÉÒÔÏÔÊ¾´íÎóÔÚÄÄÒ»ĞĞ
-	//½ÓÏÂÀ´´¦Àí×¢ÊÍ
+	line++; //æ‰¾é”™è¯¯ç”¨çš„ï¼Œå‡å¦‚è¦æŠ¥é”™è¯¯æç¤ºï¼Œè¿™ä¸ªå˜é‡å¯ä»¥æ˜¾ç¤ºé”™è¯¯åœ¨å“ªä¸€è¡Œ
+	//æ¥ä¸‹æ¥å¤„ç†æ³¨é‡Š
 	string::size_type idx1, idx2, idx3, _idx1, _idx2;
 	InputState res = InputState::CORRECT;
 	while (true) {
@@ -38,8 +38,8 @@ InputState InputBuffer::readline()
 		idx2 = sline.find("/*");
 		idx3 = sline.find("*/");
 		_idx1 = sline.find("\"");
-		_idx2 = sline.find("\"", _idx1 + 1);//ÕÒµÚ¶ş¸ö
-		if (_idx1 != string::npos && _idx2 != string::npos) { //´æÔÚË«ÒıºÅ£¬ĞèÒª¾Í´Ë×öÒ»Ğ©ĞŞÕı
+		_idx2 = sline.find("\"", _idx1 + 1);//æ‰¾ç¬¬äºŒä¸ª
+		if (_idx1 != string::npos && _idx2 != string::npos) { //å­˜åœ¨åŒå¼•å·ï¼Œéœ€è¦å°±æ­¤åšä¸€äº›ä¿®æ­£
 			if (_idx1 < idx1 && idx1 < _idx2)
 				idx1 = string::npos;
 			if (_idx1 < idx2 && idx2 < _idx2)
@@ -48,36 +48,36 @@ InputState InputBuffer::readline()
 				idx3 = string::npos;
 		}
 
-		if (this->isExegesis == true && idx3 == string::npos) //×¢ÊÍÌ¬Ã»¶Áµ½ */
+		if (this->isExegesis == true && idx3 == string::npos) //æ³¨é‡Šæ€æ²¡è¯»åˆ° */
 			return res;
 		if (this->isExegesis == false && idx1 == string::npos && idx2 == string::npos && idx3 == string::npos)
-			//·Ç×¢ÊÍÌ¬¶¼Ã»¶Áµ½ 
+			//éæ³¨é‡Šæ€éƒ½æ²¡è¯»åˆ° 
 			break;
 
-		if (this->isExegesis == true) {//ÔÚ×¢ÊÍÌ¬
-			if (idx3 == string::npos)  //Ã»ÕÒµ½¶ÔÓ¦µÄ */,Ö±½ÓÌø¹ıÕâÒ»ĞĞ
+		if (this->isExegesis == true) {//åœ¨æ³¨é‡Šæ€
+			if (idx3 == string::npos)  //æ²¡æ‰¾åˆ°å¯¹åº”çš„ */,ç›´æ¥è·³è¿‡è¿™ä¸€è¡Œ
 				break;
-			else { //ÕÒµ½ÁË
+			else { //æ‰¾åˆ°äº†
 				sline = sline.substr(idx3 + 2);
-				this->isExegesis = false;//½øÈë·Ç×¢ÊÍÌ¬
+				this->isExegesis = false;//è¿›å…¥éæ³¨é‡Šæ€
 			}
 		}
 		else {
 			string::size_type m = ::min(idx1, idx2, idx3);
-			//Î´ÔÚ×¢ÊÍÌ¬
+			//æœªåœ¨æ³¨é‡Šæ€
 
-			if (m == idx1) { //  //ÔÚµÚÒ»Î»£¬ºóÃæµÄÈ«²¿²»ÓÃÁË
+			if (m == idx1) { //  //åœ¨ç¬¬ä¸€ä½ï¼Œåé¢çš„å…¨éƒ¨ä¸ç”¨äº†
 				sline = sline.substr(0, idx1);
 				break;
 			}
-			else if (m == idx2) { //  /* ÔÚµÚÒ»Î»
-				this->isExegesis = true;//Ö±½Ó½øÈë×¢ÊÍÌ¬
-				buffer += sline.substr(0, idx2);//Ç°ÃæµÄÏÈÈë»º³åÇø
-				sline = sline.substr(idx2 + 2);//µ½µ×ÔÚ·Åµ½ĞÂµÄ×Ö·û´®ÀïÃæ
+			else if (m == idx2) { //  /* åœ¨ç¬¬ä¸€ä½
+				this->isExegesis = true;//ç›´æ¥è¿›å…¥æ³¨é‡Šæ€
+				buffer += sline.substr(0, idx2);//å‰é¢çš„å…ˆå…¥ç¼“å†²åŒº
+				sline = sline.substr(idx2 + 2);//åˆ°åº•åœ¨æ”¾åˆ°æ–°çš„å­—ç¬¦ä¸²é‡Œé¢
 			}
-			else if (m == idx3) { // */ ÔÚµÚÒ»Î»£¬ÕâÊÇ´íÎóµÄ
-				//Õâ¸ö´¦Àí´ı»á¿´
-				res = InputState::ERROR_COMMENT;//´íÎóµÄ×¢ÊÍ
+			else if (m == idx3) { // */ åœ¨ç¬¬ä¸€ä½ï¼Œè¿™æ˜¯é”™è¯¯çš„
+				//è¿™ä¸ªå¤„ç†å¾…ä¼šçœ‹
+				res = InputState::ERROR_COMMENT;//é”™è¯¯çš„æ³¨é‡Š
 				buffer += sline.substr(0, idx3);
 				sline = sline.substr(idx3 + 2);
 			}
@@ -94,7 +94,7 @@ InputState InputBuffer::readAll()
 	InputState res = InputState::CORRECT;
 	InputState temp;
 	while (true){
-		temp = readline(); //¶ÁÒ»ĞĞ
+		temp = readline(); //è¯»ä¸€è¡Œ
 		if (temp == InputState::END_OF_FILE) 
 			break;
 		else if (temp == InputState::ERROR_COMMENT || temp == InputState::NO_CLOSED_COMMENT)
@@ -124,7 +124,7 @@ void InputBuffer::reset()
 	this->line = 0;
 	this->buffer.clear();
 	this->fin.clear();
-	this->fin.seekg(0, ios::beg);//»ØÆğÊ¼Î»ÖÃ
+	this->fin.seekg(0, ios::beg);//å›èµ·å§‹ä½ç½®
 }
 
 bool InputBuffer::open(const string& path)
@@ -132,7 +132,7 @@ bool InputBuffer::open(const string& path)
 	this->path = path;
 	fin.open(path, ios::in);
 	if (!fin.is_open()) {
-		cerr << "Î´ÄÜ´ò¿ªÎÄ¼ş" << path << endl;
+		cerr << "æœªèƒ½æ‰“å¼€æ–‡ä»¶" << path << endl;
 		return false;
 	}
 	return true;
@@ -140,7 +140,7 @@ bool InputBuffer::open(const string& path)
 
 const string& InputBuffer::getBuffer() const
 {
-	return this->buffer;// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
+	return this->buffer;// TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
 }
 
 InputBuffer::~InputBuffer()

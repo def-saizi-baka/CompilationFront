@@ -5,11 +5,11 @@
 int main()
 {
 	CFG cfg;
-    // ³õÊ¼»¯ÏîÄ¿
+    // åˆå§‹åŒ–é¡¹ç›®
     cfg.initItems();
-    // ³õÊ¼»¯LR0ÏîÄ¿
+    // åˆå§‹åŒ–LR0é¡¹ç›®
     cfg.initLRItems();
-    // Õ¹Ê¾ÎÄ·¨
+    // å±•ç¤ºæ–‡æ³•
 	// cfg.showCFG();
 
 	cfg.formFirstSet();

@@ -6,7 +6,7 @@
 using namespace std;
 
 
-// ´òÓ¡¼¯ºÏ
+// æ‰“å°é›†åˆ
 void printSet(set<int> s){
     cout << "{";
     for(auto ss : s){
@@ -38,7 +38,7 @@ VNode::VNode(int idx)
 
 /******************************
 function : build NFA by or operation
-paramter : keepEnd -> ±£ÁôorÁ¬½ÓÇ°µÄ½áÊø×´Ì¬
+paramter : keepEnd -> ä¿ç•™orè¿æ¥å‰çš„ç»“æŸçŠ¶æ€
 ********************************/
 void VNode::setEdge(char ch, int idx)
 {
@@ -51,7 +51,7 @@ void VNode::setEdge(char ch, set<int> idx_set){
 
 /******************************
 function : build NFA by or operation
-paramter : keepEnd -> ±£ÁôorÁ¬½ÓÇ°µÄ½áÊø×´Ì¬
+paramter : keepEnd -> ä¿ç•™orè¿æ¥å‰çš„ç»“æŸçŠ¶æ€
 ********************************/
 void FA::mergeFAbyOr(FA& fa,bool keepEnd)
 {
@@ -62,25 +62,25 @@ void FA::mergeFAbyOr(FA& fa,bool keepEnd)
 
 	int cnt = this->mgraph.size();
 	
-	// Ôö¼ÓÆğÊ¼/ÖÕÖ¹½áµã
+	// å¢åŠ èµ·å§‹/ç»ˆæ­¢ç»“ç‚¹
 	this->mgraph.push_back(VNode(cnt));
 	this->mgraph.push_back(VNode(cnt + 1));
 
-	// Ôö¼ÓĞÂÆğÊ¼µã -> ¾ÉÆğÊ¼µã
-	// ĞŞ¸ÄÆğµã
+	// å¢åŠ æ–°èµ·å§‹ç‚¹ -> æ—§èµ·å§‹ç‚¹
+	// ä¿®æ”¹èµ·ç‚¹
 	this->mgraph[cnt].setEdge(Epsilon_CH, this->begNode);
 	this->begNode = cnt;
 
-	// Ôö¼Ó¾ÉÖÕÖ¹µã -> ĞÂÖÕÖ¹µã
-	// ĞŞ¸ÄÖÕµã
+	// å¢åŠ æ—§ç»ˆæ­¢ç‚¹ -> æ–°ç»ˆæ­¢ç‚¹
+	// ä¿®æ”¹ç»ˆç‚¹
 	this->mgraph[this->endNode].setEdge(Epsilon_CH, cnt + 1);
 	this->endNode = cnt + 1;
 
 	
-	// Ôö¼ÓfaµÄ±ß
+	// å¢åŠ façš„è¾¹
 	cnt = cnt + 2;
-	// ĞŞ¸Äfa±ßµÄË÷Òı
-	for (int i = 0; i < fa.mgraph.size(); i++)
+	// ä¿®æ”¹faè¾¹çš„ç´¢å¼•
+	for (unsigned int i = 0; i < fa.mgraph.size(); i++)
 	{
 		VNode& vt = fa.mgraph[i];
 		vt.idx += cnt;
@@ -92,7 +92,7 @@ void FA::mergeFAbyOr(FA& fa,bool keepEnd)
 		}
 	}
 
-	// Á¬½Ófa
+	// è¿æ¥fa
 	this->mgraph.insert(this->mgraph.end(),
 						fa.mgraph.begin(),
 						fa.mgraph.end());
@@ -100,14 +100,14 @@ void FA::mergeFAbyOr(FA& fa,bool keepEnd)
 	fa.begNode += cnt;
 	fa.endNode += cnt;
 
-	// Ôö¼ÓĞÂÆğÊ¼µã -> ¾ÉÆğÊ¼µã
+	// å¢åŠ æ–°èµ·å§‹ç‚¹ -> æ—§èµ·å§‹ç‚¹
 	this->mgraph[this->begNode].setEdge(Epsilon_CH, fa.begNode);
 
-	// Ôö¼Ó¾ÉÖÕÖ¹µã -> ĞÂÖÕÖ¹µã
+	// å¢åŠ æ—§ç»ˆæ­¢ç‚¹ -> æ–°ç»ˆæ­¢ç‚¹
 	this->mgraph[fa.endNode].setEdge(Epsilon_CH, this->endNode);
 	this->mgraph[this->endNode].isEnd = true;
 
-    // ºÏ²¢×ÖÄ¸±í
+    // åˆå¹¶å­—æ¯è¡¨
     symbolTable.insert(fa.symbolTable.begin(), fa.symbolTable.end());
 }
 
@@ -118,28 +118,28 @@ function : build NFA by closure operation
 ********************************/
 void FA::mergeFAbyClosure()
 {
-	// ¹Ø±ÕÖÕµã
+	// å…³é—­ç»ˆç‚¹
 	this->mgraph[this->endNode].isEnd = false;
 
-	// Ôö¼ÓĞÂÆğµãºÍĞÂÖÕµã
+	// å¢åŠ æ–°èµ·ç‚¹å’Œæ–°ç»ˆç‚¹
 	int cnt = this->mgraph.size();
 	this->mgraph.push_back(VNode(cnt));
 	this->mgraph.push_back(VNode(cnt + 1));
 	
-	// Ôö¼Ó¾ÉÖÕµãµ½¾ÉÆğµãµÄÁ¬Ïß
+	// å¢åŠ æ—§ç»ˆç‚¹åˆ°æ—§èµ·ç‚¹çš„è¿çº¿
 	this->mgraph[this->endNode].setEdge(Epsilon_CH,this->begNode);
 
-	// Ôö¼ÓĞÂÆğµãµ½ĞÂÖÕµãµÄÁ¬Ïß
+	// å¢åŠ æ–°èµ·ç‚¹åˆ°æ–°ç»ˆç‚¹çš„è¿çº¿
 	this->mgraph[cnt].setEdge(Epsilon_CH, cnt + 1);
 
-	// Ôö¼ÓĞÂÆğµãµ½¾ÉÆğµã
+	// å¢åŠ æ–°èµ·ç‚¹åˆ°æ—§èµ·ç‚¹
 	this->mgraph[cnt].setEdge(Epsilon_CH,this->begNode);
 
-	// Ôö¼Ó¾ÉÖÕµãµ½ĞÂÖÕµã
+	// å¢åŠ æ—§ç»ˆç‚¹åˆ°æ–°ç»ˆç‚¹
 	this->mgraph[this->endNode].setEdge(Epsilon_CH, cnt + 1);
 
 
-	// ĞŞ¸ÄÆğµã£¬ÖÕµã
+	// ä¿®æ”¹èµ·ç‚¹ï¼Œç»ˆç‚¹
 	this->begNode = cnt;
 	this->endNode = cnt + 1;
 	this->mgraph[this->endNode].isEnd = true;
@@ -151,12 +151,12 @@ function : build NFA by link operation
 ********************************/
 void FA::mergeFAbyLink(FA& fa)
 {
-	// ¹Ø±Õend×´Ì¬
+	// å…³é—­endçŠ¶æ€
 	fa.mgraph[fa.endNode].isEnd = false;
 
-	// ĞŞ¸Äfa±ßµÄË÷Òı
+	// ä¿®æ”¹faè¾¹çš„ç´¢å¼•
 	int cnt = this->mgraph.size();
-	for (int i = 0; i < fa.mgraph.size(); i++)
+	for (unsigned int i = 0; i < fa.mgraph.size(); i++)
 	{
 		VNode& vt = fa.mgraph[i];
 		vt.idx += cnt;
@@ -168,18 +168,18 @@ void FA::mergeFAbyLink(FA& fa)
 		}
 	}
 
-	// Á¬½Ófa
+	// è¿æ¥fa
 	this->mgraph.insert(this->mgraph.end(),
 						fa.mgraph.begin(),
 						fa.mgraph.end());
-	// Á¬½Ó±ß
+	// è¿æ¥è¾¹
 	this->mgraph[this->endNode].setEdge(Epsilon_CH, fa.begNode + cnt);
 
-	// ĞŞ¸ÄĞÂÖÕµã
+	// ä¿®æ”¹æ–°ç»ˆç‚¹
 	this->endNode = fa.endNode + cnt;
 	this->mgraph[this->endNode].isEnd = true;
 
-    // ºÏ²¢×ÖÄ¸±í
+    // åˆå¹¶å­—æ¯è¡¨
     symbolTable.insert(fa.symbolTable.begin(), fa.symbolTable.end());
 }
 
@@ -216,7 +216,7 @@ void FA::showFA()
 {
 	cout << "begNode\t:\t" << this->begNode << endl;
 	cout << "endNode\t:\t" << this->endNode << endl;
-	for (int i = 0; i < this->mgraph.size(); i++)
+	for (unsigned int i = 0; i < this->mgraph.size(); i++)
 	{
 		cout << this->mgraph[i].idx;
 		if (this->mgraph[i].isEnd){
@@ -245,15 +245,15 @@ void FA::showFA()
 	}*/
 }
 
-/*******************************
-function: ²¿·Ö×ÖÄ¸±í·ûºÅÓëÕı¹æ±í´ïÊ½µÄ·ûºÅÖØ¸´
-		  Òò´Ëµ¥¶À¹¹ÔìNFA£¬²¢Á¬½Ó
-********************************/
+/*********************************************
+function: éƒ¨åˆ†å­—æ¯è¡¨ç¬¦å·ä¸æ­£è§„è¡¨è¾¾å¼çš„ç¬¦å·é‡å¤
+		  å› æ­¤å•ç‹¬æ„é€ NFAï¼Œå¹¶è¿æ¥
+**********************************************/
 
 void FA::initOP()
 {
 	string ops[] = { "*","(",")","|",".","||", "*=", "|=" };
-    int endTypes[] = {-1,-2-3,-4,-5,-6, -7, -8};
+    int endTypes[] = {19, 100,102,31,8, 33, 39, 46};
 	FA fa(ops[0],READ_STRING, endTypes[0]);
 	
 	this->begNode = fa.begNode;
@@ -273,15 +273,15 @@ void FA::initOP()
 }
 
 /********************************************
-function£ºparse the regnex string   
-delta	£º[0-9][a-z][A-Z][;_:+-*]
+functionï¼šparse the regnex string   
+delta	ï¼š[0-9][a-z][A-Z][;_:+-*]
 *********************************************/
 void FA::readRegex(string& reg, int endType)
 {
 	stack<FA> fas;
 	stack<char> op;
 	for (auto p = reg.begin(); p!=reg.end(); p++) {
-		// '(' Ö±½ÓÑ¹Õ»£¬²»ÅĞ¶ÏÓÅÏÈ¼¶
+		// '(' ç›´æ¥å‹æ ˆï¼Œä¸åˆ¤æ–­ä¼˜å…ˆçº§
 		if (*p == '('){
 			op.push(*p);
 		}
@@ -291,7 +291,7 @@ void FA::readRegex(string& reg, int endType)
 			}
 			else {
 				char top = op.top();
-				// ÓÅÏÈ¼¶µÍÓÚ²Ù×÷Õ»¶¥ÔªËØ && Õ»·Ç¿Õ
+				// ä¼˜å…ˆçº§ä½äºæ“ä½œæ ˆé¡¶å…ƒç´  && æ ˆéç©º
 				while (FA::pri_op[*p] <= FA::pri_op[top]) {
 					op.pop();
 					mergerFA(fas, top);
@@ -329,13 +329,13 @@ void FA::readRegex(string& reg, int endType)
 	this->endNode = fa_tmp.endNode;
 	this->mgraph = fa_tmp.mgraph;
 	this->mgraph[this->endNode].isEnd = true;
-    this->mgraph[this->endNode].endState.insert(endType);       // Ìí¼ÓÖÕÖ¹×´Ì¬±ê¼Ç
+    this->mgraph[this->endNode].endState.insert(endType);       // æ·»åŠ ç»ˆæ­¢çŠ¶æ€æ ‡è®°
     this->symbolTable.insert(fa_tmp.symbolTable.begin(), fa_tmp.symbolTable.end());
 }
 
 /********************************************
-function£ºparse the regnex file(one mode,one line)
-delta	£º[0-9][a-z][A-Z][;_:+-]
+functionï¼šparse the regnex file(one mode,one line)
+delta	ï¼š[0-9][a-z][A-Z][;_:+-]
 *********************************************/
 void FA::readFile(string& filename)
 {
@@ -345,7 +345,7 @@ void FA::readFile(string& filename)
 		cerr << "No config file!" << endl;
 	}
 	
-	// Ê×ÏÈÔö¼Ó'*','|','||','(',')','.'£¬ÕâĞ©×Ö·ûÓëÕı¹æ±í´ïÊ½ÖØ¸´·ûºÅ
+	// é¦–å…ˆå¢åŠ '*','|','||','(',')','.'ï¼Œè¿™äº›å­—ç¬¦ä¸æ­£è§„è¡¨è¾¾å¼é‡å¤ç¬¦å·
 	initOP();
 
 	string reg;
@@ -362,8 +362,8 @@ void FA::readFile(string& filename)
 }
 
 /********************************************
-function£ºno regnex,just normol string
-delta	£º{ "*","(",")","|",".","||" }
+functionï¼šno regnex,just normol string
+delta	ï¼š{ "*","(",")","|",".","||" }
 *********************************************/
 void FA::readStr(string& s, int endType)
 {
@@ -376,7 +376,7 @@ void FA::readStr(string& s, int endType)
 	this->endNode = fa.endNode;
 	this->mgraph = fa.mgraph;
 	this->mgraph[this->endNode].isEnd = true;
-    this->mgraph[endNode].endState.insert(endType); // Ìí¼Ó½áÊø×´Ì¬¶ÔÓ¦µÄid
+    this->mgraph[endNode].endState.insert(endType); // æ·»åŠ ç»“æŸçŠ¶æ€å¯¹åº”çš„id
     this->symbolTable.insert(fa.symbolTable.begin(), fa.symbolTable.end());
 }
 
@@ -386,15 +386,22 @@ FA::FA(char ch)
 	mgraph.push_back(VNode(1));
 
 	mgraph[0].setEdge(ch, 1);
-    symbolTable.insert(ch);         // Ìí¼Ó×Ô¶¯»ú·ûºÅ±í
+    symbolTable.insert(ch);         // æ·»åŠ è‡ªåŠ¨æœºç¬¦å·è¡¨
 
 	this->begNode = 0;
 	this->endNode = 1;
 	mgraph[endNode].isEnd = true;
 }
 
+FA::FA()
+{
+	begNode = 0;
+	endNode = 0;
+	symbolTable.insert(Epsilon_CH);
+}
+
 FA::FA(string& s, int type, int endType){
-    symbolTable.insert(Epsilon_CH); // ·ûºÅ±í³õÊ¼»¯
+    symbolTable.insert(Epsilon_CH); // ç¬¦å·è¡¨åˆå§‹åŒ–
 	if (type == READ_REGNEX) {
 		this->readRegex(s, endType);
 	}
@@ -406,16 +413,16 @@ FA::FA(string& s, int type, int endType){
 	}
 }
 
-/* µİ¹é²éÕÒµ±Ç°½Úµã¾­¹ıEpsilon_CHÆ¯ÒÆµ½µÄËùÓĞ½Úµã */
+/* é€’å½’æŸ¥æ‰¾å½“å‰èŠ‚ç‚¹ç»è¿‡Epsilon_CHæ¼‚ç§»åˆ°çš„æ‰€æœ‰èŠ‚ç‚¹ */
 void FA::_findEpsilonSet(set<int>& find_res, int node_index){
-    // ¼ì²éµ±Ç°½ÚµãÊÇ·ñÒÑ¾­±»ËÑË÷¹ı
+    // æ£€æŸ¥å½“å‰èŠ‚ç‚¹æ˜¯å¦å·²ç»è¢«æœç´¢è¿‡
     if(find(find_res.begin(), find_res.end(), node_index)!=find_res.end())
         return;
     
-    // Ã»ÓĞ±»ËÑË÷, pushµ½find_resÖĞ
+    // æ²¡æœ‰è¢«æœç´¢, pushåˆ°find_resä¸­
     find_res.insert(node_index);
 
-    // ²éÕÒµ±Ç°½Úµã¿ÉÆ¯ÒÆ×´Ì¬
+    // æŸ¥æ‰¾å½“å‰èŠ‚ç‚¹å¯æ¼‚ç§»çŠ¶æ€
     set<int> next_epsilon_set = mgraph[node_index].arcs[Epsilon_CH];
     for(auto index : next_epsilon_set){
         _findEpsilonSet(find_res, index);
@@ -423,12 +430,12 @@ void FA::_findEpsilonSet(set<int>& find_res, int node_index){
 }
 
 
-/* µ±Ç°½ÚµãÊäÈëchËù·µ»ØµÄ×Ó¼¯ */
+/* å½“å‰èŠ‚ç‚¹è¾“å…¥chæ‰€è¿”å›çš„å­é›† */
 set<int> FA::findNextNode(int src_index, char trans_ch){
-    // ÊäÈëch¿É´ïµ½µÄ×Ó¼¯
+    // è¾“å…¥chå¯è¾¾åˆ°çš„å­é›†
     set<int> next_set_ch = mgraph[src_index].arcs[trans_ch];
 
-    // ¿Éµ½´ï×Ó¼¯epsilonÆ¯ÒÆµÄ×Ó¼¯
+    // å¯åˆ°è¾¾å­é›†epsilonæ¼‚ç§»çš„å­é›†
     set<int> return_set;
     for(auto index : next_set_ch){
         _findEpsilonSet(return_set, index);
@@ -448,7 +455,7 @@ int getFirstPriState(set<int> end_set){
 }
 
 
-bool FA::checkStr(const string& in,int& sym_idx,int& err_t){
+vector<int> FA::checkStr(const string& in,int& sym_idx,int& err_t){
 	int cur = this->begNode;
     vector<pair<string, int>> res;
     string nowBuffer;
@@ -456,78 +463,80 @@ bool FA::checkStr(const string& in,int& sym_idx,int& err_t){
     unsigned int index = 0;
 
     while(index <= in.length()){
-        // ÅĞ¶ÏÊÇ·ñ´æÔÚ×ªÒÆº¯Êı
+        // åˆ¤æ–­æ˜¯å¦å­˜åœ¨è½¬ç§»å‡½æ•°
         if(index < in.length() &&this->mgraph[cur].arcs.count(in[index])){
             while(this->mgraph[cur].arcs.count(in[index])){
-                cur = *(this->mgraph[cur].arcs[in[index]].begin()); // ×ªÒÆµ½ÏÂÒ»¸ö½Úµã
-                nowBuffer += in[index];                             // ¶ÁÈ¡µ±Ç°´®    
-                end_state = getFirstPriState(this->mgraph[cur].endState);   
+                cur = *(this->mgraph[cur].arcs[in[index]].begin()); // è½¬ç§»åˆ°ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+                nowBuffer += in[index];                             // è¯»å–å½“å‰ä¸²    
                 index++;                         
             }
+			end_state = getFirstPriState(this->mgraph[cur].endState);
             res.push_back(pair<string, int>{nowBuffer, end_state});
             cur = this->begNode;
             nowBuffer = "";
         }
         else{
-            index++;                                            // ×Ö·û´®Ö¸ÕëÖ¸ÏòÏÂÒ»¸ö×Ö·û
+            index++;                                            // å­—ç¬¦ä¸²æŒ‡é’ˆæŒ‡å‘ä¸‹ä¸€ä¸ªå­—ç¬¦
         }
     }
 
+    vector<int> rres;
     for(auto ss:res){
         cout << ss.first << " " << ss.second << endl;
+        rres.push_back(ss.second);
     }
-	return false;
+	return rres;
 }
 
 
 FA FA::toDFA(){
-    // ÒÑ¾­ºÏ²¢µÄ½Úµã
+    // å·²ç»åˆå¹¶çš„èŠ‚ç‚¹
     vector<set<int>> visit_set;
-    // ¹¤×÷¶ÓÁĞ
+    // å·¥ä½œé˜Ÿåˆ—
     queue<set<int>> work_set;
-    // ¹¹ÔìDFAµÄ½Úµã±íË÷Òı ½Úµã¼¯ºÏ -> DFAÖĞµÄid
+    // æ„é€ DFAçš„èŠ‚ç‚¹è¡¨ç´¢å¼• èŠ‚ç‚¹é›†åˆ -> DFAä¸­çš„id
     map<set<int>, int> dfa_table;
-    // ¹¹Ôì´æ·ÅDFAµÄÀà
+    // æ„é€ å­˜æ”¾DFAçš„ç±»
     FA dfa;
 
-    // ¹¹Ôì³õÊ¼½Úµã
+    // æ„é€ åˆå§‹èŠ‚ç‚¹
     set<int> init_set = findNextNode(begNode, Epsilon_CH);
     init_set.insert(begNode);
     work_set.push(init_set);
-    dfa_table.insert({init_set, dfa_table.size()}); // ²åÈëµ½½á¹û¼¯ºÏ
-    dfa.begNode = 0;                                // ÉèÖÃ³õÊ¼×´Ì¬
+    dfa_table.insert({init_set, dfa_table.size()}); // æ’å…¥åˆ°ç»“æœé›†åˆ
+    dfa.begNode = 0;                                // è®¾ç½®åˆå§‹çŠ¶æ€
 
-    // ×Ó¼¯¹¹Ôì·¨(ÓĞµãÏñBFS)
+    // å­é›†æ„é€ æ³•(æœ‰ç‚¹åƒBFS)
     while(!work_set.empty()){
-        // »ñÈ¡²¢µ¯³öµ±Ç°¶ÓÁĞµÄµÚÒ»¸ö½Úµã
+        // è·å–å¹¶å¼¹å‡ºå½“å‰é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªèŠ‚ç‚¹
         set<int> now_set = work_set.front();
         work_set.pop();
 
-        // ·ÀÖ¹ÖØ¸´ÅĞ¶Ï
+        // é˜²æ­¢é‡å¤åˆ¤æ–­
         if(find(visit_set.begin(), visit_set.end(), now_set)!=visit_set.end()) continue;
 
-        // ÉèÖÃÎª·ÃÎÊ¹ı
+        // è®¾ç½®ä¸ºè®¿é—®è¿‡
         visit_set.push_back(now_set);
 
-        // µ±Ç°¼¯ºÏ´ú±íµÄ½Úµãid
+        // å½“å‰é›†åˆä»£è¡¨çš„èŠ‚ç‚¹id
         int src_index = dfa_table[now_set];    
         // cout << "src " << "id=" << src_index <<": ";
         // printSet(now_set);
         // cout << "dst: " << endl;
 
-        // dfaĞÂÔöÒ»¸ö½Úµã
+        // dfaæ–°å¢ä¸€ä¸ªèŠ‚ç‚¹
         dfa.mgraph.push_back(VNode(src_index));
 
 
-        // ¸ù¾İ×ÖÄ¸±íÈ¥¹¹Ôì²»Í¬×Ö·û×ª»»µÄ×Ó¼¯
+        // æ ¹æ®å­—æ¯è¡¨å»æ„é€ ä¸åŒå­—ç¬¦è½¬æ¢çš„å­é›†
         for(auto ch : symbolTable){             
-            // Ìø¹ıÎŞÌõ¼ş×ªÒÆ·ûºÅ
+            // è·³è¿‡æ— æ¡ä»¶è½¬ç§»ç¬¦å·
             if(ch == Epsilon_CH) 
                 continue;  
 
-            // now_set ÊäÈëcµ½´ï next_set           
+            // now_set è¾“å…¥cåˆ°è¾¾ next_set           
             set<int> next_set;
-            for(auto node_index : now_set){       // ²éÕÒµ±Ç°½Úµã¼¯²éÕÒ½Úµãid
+            for(auto node_index : now_set){       // æŸ¥æ‰¾å½“å‰èŠ‚ç‚¹é›†æŸ¥æ‰¾èŠ‚ç‚¹id
                 set<int> next_set_any = findNextNode(node_index, ch);
                 next_set.insert(next_set_any.begin(), next_set_any.end());
             }
@@ -535,28 +544,28 @@ FA FA::toDFA(){
             // cout << ch << ": ";
             // printSet(next_set);
 
-            // ÅĞ¶Ï·Ç¿Õ
+            // åˆ¤æ–­éç©º
             if(next_set.empty()) continue;
 
-            // ²éÕÒµ±Ç°×Ó¼¯ÊÇ·ñÒÑ¾­±»ÌÖÂÛ¹ıÁË
+            // æŸ¥æ‰¾å½“å‰å­é›†æ˜¯å¦å·²ç»è¢«è®¨è®ºè¿‡äº†
             bool is_visit = false;
             auto iter = find(visit_set.begin(), visit_set.end(), next_set);
             if(iter != visit_set.end()){
-                // ÔÚdfaÖĞÌí¼ÓÒ»Ìõ±ß
+                // åœ¨dfaä¸­æ·»åŠ ä¸€æ¡è¾¹
                 dfa.mgraph[src_index].setEdge(ch, dfa_table[*iter]);
                 continue;
             }
 
-            // Ìí¼Óµ½¹¤×÷¶ÓÁĞ
+            // æ·»åŠ åˆ°å·¥ä½œé˜Ÿåˆ—
             work_set.push(next_set);
-            dfa_table.insert({next_set, dfa_table.size()}); // ²åÈëµ½½á¹û¼¯ºÏ
+            dfa_table.insert({next_set, dfa_table.size()}); // æ’å…¥åˆ°ç»“æœé›†åˆ
 
-            // ÏÂÒ»¸ö¼¯ºÏ´ú±íµÄ½Úµãid
+            // ä¸‹ä¸€ä¸ªé›†åˆä»£è¡¨çš„èŠ‚ç‚¹id
             dfa.mgraph[src_index].setEdge(ch, dfa_table[next_set]);
         }
     }
 
-    // ÉèÖÃ³õÊ¼×´Ì¬Óë½áÊø×´Ì¬
+    // è®¾ç½®åˆå§‹çŠ¶æ€ä¸ç»“æŸçŠ¶æ€
     dfa.begNode = 0;
     for(auto sub_set : dfa_table){
         for(auto index : sub_set.first){
@@ -575,4 +584,190 @@ FA FA::toDFA(){
 
 
     return dfa;
+}
+
+
+void VNode::saveNode(ofstream& fout)
+{
+	int size = 1024 * 1024;
+	char* buffer = new char[size];
+	char* cur = buffer;
+	if (buffer == NULL)
+	{
+		cerr << "Can't get enough memory!" << endl;
+		exit(-1);
+	}
+	
+	memcpy(cur, (char*)&idx, sizeof(idx));
+	cur += sizeof(idx);
+	memcpy(cur, (char*)&isEnd, sizeof(isEnd));
+	cur += sizeof(isEnd);
+
+	// ä¿å­˜endState
+	int endStateSize = endState.size();
+	memcpy(cur, (char*)&endStateSize, sizeof(endStateSize));
+	cur += sizeof(endStateSize);
+	for (auto iter : endState) {
+		memcpy(cur, (char*)&iter, sizeof(iter));
+		cur += sizeof(iter);
+	}
+
+
+	// ä¿å­˜arcs
+	int mapSize = arcs.size();
+	memcpy(cur, (char*)&mapSize, sizeof(mapSize));
+	cur += sizeof(mapSize);
+	for (auto iter = arcs.begin(); iter != arcs.end(); iter++)
+	{
+		memcpy(cur, (char*)&iter->first, sizeof(iter->first));
+		cur += sizeof(iter->first);
+
+		int nextNodeSize = iter->second.size();
+		memcpy(cur, (char*)&nextNodeSize, sizeof(nextNodeSize));
+		cur += sizeof(nextNodeSize);
+		for (auto i : iter->second) {
+			memcpy(cur, (char*)&i, sizeof(i));
+			cur += sizeof(i);
+		}
+	}
+	fout.write(buffer, cur - buffer);
+	delete[] buffer;
+}
+
+void VNode::loadNode(ifstream& fin)
+{
+	char* buffer = new char[1024 * 1024];
+	char* cur = buffer;
+	fin.read((char*)&idx, sizeof(idx));
+	fin.read((char*)&isEnd, sizeof(isEnd));
+	
+
+	// read endState
+	int endStateSize;
+	fin.read((char*)&endStateSize, sizeof(endStateSize));
+	fin.read(buffer, endStateSize * sizeof(int));
+	for (int i = 0; i < endStateSize; i++)
+	{
+		int tmp;
+		memcpy((char*)&tmp, cur, sizeof(int));
+		cur += sizeof(int);
+		endState.insert(tmp);
+	}
+
+	//read map
+	int mapSize = 0;
+	fin.read((char*)&mapSize, sizeof(mapSize));
+	for (int i = 0; i < mapSize; i++)
+	{
+		char key;
+		set<int> value;
+		fin.read(&key, sizeof(key));
+
+		cur = buffer;
+		int nextNodeSize;
+		fin.read((char*)&nextNodeSize, sizeof(nextNodeSize));
+		fin.read(buffer, nextNodeSize * sizeof(int));
+		for (int i = 0; i < nextNodeSize; i++)
+		{
+			int tmp;
+			memcpy((char*)&tmp, cur, sizeof(int));
+			cur += sizeof(int);
+			value.insert(tmp);
+		}
+		arcs[key] = value;
+	}
+	delete[] buffer;
+}
+
+VNode::VNode()
+{
+	idx = 0;
+	isEnd = false;
+}
+
+
+/**********************************
+function : save FA binary data 
+**********************************/
+void FA::saveDFA(const string& model_file)
+{
+	ofstream fout;
+	fout.open(model_file, ios::out | ios::binary);
+	if (!fout.is_open())
+	{
+		cerr << "Can't open the model file" << endl;
+		exit(-1);
+	}
+	
+	fout.write((char*)&begNode, sizeof(begNode));
+	fout.write((char*)&endNode, sizeof(endNode));
+
+	int mgraphSize = mgraph.size();
+	fout.write((char*)&mgraphSize, sizeof(mgraphSize));
+	for (auto node : mgraph)
+	{
+		node.saveNode(fout);
+	}
+
+	int tableLen = sizeof(tableLen);
+	char* buffer = new char[1024 * 1024];
+	for (auto iter : symbolTable)
+	{
+		memcpy(buffer + tableLen, (char*)&iter, sizeof(iter));
+		tableLen += sizeof(iter);
+	}
+	memcpy(buffer, (char*)&tableLen, sizeof(tableLen));
+	fout.write(buffer, tableLen);
+	delete[] buffer;
+}
+
+/*********************************
+function : load FA binary data
+*********************************/
+void FA::loadDFA(const string& model_file)
+{
+	ifstream fin;
+	fin.open(model_file, ios::in | ios::binary);
+	if (!fin.is_open())
+	{
+		cerr << "Can't open the model file" << endl;
+		exit(-1);
+	}
+
+	char* buffer = new char[1024 * 1024];
+	char* cur = buffer;
+	
+	fin.read((char*)&begNode, sizeof(begNode));
+	fin.read((char*)&endNode, sizeof(endNode));
+
+	int graphSize;
+	fin.read((char*)&graphSize, sizeof(graphSize));
+	for (int i = 0; i < graphSize; i++)
+	{
+		VNode tmp;
+		tmp.loadNode(fin);
+		mgraph.push_back(tmp);
+	}
+
+	int tableLen;
+	fin.read((char*)&tableLen, sizeof(tableLen));
+	fin.read(buffer, tableLen);
+	for (int i = 0; i < tableLen; i++)
+	{
+		char tmp = *cur;
+		symbolTable.insert(tmp);
+		cur += sizeof(char);
+	}
+
+	/*int endNodeLen;
+	fin.read((char*)&endNodeLen, sizeof(endNodeLen));
+	fin.read(buffer, endNodeLen);
+	for (int i = 0; i < endNodeLen; i += sizeof(int))
+	{
+		int tmp;
+		memcpy((char*)&tmp,cur, sizeof(int));
+		endNode.insert(tmp);
+		cur += sizeof(int);
+	}*/
+	delete[] buffer;
 }

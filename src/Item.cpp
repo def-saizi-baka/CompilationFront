@@ -1,6 +1,6 @@
 #include "Item.h"
-
-
+#include "IO/config.hpp"
+extern config con;
 
 Gram::Gram(const Gram& tmp)
 {
@@ -96,7 +96,7 @@ bool Item::operator == (const Item& other) const
 		return false;
 	else if(this->forward != other.forward)
 		return false;
-	// type ±¾ÖÊÓÉdotPos¾ö¶¨£¬Òò´Ë²»±ØÔÙÅĞ¶Ï
+	// type æœ¬è´¨ç”±dotPoså†³å®šï¼Œå› æ­¤ä¸å¿…å†åˆ¤æ–­
 	return true;
 	
 }	
@@ -119,13 +119,14 @@ bool Item::operator<(const Item& other) const{
 
 CFG::CFG()
 {
-	// Ê¹ÓÃ¿Î±¾ÉÏµÄ²âÊÔÓï·¨
+    vector<std::pair<int, std::vector<int>>> gramVec = con.get_grammar();
+	// ä½¿ç”¨è¯¾æœ¬ä¸Šçš„æµ‹è¯•è¯­æ³•
 	/*
-		ÖÕ½á·û£º a = 1,b = 2;
-		·ÇÖÕ½á·û£º S = 1001£¬ B = 1002
-		¶îÍâ·ûºÅ£º # 0 ,s` = 1000
+		ç»ˆç»“ç¬¦ï¼š a = 1,b = 2;
+		éç»ˆç»“ç¬¦ï¼š S = 1001ï¼Œ B = 1002
+		é¢å¤–ç¬¦å·ï¼š # 0 ,s` = 1000
 
-		Óï·¨ £º 
+		è¯­æ³• ï¼š 
 			S -> BB
 			1001 -> 1002 1002
 
@@ -134,11 +135,11 @@ CFG::CFG()
 
 			B -> b
 			1002 -> 2
-		ÍØ¹ãÎÄ·¨£º
+		æ‹“å¹¿æ–‡æ³•ï¼š
 			S`->S
 	*/
 
-	// ÎÄ·¨¶¨Òå
+	// æ–‡æ³•å®šä¹‰
 	int left = 1000;
 	vector<int> right3 = { 1001 };
 	this->initGram.push_back(Gram(left, right3));
@@ -160,11 +161,11 @@ CFG::CFG()
 	this->initGram.push_back(Gram(left, right2));
 	leftToGramIndex[1002].insert(3);
 
-	this->begState = 1000;//×îÖÕ¹éÔ¼Í£Ö¹µÄ·ûºÅ
+	this->begState = 1000;//æœ€ç»ˆå½’çº¦åœæ­¢çš„ç¬¦å·
 
-    // ·ÇÖÕ½á·û:
+    // éç»ˆç»“ç¬¦:
     this->nonTerSysboms = {1000, 1001, 1002};
-    // ÖÕ½á·û
+    // ç»ˆç»“ç¬¦
     this->terSysboms = {Config::end_int, 1, 2};
 }
 
@@ -188,12 +189,12 @@ Item CFG::getInitItem(){
 
 
 void CFG::buildClosures(){
-    // ¹¹Ôì³õÊ¼×´Ì¬
+    // æ„é€ åˆå§‹çŠ¶æ€
     set<Item> initItemSet{this->getInitItem()};
-    queue<Closure> buildQueue;  // ´ıÀ©Õ¹µÄ¶ÓÁĞ
-    queue<pair<int, int>> transQ;   // ´æ·Å×ªÒÆ¹ØÏµ<sourceClosure, transCh>
+    queue<Closure> buildQueue;  // å¾…æ‰©å±•çš„é˜Ÿåˆ—
+    queue<pair<int, int>> transQ;   // å­˜æ”¾è½¬ç§»å…³ç³»<sourceClosure, transCh>
     vector< set<pair<int, int>> > transRes;
-    vector<Closure> visit;  // Ã»ÓĞ¾­¹ıÀ©Õ¹µÄvisitÊı×é
+    vector<Closure> visit;  // æ²¡æœ‰ç»è¿‡æ‰©å±•çš„visitæ•°ç»„
     buildQueue.push(Closure(initItemSet));
     transQ.push({0, 0});
 
@@ -202,7 +203,7 @@ void CFG::buildClosures(){
         pair<int, int> closureFrom = transQ.front();
         buildQueue.pop();
         transQ.pop();
-        // ·ÀÖ¹ÖØ¸´²éÕÒ, Í¬Ê±±£Ö¤Á´½Ó¹ØÏµ
+        // é˜²æ­¢é‡å¤æŸ¥æ‰¾, åŒæ—¶ä¿è¯é“¾æ¥å…³ç³»
         auto find_iter = find(visit.begin(), visit.end(), waitExtendedClosure);
         if(find_iter!=visit.end()){
             int index = find_iter - visit.begin();
@@ -210,20 +211,20 @@ void CFG::buildClosures(){
             continue;
         }
         visit.push_back(waitExtendedClosure);
-        // À©Õ¹, ²¢Ìí¼Óµ½CFGµÄÏîÄ¿¼¯ÖĞ
+        // æ‰©å±•, å¹¶æ·»åŠ åˆ°CFGçš„é¡¹ç›®é›†ä¸­
         Closure builtClosure(*this, waitExtendedClosure.getFamily());
 
         // debug
         builtClosure.printClosure();
 
-        // ±£´æ×ªÒÆ½á¹û
+        // ä¿å­˜è½¬ç§»ç»“æœ
         this->closures.push_back(builtClosure);
         transRes.push_back(set<pair<int, int>>{closureFrom});
         this->closuresRelation.push_back(set< pair<int, int> >{});
 
         /* GO */
         int source = this->closures.size()-1;
-        // ·ÇÖÕ½á·û
+        // éç»ˆç»“ç¬¦
         for(auto nonTerSys: nonTerSysboms){
             set<Item> gotoRes = builtClosure.GO(nonTerSys);
             if(!gotoRes.empty()) {
@@ -232,7 +233,7 @@ void CFG::buildClosures(){
             }
         }
 
-        // ÖÕ½á·û
+        // ç»ˆç»“ç¬¦
         for(auto terSys: terSysboms){
             set<Item> actionRes = builtClosure.GO(terSys);
             if(!actionRes.empty()) {
@@ -243,7 +244,7 @@ void CFG::buildClosures(){
 
     }
 
-    // ÖØĞÂ¹¹½¨±Õ°üÖ®¼ä¹ØÏµ
+    // é‡æ–°æ„å»ºé—­åŒ…ä¹‹é—´å…³ç³»
     int i=0;
     for(auto trans : transRes){
         for(auto tranPair : trans){
@@ -254,18 +255,18 @@ void CFG::buildClosures(){
 }
 
 void CFG::buildAnalysisTable(){
-    // ¸ù¾İ±Õ°ü¹ØÏµ¹¹½¨action / goto±í
+    // æ ¹æ®é—­åŒ…å…³ç³»æ„å»ºaction / gotoè¡¨
     for(uint32_t i=0; i<closures.size(); i++){
-        // Îª¸Ã±Õ°ü×´Ì¬ĞÂ½¨Ò»ĞĞ
+        // ä¸ºè¯¥é—­åŒ…çŠ¶æ€æ–°å»ºä¸€è¡Œ
         this->analysisTable.insert({i, vector<pair<int, int>>{}});
-        // ¼ì²éÒÆ½ø
+        // æ£€æŸ¥ç§»è¿›
         for(auto transRule : closuresRelation[i]){
             this->analysisTable[i].push_back(transRule);
         }
-        // ¼ì²é¹æÔ¼ºÍacc
+        // æ£€æŸ¥è§„çº¦å’Œacc
         for(auto item : closures[i].getFamily()){
             if(item.getType() == ACTION_REDUCE){
-                // ÏÈÅĞ¶ÏÊÇ·ñÎªacc
+                // å…ˆåˆ¤æ–­æ˜¯å¦ä¸ºacc
                 if(item.left == 1000){
                     this->analysisTable[i].push_back({item.getForward(), parser_config::ACCEPT});
                 }
@@ -284,15 +285,15 @@ void CFG::showCFG()
 		s.showGram();
 	}*/
 
-    cout << "ËùÓĞÏîÄ¿Îª: "<< endl;
+    cout << "æ‰€æœ‰é¡¹ç›®ä¸º: "<< endl;
 	for (auto& s : allItem){
-		cout << "Êä³öËùÓĞÏîÄ¿:" << endl;
+		cout << "è¾“å‡ºæ‰€æœ‰é¡¹ç›®:" << endl;
 		s.showItem();
 	}
-    cout << "\n" << "ËùÓĞLR(0)ÏîÄ¿Îª" << endl;
+    cout << "\n" << "æ‰€æœ‰LR(0)é¡¹ç›®ä¸º" << endl;
 
     for (auto& s : LRItem){
-		cout << "Êä³öËùÓĞÏîÄ¿:" << endl;
+		cout << "è¾“å‡ºæ‰€æœ‰é¡¹ç›®:" << endl;
 		s.showItem();
 	}
 	/*for (auto& iter: leftToGramIndex)
@@ -307,11 +308,11 @@ void CFG::showCFG()
 	}*/
 }
 
-// ´´½¨ËùÓĞµÄLR(0)ÏîÄ¿
+// åˆ›å»ºæ‰€æœ‰çš„LR(0)é¡¹ç›®
 void CFG::initLRItems(){
-    // ¶Ô³õÊ¼ÏîÄ¿ÖĞµÄÃ¿¸ö½Úµã
+    // å¯¹åˆå§‹é¡¹ç›®ä¸­çš„æ¯ä¸ªèŠ‚ç‚¹
     for(auto item : allItem){
-        // µã¿ÉÄÜ´æÔÚµÄ·¶Î§, ½øĞĞ±éÀú
+        // ç‚¹å¯èƒ½å­˜åœ¨çš„èŒƒå›´, è¿›è¡Œéå†
         for(uint32_t dot_pos=0; dot_pos <= item.right.size(); dot_pos++){  
             LRItem.push_back(Item(Gram(item), dot_pos));
         }
@@ -321,11 +322,11 @@ void CFG::initLRItems(){
 
 void CFG::formFirstSet()
 {
-	// ÕâÀïÒª±éÀú·ûºÅ±íµÄ£¬·ìºÏµÄÊ±ºòÒªĞŞ¸Ä
-	// ÕâÀïÁÙÊ±¿ªÒ»¸övector
-	// ÒòÎªÉú³ÉFIRST¼¯µÄ¹ı³ÌÊÇ¸ö²»¶ÏÖØ¸´µÄ¹ı³Ì£¬Òò´ËĞèÒªÓÃFIRSTÀàµÄbool±äÁ¿±ê¼Ç¸Ã¼¯ºÏÊÇ·ñÒÑ¾­±»È·¶¨
-	// ²»È·¶¨ĞÔ¾ß±¸¿É´«µİĞÔ£¬A<-B<-C£¬C²»È·¶¨£¬ÔòAB²»È·¶¨
-	// ÏÂÃæµÄ·½·¨ĞèÒªinitGram ÖĞĞèÒª·ÇÖÕ½á·û°´ÕÕË³ĞòÅÅÁĞ¡£
+	// è¿™é‡Œè¦éå†ç¬¦å·è¡¨çš„ï¼Œç¼åˆçš„æ—¶å€™è¦ä¿®æ”¹
+	// è¿™é‡Œä¸´æ—¶å¼€ä¸€ä¸ªvector
+	// å› ä¸ºç”ŸæˆFIRSTé›†çš„è¿‡ç¨‹æ˜¯ä¸ªä¸æ–­é‡å¤çš„è¿‡ç¨‹ï¼Œå› æ­¤éœ€è¦ç”¨FIRSTç±»çš„boolå˜é‡æ ‡è®°è¯¥é›†åˆæ˜¯å¦å·²ç»è¢«ç¡®å®š
+	// ä¸ç¡®å®šæ€§å…·å¤‡å¯ä¼ é€’æ€§ï¼ŒA<-B<-Cï¼ŒCä¸ç¡®å®šï¼Œåˆ™ABä¸ç¡®å®š
+	// ä¸‹é¢çš„æ–¹æ³•éœ€è¦initGram ä¸­éœ€è¦éç»ˆç»“ç¬¦æŒ‰ç…§é¡ºåºæ’åˆ—ã€‚
 	vector<int> symbols = { 1,2,1000,1001,1002 };
 	bool flag = true;
 	while (flag) {
@@ -347,31 +348,31 @@ void CFG::formFirstSet()
 
 void CFG::formFirstSet(int symbol)
 {	
-	// Ëã·¨ µÚ4ÕÂPPTµÚ31Ò³
+	// ç®—æ³• ç¬¬4ç« PPTç¬¬31é¡µ
 	// 
-	// ´Ë´¦ÎªÖÕ½á·ûµÄÅĞ¶Ï£¬ÔÚ·ìºÏµÄÊ±ºò
-	// Ó¦¸ÃÊÇÒª´Ó·ûºÅ±íÖĞ¶ÁÈ¡£¡
+	// æ­¤å¤„ä¸ºç»ˆç»“ç¬¦çš„åˆ¤æ–­ï¼Œåœ¨ç¼åˆçš„æ—¶å€™
+	// åº”è¯¥æ˜¯è¦ä»ç¬¦å·è¡¨ä¸­è¯»å–ï¼
 	if (symbol < 1000)
 	{
 		this->firstSet[symbol].insert(symbol);
 		this->firstSet[symbol].makeSure();
 	}
-	// ´ËÊ±µÄÇé¿öÎªS`
+	// æ­¤æ—¶çš„æƒ…å†µä¸ºS`
 	else if(symbol == this->begState){
 		this->firstSet[symbol].insert(0);
 		this->firstSet[symbol].makeSure();
 	}
 	else
 	{
-		// ±éÀú value ÔÚ²úÉúÊ½×ó²àµÄÇé¿ö
+		// éå† value åœ¨äº§ç”Ÿå¼å·¦ä¾§çš„æƒ…å†µ
 		for (auto iter: leftToGramIndex[symbol])
 		{
-			// ÎªÖÕ½á·û£¬ÕâÀï°Ñepsilon¸ø°üº¬½øÈ¥ÁË,¾ÍÊÇÈç¹û´æÔÚ¿Õ²úÉúÊ½£¬Ò²¿ÉÒÔĞ´Èëepsilon
+			// ä¸ºç»ˆç»“ç¬¦ï¼Œè¿™é‡ŒæŠŠepsilonç»™åŒ…å«è¿›å»äº†,å°±æ˜¯å¦‚æœå­˜åœ¨ç©ºäº§ç”Ÿå¼ï¼Œä¹Ÿå¯ä»¥å†™å…¥epsilon
 			if (initGram[iter].right[0] < 1000) {
 				firstSet[symbol].insert(initGram[iter].right[0]);
 				firstSet[symbol].makeSure();
 			}
-			// ´ËÊ±Îª·ÇÖÕ½á·û X->Y1Y2
+			// æ­¤æ—¶ä¸ºéç»ˆç»“ç¬¦ X->Y1Y2
 			else if (initGram[iter].right[0] > 1000) {
 				bool flag = true;
 				int idx = 0;
@@ -381,7 +382,7 @@ void CFG::formFirstSet(int symbol)
 					int x = initGram[iter].right[idx];
 					auto tmp = firstSet[x];
 					tmp.divEpsilon();
-					// ´Ë´¦ÈÔÈ»¿ÉÒÔ¸Ä½ø£¬¼´µ±Y1È·¶¨Ê±£¬X²»ĞèÒª·´¸´¶ÁÈ¡
+					// æ­¤å¤„ä»ç„¶å¯ä»¥æ”¹è¿›ï¼Œå³å½“Y1ç¡®å®šæ—¶ï¼ŒXä¸éœ€è¦åå¤è¯»å–
 					firstSet[symbol].insert(tmp);
 					firstSet[symbol].transSure(tmp);
 
@@ -389,14 +390,14 @@ void CFG::formFirstSet(int symbol)
 						firstSet[symbol].insert(EPSILON);
 					}
 
-					// ¼ì²éFIRST[Y1] ÊÇ·ñ´æÔÚ¿Õ×ªÒÆ
+					// æ£€æŸ¥FIRST[Y1] æ˜¯å¦å­˜åœ¨ç©ºè½¬ç§»
 					flag = false;
 					for (auto iter1 : leftToGramIndex[x])
 					{
 						if (initGram[iter1].right[0] == EPSILON)
 						{
 							flag = true;
-							idx++;	// Ö¸ÏòY2£¬¼ÌĞøÅĞ¶Ï
+							idx++;	// æŒ‡å‘Y2ï¼Œç»§ç»­åˆ¤æ–­
 							break;
 						}
 					}
@@ -413,18 +414,18 @@ set<int> CFG::getFirstSet(int value){
 
 set<int> CFG::getFirstSet(vector<int> gramStr)
 {
-	// Ëã·¨£ºµÚËÄÕÂPPT 33Ò³
+	// ç®—æ³•ï¼šç¬¬å››ç« PPT 33é¡µ
 	FIRST first;
-	// °ÑµÚÒ»¸ö·ûºÅµÄFIRST/EPSILON ¼ÓÈë
+	// æŠŠç¬¬ä¸€ä¸ªç¬¦å·çš„FIRST/EPSILON åŠ å…¥
 	auto tmp = firstSet[gramStr[0]];
 	tmp.divEpsilon();
 	first.insert(tmp);
 
-	// ¼ì²éÊ£ÏÂµÄ·ûºÅ
+	// æ£€æŸ¥å‰©ä¸‹çš„ç¬¦å·
 	int rSize = gramStr.size();
 	for (auto iter = ++gramStr.begin(); iter != gramStr.end(); iter++)
 	{
-		// ¼ÙÉè´æÔÚepsilon
+		// å‡è®¾å­˜åœ¨epsilon
 		if (firstSet[*iter].count(EPSILON))
 		{
 			auto tmp = firstSet[*iter];
@@ -534,42 +535,42 @@ void Closure::showItem(Item& item){
 }
 
 Closure::Closure(CFG& cfg,const set<Item>& items){
-    // ³õÊ¼»¯¶ÓÁĞ
+    // åˆå§‹åŒ–é˜Ÿåˆ—
     queue<Item> item_res;
     for(auto item : items){
         item_res.push(item);
     }
 
     while(!item_res.empty()){
-        // È¡¶ÓÊ×ÔªËØ
+        // å–é˜Ÿé¦–å…ƒç´ 
         Item now_item = item_res.front();
         item_res.pop();
         this->family.insert(now_item);
         // showItem(now_item);
-        // µãºóÃæÊÇ·ÇÖÕ½á·û, ½øĞĞÍØÕ¹, ¼´S->¦Á.B¦ÂĞÎÊ½
+        // ç‚¹åé¢æ˜¯éç»ˆç»“ç¬¦, è¿›è¡Œæ‹“å±•, å³S->Î±.BÎ²å½¢å¼
         if(now_item.getType() != ACTION_REDUCE && now_item.getDotNext()>1000){
             vector<Item> tmp;
             set<int> forward_tmp;
-            // ²éÕÒËùÓĞB->.XXXµÄÇé¿ö
+            // æŸ¥æ‰¾æ‰€æœ‰B->.XXXçš„æƒ…å†µ
             for(auto item_tmp : cfg.allItem){
                 if(item_tmp.left == now_item.getDotNext()){
                     tmp.push_back(item_tmp);
                 }
             }
-            // »ñÈ¡¦Â, ÒÔ±ã²éÕÒ¦ÂµÄFirst¼¯ºÏ
+            // è·å–Î², ä»¥ä¾¿æŸ¥æ‰¾Î²çš„Firsté›†åˆ
             now_item.dotRightMove();
-            // ¹æÔ¼Ä£Ê½, ËµÃ÷¦ÂÎª¿Õ, forwardÕÕ³­now_itemµÄ
+            // è§„çº¦æ¨¡å¼, è¯´æ˜Î²ä¸ºç©º, forwardç…§æŠ„now_itemçš„
             if(now_item.getType() == ACTION_REDUCE){    
                 forward_tmp.insert(now_item.getForward());
             }
-            // ÒÆ½øÄ£Ê½, ¦Â²»Îª¿Õ, forward=first(¦Â)
+            // ç§»è¿›æ¨¡å¼, Î²ä¸ä¸ºç©º, forward=first(Î²)
             else{
-                vector<int> beta = now_item.getDotNextAll();    // »ñÈ¡¦Â
+                vector<int> beta = now_item.getDotNextAll();    // è·å–Î²
                 forward_tmp = cfg.getFirstSet(beta);
                 // forward_tmp = cfg.getFirstSet(beta[0]);
             }
 
-            // ¸Ã±Õ°ü¹¹ÔìÆäËûÏîÄ¿
+            // è¯¥é—­åŒ…æ„é€ å…¶ä»–é¡¹ç›®
             for(auto forward : forward_tmp){
                 for(auto item : tmp){
                     item.setForward(forward);
@@ -595,7 +596,7 @@ void Closure::printClosure(){
 set<Item> Closure::GO(int input){
     set<Item> res;
     for(auto item : this->family){
-        // µ±Ç°·ÇÖÕÖ¹(¹æÔ¼)×´Ì¬, ²¢ÇÒ×ªÒÆ·ûºÅÓëµãºóµÄ·ûºÅÏàÍ¬
+        // å½“å‰éç»ˆæ­¢(è§„çº¦)çŠ¶æ€, å¹¶ä¸”è½¬ç§»ç¬¦å·ä¸ç‚¹åçš„ç¬¦å·ç›¸åŒ
         if(item.getType()!=ACTION_REDUCE && item.getDotNext() == input){
             item.dotRightMove();
             res.insert(item);

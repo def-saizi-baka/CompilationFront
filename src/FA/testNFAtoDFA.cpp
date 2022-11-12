@@ -5,19 +5,19 @@ int main(){
     NFA nfa;
     fstream fp("testNFAtoDFA2.txt", ios::in);
     string line;
-    // ÉèÖÃÆğÊ¼½ÚµãÓëÖÕÖ¹½Úµã
+    // è®¾ç½®èµ·å§‹èŠ‚ç‚¹ä¸ç»ˆæ­¢èŠ‚ç‚¹
     getline(fp, line);
     int src_node = atoi(line.c_str());
     getline(fp, line);
     int dst_node = atoi(line.c_str());
-    // ¶ÁÈ¡ÎÄ¼ş, ĞÂÔö½ÚµãÓë×ªÒÆº¯Êı
+    // è¯»å–æ–‡ä»¶, æ–°å¢èŠ‚ç‚¹ä¸è½¬ç§»å‡½æ•°
     while(getline(fp, line)){
-        // ·ÖÎö¶ÁÈëµÄÊı¾İ
+        // åˆ†æè¯»å…¥çš„æ•°æ®
         int src_id, dst_id;
         char trans_ch;
         get_argv(src_id, dst_id, trans_ch, line);
 
-        // ĞÂ½¨½Úµã / ±ß
+        // æ–°å»ºèŠ‚ç‚¹ / è¾¹
         nfa.addSrc(src_id, dst_id, trans_ch);
     }
 
