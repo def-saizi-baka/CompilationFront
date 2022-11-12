@@ -10,12 +10,13 @@
                 "${file}",
                 "${fileDirname}\\FA\\FA.cpp",
                 "${fileDirname}\\IO\\inputBuffer.cpp", 
+                "${fileDirname}\\jsoncpp.cpp",
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
-                "-I",
-                "${fileDirname}\\json\\include",
-                "-L",
-                "${fileDirname}\\json\\lib"
+                // "-I",
+                // "${fileDirname}\\json\\include",
+                // "-L${fileDirname}\\json\\lib",
+                // ""
             ],
             "options": {
                 "cwd": "${fileDirname}"
