@@ -6,6 +6,8 @@ config::config()
 	stringstream ssm;
 	string temp;
 	string content;
+	int raw;
+	string regex;
 	int id;
 
 	fin.open(Config::path_keyword, ios::in);
@@ -16,11 +18,17 @@ config::config()
 		ssm << temp;//全部放下去
 		ssm >> content;
 		ssm >> id;
+		ssm >> raw;
+		if (raw == 0)
+			ssm >> regex;
+		else
+			regex = content;
 		ssm.clear();
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.keywords[content] = id;
 		this->dic_symbols.symbols[content] = id;
 		this->dic_symbols._symbols[id] = content;
+		this->regexList.push_back(regex_exp{ regex,id,raw == 1 });
 	}
 	fin.close();
 
@@ -31,11 +39,14 @@ config::config()
 		ssm << temp;//全部放下去
 		ssm >> content;
 		ssm >> id;
+		ssm >> raw;
+		ssm >> regex;
 		ssm.clear();
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.delimiters[content] = id;
 		this->dic_symbols.symbols[content] = id;
 		this->dic_symbols._symbols[id] = content;
+		this->regexList.push_back(regex_exp{ regex,id,raw == 1 });
 	}
 	fin.close();
 
@@ -46,11 +57,14 @@ config::config()
 		ssm << temp;//全部放下去
 		ssm >> content;
 		ssm >> id;
+		ssm >> raw;
+		ssm >> regex;
 		ssm.clear();
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.operators[content] = id;
 		this->dic_symbols.symbols[content] = id;
 		this->dic_symbols._symbols[id] = content;
+		this->regexList.push_back(regex_exp{ regex,id,raw == 1 });
 	}
 	fin.close();
 
@@ -97,6 +111,7 @@ config::config()
 	
 }
 
+
 config::~config()
 {
 	if (logFile.is_open()) {
@@ -136,6 +151,12 @@ const map<string, int>& config::get_operators()const
 const map<string, int>& config::get_delimiters()const
 {
 	return this->dic_symbols.delimiters;
+	// TODO: 在此处插入 return 语句
+}
+
+const vector<regex_exp>& config::get_regex() const
+{
+	return this->regexList;
 	// TODO: 在此处插入 return 语句
 }
 

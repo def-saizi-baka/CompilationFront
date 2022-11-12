@@ -1,32 +1,34 @@
-char 61
-short 62
-int 63
-long 64 
-float 65
-double 66
-unsigned 67
-signed 68
-struct 69
-union 70
-enum 71
-void 72
-if 73
-else 74
-switch 75
-case 76
-default 77
-for 78
-do 79
-while 80
-break 81
-continue 82
-goto 83
-return 84
-auto 85
-extern 86
-register 87
-static 88
-const 89
-sizeof 90
-typedef 91
-volatile 92
+char 61 0 c.h.a.r 
+short 62 0 s.h.o.r.t
+int 63 0 i.n.t
+long 64 0 l.o.n.g
+float 65 0 f.l.o.a.t
+double 66 0 d.o.u.b.l.e
+unsigned 67 0 u.n.s.i.g.n.e.d
+signed 68 0 s.i.g.n.e.d
+struct 69 0 s.t.r.u.c.t
+union 70 0 u.n.i.o.n
+enum 71 0 e.n.u.m 
+void 72 0 v.o.i.d 
+if 73 0 i.f
+else 74 0 e.l.s.e
+switch 75 0 s.w.i.t.c.h
+case 76 0 c.a.s.e
+default 77 0 d.e.f.a.u.l.t
+for 78 0 f.o.r 
+do 79 0 d.o
+while 80 0 w.h.i.l.e
+break 81 0 b.r.e.a.k
+continue 82 0 c.o.n.t.i.n.u.e
+goto 83 0 g.o.t.o
+return 84 0 r.e.t.u.r.n
+auto 85 0 a.u.t.o
+extern 86 0 e.x.t.e.r.n
+register 87 0 r.e.g.i.s.t.e.r 
+static 88 0 s.t.a.t.i.c
+const 89 0 c.o.n.s.t
+sizeof 90 0 s.i.z.e.o.f
+typedef 91 0 t.y.p.e.d.e.f
+volatile 92 0 v.o.l.a.t.i.l.e
+常量	100 0 (0|1|2|3|4|5|6|7|8|9)(0|1|2|3|4|5|6|7|8|9)*
+变量名	200 0 (_|a|b|c|d|e|d|f|g|h|i|j|k|l|m|n|o|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z).(_|a|b|c|d|e|d|f|g|h|i|j|k|l|m|n|o|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|0|1|2|3|4|5|6|7|8|9)*

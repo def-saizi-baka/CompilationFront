@@ -10,6 +10,12 @@ using namespace std;
 
 
 
+typedef struct{
+	string regex;
+	int endType = -1;
+	bool raw = false;
+} regex_exp;
+
 class config
 {
 public:
@@ -21,7 +27,8 @@ public:
 	const map<string, int>& get_keywords()const;
 	const map<string, int>& get_operators()const;
 	const map<string, int>& get_delimiters()const;
-	vector<pair<int, vector<int>>>& get_grammar(){ return this->grammar; };
+	const vector<regex_exp>& get_regex() const;
+	const vector<pair<int, vector<int>>>& get_grammar()const { return this->grammar; };
 	const map<string, int>& get_symbols() const { return this->dic_symbols.symbols; };
 	map<int, string>& get__symbols(){ return this->dic_symbols._symbols; };
 private:
@@ -37,6 +44,7 @@ private:
 	}dic_symbols; //符号字典，把每一个符号映射到一个int值 
 	vector<pair<int, vector<int>>> grammar;//所有文法表
 	ofstream logFile;
+	vector<regex_exp> regexList;
 };
 
 static void get_phases_list(vector<int>& res, config& con, string input)

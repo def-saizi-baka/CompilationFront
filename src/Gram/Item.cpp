@@ -121,13 +121,20 @@ CFG::CFG(){
     vector<std::pair<int, std::vector<int>>> gramVec = con.get_grammar();
     this->terSysboms = con.get_stop_symbols();
     this->nonTerSysboms = con.get_unstop_symbols();
+    
     // 初始状态
     this->begState = gramVec[0].first;
     // 构建语法表
     int _ = 0;
     for(auto grammar : gramVec){
-        this->initGram.push_back(Gram(grammar.first, grammar.second));
-	    leftToGramIndex[grammar.first].insert(_++);
+        if(grammar.second.size()>0){
+            this->initGram.push_back(Gram(grammar.first, grammar.second));
+            leftToGramIndex[grammar.first].insert(_++);
+        }
+        else{
+            // cout << "[WARN]不存在的生成式"+to_string(grammar.first) << endl;
+            con.log("[WARN]不存在的生成式"+to_string(grammar.first));
+        }
     }
 	// 使用课本上的测试语法
 	/*
@@ -299,12 +306,12 @@ void CFG::showCFG()
 		cout << "输出所有项目:" << endl;
 		s.showItem();
 	}
-    cout << "\n" << "所有LR(0)项目为" << endl;
+    // cout << "\n" << "所有LR(0)项目为" << endl;
 
-    for (auto& s : LRItem){
-		cout << "输出所有项目:" << endl;
-		s.showItem();
-	}
+    // for (auto& s : LRItem){
+	// 	cout << "输出所有项目:" << endl;
+	// 	s.showItem();
+	// }
 	/*for (auto& iter: leftToGramIndex)
 	{
 		cout << iter.first<<"\t:\t";
@@ -336,23 +343,42 @@ void CFG::formFirstSet()
 	// 因为生成FIRST集的过程是个不断重复的过程，因此需要用FIRST类的bool变量标记该集合是否已经被确定
 	// 不确定性具备可传递性，A<-B<-C，C不确定，则AB不确定
 	// 下面的方法需要initGram 中需要非终结符按照顺序排列。
-	map<int, string> symbols = con.get__symbols();
+	map<std::string, int> symbols = con.get_symbols();
     
 	bool flag = true;
+	int times = 0;
 	while (flag) {
 		flag = false;
         for(auto symbol : symbols){
-			if (!firstSet[symbol.first].isSure()){
-				formFirstSet(symbol.first);
-				if (!firstSet[symbol.first].isSure()){
-					flag = true;
-				}
-			}            
+			if(leftToGramIndex[symbol.second].size()!=0)
+			{
+				if (!firstSet[symbol.second].isSure()){
+				formFirstSet(symbol.second);
+					if (!firstSet[symbol.second].isSure()){
+						flag = true;
+					}
+				} 
+			}           
         }
+		cout<<times<<"轮"<<endl;
+		for(auto symbol : symbols)
+		{
+			if(!firstSet[symbol.second].isSure() && leftToGramIndex[symbol.second].size()!=0)
+			{
+				cout<<symbol.second<<"\t: \t"<<endl;
+				for (auto iter: leftToGramIndex[symbol.second])
+				{
+					cout<<"\t\t";
+					initGram[iter].showGram();
+				}
+				cout<<endl;
+			}
+			cout<<endl;
+		}
+		times++;
 	}
 
 }
-
 void CFG::formFirstSet(int symbol)
 {	
 	// 算法 第4章PPT第31页
