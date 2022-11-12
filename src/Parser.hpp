@@ -22,9 +22,10 @@ class parser
 {
 public:
 	vector<int>&& analysis(const vector<int>& token
-		,const map<int,vector<pair<int, int>>>& action,const map<int, vector<pair<int, int>>>& _goto);
+		,const map<int,vector<pair<int, int>>>& analysisTable);
 	int find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign);
 	int find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign);
+    int find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime);
 	parserTree& get_tree() { return tree; };
 private:
 	parserTree tree;
@@ -37,15 +38,14 @@ private:
 /// <param name="action"></param> action表
 /// <param name="_goto"></param> goto表，为了避免goto关键字冲突
 /// <returns></returns> 返回右值引用，是一个分析得到的状态序列
-vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& action,
-	const map<int, vector<pair<int, int>>>& _goto)
+vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& analysisTable)
 {
 	stack<int> signs;
 	vector<int> status;
 	signs.push(Config::end_int);
 	status.push_back(0);//从第0个状态开始
 	for (unsigned idx = 0; idx < token.size();) {
-		int next = find_action(action, status.back(), token[idx]);
+		int next = find(analysisTable, status.back(), token[idx], true);
 		if (next == parser_config::ERROR) {
 			con.log("[ERROR] 移进失败，当前分析到的符号唯一标识符为：" + to_string(idx));
 			return move(status);
@@ -73,7 +73,7 @@ vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<p
 				status.pop_back();
 			}
 			signs.push(con.get_grammar()[temp].first); //首先是归约得到符号压栈
-			next = find_goto(_goto, status.back(), signs.top());
+			next = find(analysisTable, status.back(), signs.top(), false);
 			status.push_back(next);
 			tree.reduction(con.get_grammar()[temp]);//归约语法树
 		}
@@ -132,4 +132,11 @@ int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status,
 	return parser_config::ERROR;
 }
 
-
+int parser::find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime){
+    if(prime){
+        return find_action(action, status, sign);
+    }
+    else{
+        return find_goto(action, status, sign);
+    }
+}
