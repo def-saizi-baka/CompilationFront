@@ -6,7 +6,7 @@
             "command": "C:\\Environment\\mingw64\\mingw64\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
-                "-g",
+                "-g", 
                 "${file}",
                 "${fileDirname}\\FA\\FA.cpp",
                 "${fileDirname}\\IO\\inputBuffer.cpp", 
