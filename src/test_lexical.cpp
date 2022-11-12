@@ -1,8 +1,9 @@
-#include "FA/FA.h"
-#include "IO/inputBuffer.h"
-#include "IO/config.hpp"
+#include "FA.h"
+#include "inputBuffer.h"
+#include "config.h"
 #include "Parser.hpp"
 #include "parserTree.hpp"
+#include "Item.h"
 
 config con;
 
@@ -34,8 +35,16 @@ int main(){
         cout << token << " " ;
     }
 
+    CFG cfg;
+        // 初始化项目
+    cfg.initItems();
+    cfg.initLRItems();
+	cfg.formFirstSet();
+    cfg.buildClosures();
+    cfg.buildAnalysisTable();
+    map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
     
     parser Pa;
-    // Pa.analysis(tokens, )
+    Pa.analysis(tokens, analysisTable);
 
 }

@@ -9,11 +9,13 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include "const.h"
+#include "config.h"
 
 #define ACTION_REDUCE	0
 #define ACTION_MOVE		1
 
-#define EPSILON			3 // 这里也是偷懒了，缝合的时候要换成符号表的符号
+#define EPSILON			999 // 这里也是偷懒了，缝合的时候要换成符号表的符号
 using namespace std;
 
 class CFG;
@@ -103,8 +105,8 @@ class CFG{
         vector<Item> allItem;	                // 拓展语法 
         vector<Item> LRItem;				    // LR0项目
 
-        vector<int> terSysboms;                 // 终结符号集合
-        vector<int> nonTerSysboms;              // 非终结符号集合
+        map<string, int> terSysboms;                 // 终结符号集合
+        map<string, int> nonTerSysboms;              // 非终结符号集合
 
 
         vector<Closure> closures;               // 闭包
@@ -129,6 +131,7 @@ class CFG{
 
         set<int> getFirstSet(int value);						// 获取单个非终结符的FIRST集
         set<int> getFirstSet(vector<int> gramStr);					// 获取某个串的非终结符
+        map<int, std::vector<std::pair<int, int>>> getAnalysisTable(){return this->analysisTable;}
         Item getInitItem();                                     // 获取项目初始项
         void showCFG();
         void showFirstSet();
