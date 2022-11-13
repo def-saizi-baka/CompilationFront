@@ -315,7 +315,18 @@ void FA::readRegex(string& reg, int endType)
 			}
 		}
 		else {
-			fas.push(FA(*p));
+			if(*p == '\\')
+			{
+				p++;
+				if(*p=='s'){
+					fas.push(FA(' '));
+				}else{
+					fas.push(FA(*p));
+				}
+			}else{
+				fas.push(FA(*p));
+			}
+			
 		}
 	}
 

@@ -35,6 +35,10 @@ MANIFEST
 *.spec
 *.exe
 
+# helper .py
+helper.py
+test_FA*
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
