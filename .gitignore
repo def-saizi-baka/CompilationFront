@@ -38,6 +38,7 @@ MANIFEST
 # helper .py
 helper.py
 test_FA*
+bat_for_FA.bat
 
 # Installer logs
 pip-log.txt
