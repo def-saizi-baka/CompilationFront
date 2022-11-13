@@ -117,7 +117,7 @@ vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<p
 					signs.push(con.get_grammar()[temp].first); //首先是归约得到符号压栈
 					next = find(analysisTable, status.back(), signs.top(), false);
 					status.push_back(next);
-					// tree.reduction(con.get_grammar()[temp]);//归约语法树
+					tree.reduction(con.get_grammar()[temp]);//归约语法树
 				}
 				else
 					break;
@@ -133,6 +133,7 @@ vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<p
 		
 			}
 			else if(next == parser_config::ACCEPT){
+				this->tree.end();//结束，建树
 				con.log("[INFO] 移进归约成功完成");
 				return move(status);
 			}

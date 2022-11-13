@@ -23,7 +23,7 @@ void load(FA& dfa,const string modelPath)
 int main(int argc,char** argv)
 {
     FA dfa;
-    if(argc < 4)
+    if(argc < 5)
     {
         cout<<"Not correct parameters";
         exit(-1);
@@ -69,4 +69,5 @@ int main(int argc,char** argv)
     
     parser Pa;
     Pa.analysis(tokens, analysisTable);
+    Pa.get_tree().to_json(argv[4]);
 }

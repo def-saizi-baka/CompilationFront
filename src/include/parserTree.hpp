@@ -6,6 +6,7 @@
 extern config con;
 using namespace std;
 
+
 struct node{
 	int symbol = -1;//默认-1代表没有符号
 	int num = 0;
@@ -49,6 +50,19 @@ void parserTree::in(int symbol)
 void parserTree::reduction(pair<int, vector<int>> grammar)
 {
 	try {
+		if(grammar.second.size() < 1){
+			string message = "[ERROR] 语法生成式为空,该语法生成式为：";
+			message += to_string(grammar.first) + " → ";
+				for (const auto& t : grammar.second) {
+					message += to_string(t);
+					message += "|";
+				}
+				if (*message.rbegin() == '|')
+					message.pop_back();
+				con.log(message);
+			con.log(message);
+			return ;
+		}
 		node* root = new node;
 		root->symbol = grammar.first;
 		for (int i = grammar.second.size() - 1; i >= 0; i--) {
@@ -57,11 +71,10 @@ void parserTree::reduction(pair<int, vector<int>> grammar)
 			if (grammar.second[i] == temp->symbol) {//这里就是对应上了
 				this->roots.pop_back();
 				root->num++;
-				root->kids.insert(root->kids.begin(), root);
+				root->kids.insert(root->kids.begin(), temp);
 			}
 			else {
-				string message = "[ERROR] 生成语法分析树 \
-					过程中，发现需归约符号和语法生成式不匹配,该语法生成式为：";
+				string message = "[ERROR] 生成语法分析树过程中，发现需归约符号和语法生成式不匹配,该语法生成式为：";
 				message += to_string(grammar.first) + " → ";
 				for (const auto& t : grammar.second) {
 					message += to_string(t);
@@ -72,6 +85,7 @@ void parserTree::reduction(pair<int, vector<int>> grammar)
 				con.log(message);
 			}
 		}
+		this->roots.push_back(root);
 	}
 	catch (const bad_alloc& e) {
 		con.log(string("[ERROR] ") + e.what());
@@ -87,8 +101,7 @@ void parserTree::end()
 		this->root = this->roots[0];
 	}
 	else { //这样就说明没有归约成一棵语法树
-		con.log("[ERROR] 没有成功归约成一个语法树，可能是输入文法有误等问题\
-			，请检查前面的报错");
+		con.log("[ERROR] 没有成功归约成一个语法树，可能是输入文法有误等问题，请检查前面的报错");
 	}
 }
 
@@ -137,17 +150,20 @@ Json::Value parserTree::build_tree(node* tree)
 {
 	Json::Value jv_node;
 	string tag_name = con.get__symbols()[tree->symbol];
-	jv_node["kind"] = tag_name;
+	
+	jv_node["1.kind"] = tag_name;
+	con.log("[INFO] 成功展开节点，节点类型为：" + tag_name);
 	for (size_t i = 0; i < tree->kids.size(); i++)
 	{
 		node* subtree = tree->kids[i];
 		if (subtree != nullptr) {
 			Json::Value jv_son = build_tree(subtree);
-			jv_node["inner"].append(Json::Value(jv_son));
+			jv_node["2.inner"].append(Json::Value(jv_son));
 		}
 	}
 	return jv_node;
 }
+
 
 parserTree::~parserTree()
 {

@@ -1,1 +1,1 @@
-test_lexical.exe --save dfamodel test_in.txt
+test_lexical.exe --save dfamodel test_in.txt tree.json
