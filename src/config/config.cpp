@@ -41,6 +41,10 @@ config::config()
 		ssm >> id;
 		ssm >> raw;
 		ssm >> regex;
+		if (raw == 0)
+			ssm >> regex;
+		else
+			regex = content;
 		ssm.clear();
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.delimiters[content] = id;
@@ -59,6 +63,10 @@ config::config()
 		ssm >> id;
 		ssm >> raw;
 		ssm >> regex;
+		if (raw == 0)
+			ssm >> regex;
+		else
+			regex = content;
 		ssm.clear();
 		this->dic_symbols.stop_symbols[content] = id;
 		this->dic_symbols.operators[content] = id;
@@ -111,6 +119,10 @@ config::config()
 	
 }
 
+string config::get_name(int symbol)
+{
+	return dic_symbols._symbols[symbol];
+}
 
 config::~config()
 {

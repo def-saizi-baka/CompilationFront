@@ -31,13 +31,14 @@ int main(){
         vector<int> token = load_dfa.checkStr(line, sys_idx, err_idx);
         tokens.insert(tokens.end(), token.begin(), token.end());
     }
+    tokens.push_back(Config::end_int);
     for(auto token : tokens){
         cout << token << " " ;
     }
 
     CFG cfg;
         // 初始化项目
-    cfg.setDebug();
+    // cfg.setDebug();
     cfg.initItems();
     cfg.initLRItems();
 	cfg.formFirstSet();

@@ -21,6 +21,13 @@ void Gram::showGram()
 	{
 		cout << iter << ",";
 	}
+	
+	cout << "\t\t";
+	cout << con.get_name(this->left) << "\t->\t";
+	for (auto iter : right)
+	{
+		cout << con.get_name(iter) << ",";
+	}
 	cout << endl;
 }
 
@@ -393,10 +400,11 @@ void CFG::formFirstSet()
 	while (flag) {
 		flag = false;
         for(auto symbol : symbols){
+			//firstSet[symbol.second].makeSure();
 			if(leftToGramIndex[symbol.second].size()!=0)
 			{
 				if (!firstSet[symbol.second].isSure()){
-				formFirstSet(symbol.second);
+					formFirstSet(symbol.second);
 					if (!firstSet[symbol.second].isSure()){
 						flag = true;
 					}
@@ -421,6 +429,19 @@ void CFG::formFirstSet()
 		// times++;
 	}
 
+	if(this->debug)
+	{
+		cout << endl;
+		for(auto &i:initGram)
+		{
+			i.showGram();
+		}
+		
+		cout<<endl;
+
+		this->showFirstSet();
+	}
+
 }
 void CFG::formFirstSet(int symbol)
 {	
@@ -435,7 +456,7 @@ void CFG::formFirstSet(int symbol)
 	}
 	// 此时的情况为S`
 	else if(symbol == this->begState){
-		this->firstSet[symbol].insert(0);
+		this->firstSet[symbol].insert(Config::end_int);
 		this->firstSet[symbol].makeSure();
 	}
 	else
@@ -452,6 +473,7 @@ void CFG::formFirstSet(int symbol)
 			else if (initGram[iter].right[0] > 1000) {
 				bool flag = true;
 				int idx = 0;
+				//firstSet[symbol].makeSure();
 				while (flag)
 				{
 					// FIRST[x] = FIRST[Y] - epsilon 
@@ -460,6 +482,9 @@ void CFG::formFirstSet(int symbol)
 					tmp.divEpsilon();
 					// 此处仍然可以改进，即当Y1确定时，X不需要反复读取
 					firstSet[symbol].insert(tmp);
+					// if(!tmp.isSure()){
+					// 	firstSet[symbol].notSure();
+					// }
 					firstSet[symbol].transSure(tmp);
 
 					if (idx + 1 == initGram[iter].right.size()) {
@@ -621,7 +646,14 @@ Closure::Closure(CFG& cfg,const set<Item>& items){
         // 取队首元素
         Item now_item = item_res.front();
         item_res.pop();
+        // 防止重复
+        uint32_t old_size = this->family.size();
         this->family.insert(now_item);
+        if(old_size == this->family.size()){
+            // cout << "重复的Item" << endl;
+            // now_item.showItem();
+            continue;
+        }
         // showItem(now_item);
         // 点后面是非终结符, 进行拓展, 即S->α.Bβ形式
         if(now_item.getType() != ACTION_REDUCE && now_item.getDotNext()>1000){
@@ -642,8 +674,11 @@ Closure::Closure(CFG& cfg,const set<Item>& items){
             // 移进模式, β不为空, forward=first(β)
             else{
                 vector<int> beta = now_item.getDotNextAll();    // 获取β
-                forward_tmp = cfg.getFirstSet(beta);
-                // forward_tmp = cfg.getFirstSet(beta[0]);
+                if(beta[0] < 1000){
+                    forward_tmp.insert(beta[0]);
+                }
+                else
+                    forward_tmp = cfg.getFirstSet(beta);
             }
 
             // 该闭包构造其他项目

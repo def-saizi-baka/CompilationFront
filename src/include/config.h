@@ -28,6 +28,7 @@ public:
 	const map<string, int>& get_operators()const;
 	const map<string, int>& get_delimiters()const;
 	const vector<regex_exp>& get_regex() const;
+	string get_name(int value);
 	const vector<pair<int, vector<int>>>& get_grammar()const { return this->grammar; };
 	const map<string, int>& get_symbols() const { return this->dic_symbols.symbols; };
 	map<int, string>& get__symbols(){ return this->dic_symbols._symbols; };
@@ -47,6 +48,7 @@ private:
 	vector<regex_exp> regexList;
 };
 
+
 static void get_phases_list(vector<int>& res, config& con, string input)
 {
 	size_t i, j;
@@ -65,6 +67,15 @@ static void get_phases_list(vector<int>& res, config& con, string input)
 				temp.erase(0, temp.find_first_not_of(" "));
 				temp.erase(temp.find_last_not_of(" ") + 1);
 				//以上这些操作是避免去除空格
+				while(true){
+					int t = temp.find("large");
+					if(t != string::npos){
+						temp = temp.substr(t + 5);
+						temp = ">" + temp;	
+					}
+					else
+						break;
+				}
 				auto iter_stop = con.get_stop_symbols().find(temp);
 				if (iter_stop != con.get_stop_symbols().end())
 					res.push_back(iter_stop->second);
