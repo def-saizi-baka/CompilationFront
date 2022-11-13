@@ -4381,29 +4381,30 @@ static String valueToQuotedStringN(const char* value, size_t length,
     // Should add a flag to allow this compatibility mode and prevent this
     // sequence from occurring.
     default: {
-      if (emitUTF8) {
-        unsigned codepoint = static_cast<unsigned char>(*c);
-        if (codepoint < 0x20) {
-          appendHex(result, codepoint);
-        } else {
-          appendRaw(result, codepoint);
-        }
-      } else {
-        unsigned codepoint = utf8ToCodepoint(c, end); // modifies `c`
-        if (codepoint < 0x20) {
-          appendHex(result, codepoint);
-        } else if (codepoint < 0x80) {
-          appendRaw(result, codepoint);
-        } else if (codepoint < 0x10000) {
-          // Basic Multilingual Plane
-          appendHex(result, codepoint);
-        } else {
-          // Extended Unicode. Encode 20 bits as a surrogate pair.
-          codepoint -= 0x10000;
-          appendHex(result, 0xd800 + ((codepoint >> 10) & 0x3ff));
-          appendHex(result, 0xdc00 + (codepoint & 0x3ff));
-        }
-      }
+      result += *c;
+      // if (emitUTF8) {
+      //   unsigned codepoint = static_cast<unsigned char>(*c);
+      //   if (codepoint < 0x20) {
+      //     appendHex(result, codepoint);
+      //   } else {
+      //     appendRaw(result, codepoint);
+      //   }
+      // } else {
+      //   unsigned codepoint = utf8ToCodepoint(c, end); // modifies `c`
+      //   if (codepoint < 0x20) {
+      //     appendHex(result, codepoint);
+      //   } else if (codepoint < 0x80) {
+      //     appendRaw(result, codepoint);
+      //   } else if (codepoint < 0x10000) {
+      //     // Basic Multilingual Plane
+      //     appendHex(result, codepoint);
+      //   } else {
+      //     // Extended Unicode. Encode 20 bits as a surrogate pair.
+      //     codepoint -= 0x10000;
+      //     appendHex(result, 0xd800 + ((codepoint >> 10) & 0x3ff));
+      //     appendHex(result, 0xdc00 + (codepoint & 0x3ff));
+      //   }
+      // }
     } break;
     }
   }
@@ -5323,7 +5324,6 @@ OStream& operator<<(OStream& sout, Value const& root) {
 // //////////////////////////////////////////////////////////////////////
 // End of content of file: src/lib_json/json_writer.cpp
 // //////////////////////////////////////////////////////////////////////
-
 
 
 
