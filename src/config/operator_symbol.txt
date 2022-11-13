@@ -12,7 +12,6 @@
 sizeof 16 0 s.i.z.e.o.f
 new 17 0 n.e.w 
 delete 18 0 d.e.l.e.t.e
-* 19 1 
 / 20 0 /
 % 21 0 %
 << 22 0 <.<
