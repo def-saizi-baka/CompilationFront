@@ -7,20 +7,41 @@
 
 config con;
 
-int main(){
-    // string path = "dfghjk";
-	// FA fa(path, READ_SYMBOLTABLE);
-    // FA dfa = fa.toDFA();
-    // dfa.saveDFA("dfamodel");
-    int sys_idx, err_idx;
+void save(FA& dfa,const string modelPath)
+{
+    string para = "dfamodel";
+	FA fa(para, READ_SYMBOLTABLE);
+	dfa = fa.toDFA();
+    dfa.saveDFA(modelPath);
+}
 
-    // for(auto ss : test){
-    //     cout << ss << ": " << endl;
-    //     dfa.checkStr(ss, sys_idx, err_idx);
-    // }
-    FA load_dfa;
-    load_dfa.loadDFA("dfamodel");
-    InputBuffer inputBuffer("test_in.txt");
+void load(FA& dfa,const string modelPath)
+{
+    dfa.loadDFA(modelPath);
+}
+
+int main(int argc,char** argv)
+{
+    FA dfa;
+    if(argc < 4)
+    {
+        cout<<"Not correct parameters";
+        exit(-1);
+    }
+    
+    string modelChoice = string(argv[1]);
+    if(modelChoice == "-s" || modelChoice == "--save"){
+        save(dfa,string(argv[2]));
+    }else if(modelChoice == "-l" || modelChoice == "--load"){
+        load(dfa,string(argv[2]));
+    }
+
+    int sys_idx, err_idx;
+    // FA dfa;
+    // dfa.loadDFA("dfamodel");
+
+    string inputFile = string(argv[3]);
+    InputBuffer inputBuffer(inputFile);
     vector<int> tokens;
     while(inputBuffer.readline() != InputState::END_OF_FILE){
         string line;
@@ -28,7 +49,7 @@ int main(){
         if(!line.length()) continue;
         
         // cout << line << endl;
-        vector<int> token = load_dfa.checkStr(line, sys_idx, err_idx);
+        vector<int> token = dfa.checkStr(line, sys_idx, err_idx);
         tokens.insert(tokens.end(), token.begin(), token.end());
     }
     tokens.push_back(Config::end_int);
@@ -48,6 +69,4 @@ int main(){
     
     parser Pa;
     Pa.analysis(tokens, analysisTable);
-    
-
 }

@@ -2,7 +2,7 @@ int main()
 {
     int a = 1;
     while(1){
-        printf(a);
+        printf("%f",1.23);
         int b=0;
     }
     return 0;

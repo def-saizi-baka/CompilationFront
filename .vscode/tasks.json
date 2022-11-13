@@ -7,7 +7,6 @@
             "args": [
                 "-fdiagnostics-color=always",
                 "-g", 
-                "${fileDirname}\\test_FA.cpp",
                 "${file}",
                 "${fileDirname}\\FA\\FA.cpp",
                 "${fileDirname}\\IO\\inputBuffer.cpp", 

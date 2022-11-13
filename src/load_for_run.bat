@@ -1,0 +1,1 @@
+test_lexical.exe --load dfamodel test_in.txt
