@@ -1,6 +1,15 @@
+#include <stdio.h>
+#include "FA.h"
+void func(int a)
+{
+    double f;
+    f++;
+    f--;
+    ++f;
+    printf("%d",a);
+}
 int main()
 {
     int a = 1;
-    a = a + 1;
     return 1;
 } 
