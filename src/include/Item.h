@@ -9,7 +9,6 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
-#include "const.h"
 #include "config.h"
 
 #define ACTION_REDUCE	0

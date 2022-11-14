@@ -1,6 +1,5 @@
 #include "FA.h"
 #include "inputBuffer.h"
-#include "config.h"
 #include "Parser.hpp"
 #include "parserTree.hpp"
 #include "Item.h"
@@ -35,7 +34,7 @@ struct cmdOptions{
         isSave = false;
         isLoad = true;
         processType = LEX_GRAMMER;
-        modelFile = "./src/dfamodel";
+        modelFile = "./dfamodel";
         inFile = "";
         outFile = "";
     }
@@ -55,6 +54,19 @@ void help()
     cout << "                                   [filepath] the path of input file"<<endl;
     cout << "-o / --outfile [filepath]      : output the parse result as json format"<<endl;
     cout << "                                   [filepath] the path where the result saved"<<endl;
+    cout << "-pk / --path_keywords [filepath]      : set the path of the keywords configuration file"<<endl;
+    cout << "                                       [filepath] the path where the file saved"<<endl;
+    cout << "-pd / --path_delimiters [filepath]    : set the path of the delimiters configuration file"<<endl;
+    cout << "                                       [filepath] the path where the file saved"<<endl;
+    cout << "-po / --path_operator_symbols [filepath]      : set the path of the operator symbols configuration file"<<endl;
+    cout << "                                               [filepath] the path where the file saved"<<endl;
+    cout << "-pu / --path_unstop_symbols [filepath]      : set the path of the unstop symbols configuration file"<<endl;
+    cout << "                                               [filepath] the path where the file saved"<<endl;
+    cout << "-pg / --path_grammar [filepath]             : set the path of the grammar configuration file"<<endl;
+    cout << "                                               [filepath] the path where the file saved"<<endl;
+    cout << "-plog / --path_parserlog [filepath]             : set the path of the parser log file"<<endl;
+    cout << "                                               [filepath] the path where the file saved"<<endl;
+
     cout << "*************************************************************************************"<<endl;
     cout << "you can input cmd like : " << endl;
     cout << "                              main.exe -i in.txt -o out.json                       " << endl;
@@ -90,6 +102,7 @@ void loadDFA(FA& dfa,const string modelPath)
 
 void cmdParse(int argc,char** argv,cmdOptions& ops)
 {
+    
     for(int i=1;i<argc;i++)
     {
         string Option(argv[i]);
@@ -113,8 +126,27 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
         } 
         else if(Option == "-o" || Option == "--outfile") {
             ops.outFile = string(argv[++i]);
-        }else if(Option == "--lex"){
+        }
+        else if(Option == "--lex"){
             ops.processType = ONLY_LEX;
+        }
+        else if(Option == "-pk" || Option == "--path_keywords"){
+            con.path_keyword = string(argv[++i]);
+        }
+        else if(Option == "-pd" || Option == "--path_delimiters"){
+            con.path_delimiter = string(argv[++i]);
+        }
+        else if(Option == "-po" || Option == "--path_operator_symbols"){
+            con.path_operator = string(argv[++i]);
+        }
+        else if(Option == "-pu" || Option == "--path_unstop_symbols"){
+            con.path_unstop = string(argv[++i]);
+        }
+        else if(Option == "-pg" || Option == "--path_grammar"){
+            con.grammar_path = string(argv[++i]);
+        }
+        else if(Option == "-plog" || Option == "--path_parserlog"){
+            con.log_path = string(argv[++i]);
         }
         else{
             ops.unKnown = true;
@@ -216,7 +248,7 @@ void optionEXE(cmdOptions& ops)
 
         //
         if(ops.inFile == ""){
-            ops.inFile= "./src/test_in.txt";
+            ops.inFile= "./test_in.txt";
         }else if(ops.outFile == ""){
             ops.outFile = "tree.json";
         }
@@ -236,6 +268,7 @@ int main(int argc,char** argv)
     try{
         cmdOptions ops;
         cmdParse(argc,argv,ops);
+        con.init();
         optionEXE(ops);
         return 0;
     }

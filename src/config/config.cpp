@@ -2,6 +2,11 @@
 
 config::config()
 {
+	;	
+}
+
+void config::init()
+{
 	ifstream fin;
 	stringstream ssm;
 	string temp;
@@ -10,7 +15,7 @@ config::config()
 	string regex;
 	int id;
 
-	fin.open(Config::path_keyword, ios::in);
+	fin.open(path_keyword, ios::in);
 	bool debug = fin.is_open();
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
@@ -32,7 +37,7 @@ config::config()
 	}
 	fin.close();
 
-	fin.open(Config::path_delimiter, ios::in);
+	fin.open(path_delimiter, ios::in);
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
@@ -54,7 +59,7 @@ config::config()
 	}
 	fin.close();
 
-	fin.open(Config::path_operator, ios::in);
+	fin.open(path_operator, ios::in);
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
@@ -76,7 +81,7 @@ config::config()
 	}
 	fin.close();
 
-	fin.open(Config::path_unstop, ios::in);
+	fin.open(path_unstop, ios::in);
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
@@ -92,10 +97,10 @@ config::config()
 	this->dic_symbols.symbols[this->dic_symbols.end] = Config::end_int; //加上栈底符号
 	this->dic_symbols._symbols[Config::end_int] = this->dic_symbols.end;
 
-	logFile.open(Config::log_path, ios::out);
+	logFile.open(log_path, ios::out);
 	assert(logFile.is_open());
 
-	fin.open(Config::grammar_path, ios::in);
+	fin.open(grammar_path, ios::in);
 	assert(fin.is_open());
 	while (fin.peek()!= EOF){
 		getline(fin, temp);
@@ -116,7 +121,6 @@ config::config()
 		log(string("[INFO] 成功导入语法表达式" + temp));
 	}
 	fin.close();
-	
 }
 
 string config::get_name(int symbol)
