@@ -5,6 +5,9 @@
 #include "parserTree.hpp"
 #include "Item.h"
 
+#define ONLY_LEX    0
+#define LEX_GRAMMER 1
+
 config con;
 
 struct cmdOptions{
@@ -13,6 +16,7 @@ struct cmdOptions{
     bool isSave;
     bool isLoad;
     bool unKnown;
+    int  processType;
     string unKnownCmd;
     string modelFile;
     string inFile;
@@ -22,12 +26,14 @@ struct cmdOptions{
     cmdOptions()
     {
         // 默认使用自带的dfa模型加载
+        // 默认进行词法+语法分析
         unKnown = false;
         unKnownCmd = "";
         isHelp = false;
         isVersion = false;
         isSave = false;
         isLoad = true;
+        processType = LEX_GRAMMER;
         modelFile = "dfamodel";
         inFile = "";
         outFile = "";
@@ -77,6 +83,7 @@ void saveDFA(FA& dfa,const string modelPath)
 
 void loadDFA(FA& dfa,const string modelPath)
 {
+    cout << "loading the dfa......" <<endl;
     dfa.loadDFA(modelPath);
 }
 
@@ -105,6 +112,8 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
         } 
         else if(Option == "-o" || Option == "--outfile") {
             ops.outFile = string(argv[++i]);
+        }else if(Option == "--lex"){
+            ops.processType = ONLY_LEX;
         }
         else{
             ops.unKnown = true;
@@ -113,7 +122,7 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
     }
 }
 
-void gramParse(FA& dfa,string inFile,string outFile)
+vector<int> lexParse(FA& dfa,string inFile,string outFile)
 {
     int sys_idx, err_idx;
 
@@ -133,6 +142,35 @@ void gramParse(FA& dfa,string inFile,string outFile)
     for(auto token : tokens){
         cout << token << " " ;
     }
+    return tokens;
+}
+
+void lexParse(FA& dfa,string inFile,string outFile,vector<int>& tokens)
+{
+    int sys_idx, err_idx;
+    // 词法分析获取到单词表示序列
+    string inputFile = inFile;
+    InputBuffer inputBuffer(inputFile);
+    while(inputBuffer.readline() != InputState::END_OF_FILE){
+        string line;
+        inputBuffer.pop(line);
+        if(!line.length()) 
+            continue;
+        vector<int> token = dfa.checkStr(line, sys_idx, err_idx);
+        tokens.insert(tokens.end(), token.begin(), token.end());
+    }
+    tokens.push_back(Config::end_int);
+    for(auto token : tokens){
+        cout << token << " " ;
+    }
+}
+
+void gramParse(FA& dfa,string inFile,string outFile)
+{
+    int sys_idx, err_idx;
+
+    vector<int> tokens;
+    lexParse(dfa,inFile,outFile,tokens);
 
     // 语法分析，以json的格式输出语法树
     CFG cfg;
@@ -181,8 +219,14 @@ void optionEXE(cmdOptions& ops)
         }else if(ops.outFile == ""){
             ops.outFile = "tree.json";
         }
-        // 执行语法分析
-        gramParse(dfa,ops.inFile,ops.outFile);
+
+        if(ops.processType == LEX_GRAMMER){
+            // 执行语法分析
+            gramParse(dfa,ops.inFile,ops.outFile);
+        }else{
+            lexParse(dfa,ops.inFile,ops.outFile);
+        }
+
     }
 }
 
@@ -193,55 +237,3 @@ int main(int argc,char** argv)
     optionEXE(ops);
     return 0;
 }
-
-// int main(int argc,char** argv)
-// {
-//     FA dfa;
-//     if(argc < 5)
-//     {
-//         cout<<"Not correct parameters";
-//         exit(-1);
-//     }
-    
-//     string modelChoice = string(argv[1]);
-//     if(modelChoice == "-s" || modelChoice == "--save"){
-//         saveDFA(dfa,string(argv[2]));
-//     }else if(modelChoice == "-l" || modelChoice == "--load"){
-//         loadDFA(dfa,string(argv[2]));
-//     }
-
-//     int sys_idx, err_idx;
-//     // FA dfa;
-//     // dfa.loadDFA("dfamodel");
-
-//     string inputFile = string(argv[3]);
-//     InputBuffer inputBuffer(inputFile);
-//     vector<int> tokens;
-//     while(inputBuffer.readline() != InputState::END_OF_FILE){
-//         string line;
-//         inputBuffer.pop(line);
-//         if(!line.length()) continue;
-        
-//         // cout << line << endl;
-//         vector<int> token = dfa.checkStr(line, sys_idx, err_idx);
-//         tokens.insert(tokens.end(), token.begin(), token.end());
-//     }
-//     tokens.push_back(Config::end_int);
-//     for(auto token : tokens){
-//         cout << token << " " ;
-//     }
-
-//     CFG cfg;
-//         // 初始化项目
-//     // cfg.setDebug();
-//     cfg.initItems();
-//     cfg.initLRItems();
-// 	cfg.formFirstSet();
-//     cfg.buildClosures();
-//     cfg.buildAnalysisTable();
-//     map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
-    
-//     parser Pa;
-//     Pa.analysis(tokens, analysisTable);
-//     Pa.get_tree().to_json(argv[4]);
-// }

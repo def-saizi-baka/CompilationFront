@@ -14,12 +14,10 @@ using namespace std;
 
 extern config con;
 
-
-
 class parser
 {
 public:
-	vector<int>&& analysis(const vector<int>& token
+	void analysis(const vector<int>& token
 		,const map<int,vector<pair<int, int>>>& analysisTable);
 	int find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign);
 	int find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign);
@@ -66,7 +64,7 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs){
 /// <param name="action"></param> action表
 /// <param name="_goto"></param> goto表，为了避免goto关键字冲突
 /// <returns></returns> 返回右值引用，是一个分析得到的状态序列
-vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& analysisTable)
+void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& analysisTable)
 {
 	stack<int> signs;
 	vector<int> status;
@@ -130,24 +128,23 @@ vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<p
                 analysis_info(_, status, signs);
 				tree.in(token[idx]);
 				idx++;//继续读下一个状态
-		
+
 			}
 			else if(next == parser_config::ACCEPT){
 				this->tree.end();//结束，建树
 				con.log("[INFO] 移进归约成功完成");
-				return move(status);
+				return;
 			}
 
 
 		}
 		else{
 			con.log("[ERROR] 移进失败，当前分析到的符号唯一标识符为：" + to_string(idx));
-			return move(status);
+			return;
 		}
 
         _++;
 	}
-	return move(status);
 }
 
 /// <summary>
@@ -199,7 +196,7 @@ int parser::find(const map<int, vector<pair<int, int>>>& action, int status, int
     // cout << '\t' << setw(15) << "Status: "+to_string(status) <<"  ";
     // cout << '\t' << setw(15) << "Sign: "+to_string(sign)<<"  ";
     // cout << '\t' << setw(15) << "Type: " + string(prime ? "action" : "goto")<<endl;
-    
+
     if(prime){
         return find_action(action, status, sign);
     }
