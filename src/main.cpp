@@ -68,7 +68,7 @@ void version()
 
 void unKnown(string unKnownCmd)
 {
-    cout<< "command "<<unKnownCmd<<" not found, you can use -h or --help for hlep."<<endl;
+    cout<< "command "<<unKnownCmd<<" not found, you can use -h or --help for help."<<endl;
 }
 
 void saveDFA(FA& dfa,const string modelPath)
