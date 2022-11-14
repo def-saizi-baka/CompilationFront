@@ -89,6 +89,7 @@ public:
 	void divEpsilon();
 	int count(int);
 	void showFIRST();
+    void transSure(bool subSure);
 	void transSure(const FIRST&);
 	void makeSure();	
 	void notSure();

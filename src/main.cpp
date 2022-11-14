@@ -175,7 +175,7 @@ void gramParse(FA& dfa,string inFile,string outFile)
     // 语法分析，以json的格式输出语法树
     CFG cfg;
     // 设置是否打印过程信息
-    // cfg.setDebug();
+    cfg.setDebug();
     cfg.initItems();
     cfg.initLRItems();
 	cfg.formFirstSet();

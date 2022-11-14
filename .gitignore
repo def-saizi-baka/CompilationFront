@@ -35,7 +35,7 @@ MANIFEST
 *.spec
 *.exe
 
-# helper .py
+# helper 
 helper.py
 test_FA*
 bat_for_FA.bat

@@ -388,29 +388,35 @@ void CFG::initLRItems(){
 
 void CFG::formFirstSet()
 {
-	// 这里要遍历符号表的，缝合的时候要修改
-	// 这里临时开一个vector
 	// 因为生成FIRST集的过程是个不断重复的过程，因此需要用FIRST类的bool变量标记该集合是否已经被确定
 	// 不确定性具备可传递性，A<-B<-C，C不确定，则AB不确定
-	// 下面的方法需要initGram 中需要非终结符按照顺序排列。
 	map<std::string, int> symbols = con.get_symbols();
     
 	bool flag = true;
-	// int times = 0;
+	//int times = 0;
+	int beforeMakeSure = 0;
+	int afterMakeSure = 0;
+	beforeMakeSure = symbols.size();
 	while (flag) {
 		flag = false;
+		afterMakeSure = 0;
         for(auto symbol : symbols){
-			//firstSet[symbol.second].makeSure();
 			if(leftToGramIndex[symbol.second].size()!=0)
 			{
 				if (!firstSet[symbol.second].isSure()){
 					formFirstSet(symbol.second);
 					if (!firstSet[symbol.second].isSure()){
 						flag = true;
+						afterMakeSure++; // 记录当前这一轮筛选剩下的元素
 					}
 				} 
 			}           
         }
+		if(beforeMakeSure == afterMakeSure)
+			break;
+		else
+			beforeMakeSure = afterMakeSure;
+
 		// cout<<times<<"轮"<<endl;
 		// for(auto symbol : symbols)
 		// {
@@ -423,8 +429,8 @@ void CFG::formFirstSet()
 		// 			initGram[iter].showGram();
 		// 		}
 		// 		cout<<endl;
+		// 		firstSet[symbol.second].showFIRST();
 		// 	}
-		// 	cout<<endl;
 		// }
 		// times++;
 	}
@@ -436,19 +442,18 @@ void CFG::formFirstSet()
 		{
 			i.showGram();
 		}
-		
 		cout<<endl;
-
 		this->showFirstSet();
 	}
 
 }
+
 void CFG::formFirstSet(int symbol)
 {	
 	// 算法 第4章PPT第31页
-	// 
-	// 此处为终结符的判断，在缝合的时候
-	// 应该是要从符号表中读取！
+
+	// 先开启为确定，若所有子产生式为确定，则最终确定
+	this->firstSet[symbol].makeSure();
 	if (symbol < 1000)
 	{
 		this->firstSet[symbol].insert(symbol);
@@ -467,7 +472,7 @@ void CFG::formFirstSet(int symbol)
 			// 为终结符，这里把epsilon给包含进去了,就是如果存在空产生式，也可以写入epsilon
 			if (initGram[iter].right[0] < 1000) {
 				firstSet[symbol].insert(initGram[iter].right[0]);
-				firstSet[symbol].makeSure();
+				firstSet[symbol].transSure(true);
 			}
 			// 此时为非终结符 X->Y1Y2
 			else if (initGram[iter].right[0] > 1000) {
@@ -478,17 +483,18 @@ void CFG::formFirstSet(int symbol)
 				{
 					// FIRST[x] = FIRST[Y] - epsilon 
 					int x = initGram[iter].right[idx];
-					auto tmp = firstSet[x];
-					tmp.divEpsilon();
-					// 此处仍然可以改进，即当Y1确定时，X不需要反复读取
-					firstSet[symbol].insert(tmp);
-					// if(!tmp.isSure()){
-					// 	firstSet[symbol].notSure();
-					// }
-					firstSet[symbol].transSure(tmp);
+					// 防止出现左递归锁住确定关系
+					if(x != symbol)
+					{
+						auto tmp = firstSet[x];
+						tmp.divEpsilon();
+						// 此处仍然可以改进，即当Y1确定时，X不需要反复读取
+						firstSet[symbol].insert(tmp);
+						firstSet[symbol].transSure(tmp);
 
-					if (idx + 1 == initGram[iter].right.size()) {
-						firstSet[symbol].insert(EPSILON);
+						if (idx + 1 == initGram[iter].right.size()) {
+							firstSet[symbol].insert(EPSILON);
+						}
 					}
 
 					// 检查FIRST[Y1] 是否存在空转移
@@ -610,9 +616,14 @@ bool FIRST::isSure()
 	return this->sure;
 }
 
+void FIRST::transSure(bool subSure)
+{
+	this->sure = this->sure && subSure;
+}
+
 void FIRST::transSure(const FIRST& front)
 {
-	this->sure = front.sure;
+	this->sure = this->sure && front.sure;
 }
 
 void Closure::showItem(Item& item){
