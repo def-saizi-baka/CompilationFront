@@ -6,6 +6,7 @@
             "command": "D:\\MySoftware\\MinGW\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
+                
                 "-g", 
                 "${file}",
                 "${fileDirname}\\FA\\FA.cpp",
@@ -13,19 +14,9 @@
                 "${fileDirname}\\config\\config.cpp", 
                 "${fileDirname}\\dependency\\jsoncpp.cpp",
                 "${fileDirname}\\GRAM\\Item.cpp",
+
                 "-o",
                 "${fileDirname}\\${fileBasenameNoExtension}.exe",
-
-                // "-fdiagnostics-color=always",
-                // "-g",
-                // "${file}",
-                // "${fileDirname}\\FA\\FA.cpp",
-                // "${fileDirname}\\IO\\inputBuffer.cpp", 
-                // "${fileDirname}\\IO\\config.cpp", 
-                // "${fileDirname}\\jsoncpp.cpp",
-                // "${fileDirname}\\Item.cpp",
-                // "-o",
-                // "${fileDirname}\\${fileBasenameNoExtension}.exe",
 
                 "-I",
                 "${fileDirname}\\include",
@@ -35,6 +26,36 @@
             "options": {
                 "cwd": "${fileDirname}"
             },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "调试器生成的任务。"
+        },
+        {
+            "type": "cppbuild",
+            "label": "生成main.exe",
+            "command": "D:\\MySoftware\\MinGW\\bin\\g++.exe",
+            "args": [
+                "-fdiagnostics-color=always",
+                
+                "-g", 
+                "${cwd}\\src\\main.cpp",
+                "${cwd}\\src\\FA\\FA.cpp",
+                "${cwd}\\src\\IO\\inputBuffer.cpp", 
+                "${cwd}\\src\\config\\config.cpp", 
+                "${cwd}\\src\\dependency\\jsoncpp.cpp",
+                "${cwd}\\src\\GRAM\\Item.cpp",
+
+                "-o",
+                "${cwd}\\src\\main.exe",
+
+                "-I",
+                "${cwd}\\src\\include",
+            ],
             "problemMatcher": [
                 "$gcc"
             ],

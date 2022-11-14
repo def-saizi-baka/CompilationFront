@@ -1,17 +1,17 @@
 {
-	"1.kind" : "\u7a0b\u5e8f",
+	"1.kind" : "程序",
 	"2.inner" : 
 	[
 		{
-			"1.kind" : "\u5916\u90e8\u58f0\u660e",
+			"1.kind" : "外部声明",
 			"2.inner" : 
 			[
 				{
-					"1.kind" : "\u51fd\u6570\u5b9a\u4e49",
+					"1.kind" : "函数定义",
 					"2.inner" : 
 					[
 						{
-							"1.kind" : "\u7c7b\u578b\u540d",
+							"1.kind" : "类型名",
 							"2.inner" : 
 							[
 								{
@@ -20,11 +20,11 @@
 							]
 						},
 						{
-							"1.kind" : "\u51fd\u6570\u540d",
+							"1.kind" : "函数名",
 							"2.inner" : 
 							[
 								{
-									"1.kind" : "\u53d8\u91cf\u540d"
+									"1.kind" : "变量名"
 								}
 							]
 						},
@@ -35,38 +35,38 @@
 							"1.kind" : ")"
 						},
 						{
-							"1.kind" : "\u8bed\u53e5\u5757",
+							"1.kind" : "语句块",
 							"2.inner" : 
 							[
 								{
 									"1.kind" : "{"
 								},
 								{
-									"1.kind" : "\u8bed\u53e5List",
+									"1.kind" : "语句List",
 									"2.inner" : 
 									[
 										{
-											"1.kind" : "\u8bed\u53e5List",
+											"1.kind" : "语句List",
 											"2.inner" : 
 											[
 												{
-													"1.kind" : "\u8bed\u53e5List",
+													"1.kind" : "语句List",
 													"2.inner" : 
 													[
 														{
-															"1.kind" : "\u8bed\u53e5",
+															"1.kind" : "语句",
 															"2.inner" : 
 															[
 																{
-																	"1.kind" : "\u53d8\u91cf\u5b9a\u4e49\u8bed\u53e5",
+																	"1.kind" : "变量定义语句",
 																	"2.inner" : 
 																	[
 																		{
-																			"1.kind" : "\u53d8\u91cf\u5b9a\u4e49",
+																			"1.kind" : "变量定义",
 																			"2.inner" : 
 																			[
 																				{
-																					"1.kind" : "\u7c7b\u578b\u540d",
+																					"1.kind" : "类型名",
 																					"2.inner" : 
 																					[
 																						{
@@ -75,18 +75,18 @@
 																					]
 																				},
 																				{
-																					"1.kind" : "\u5f85\u5b9a\u4e49\u53d8\u91cf",
+																					"1.kind" : "待定义变量",
 																					"2.inner" : 
 																					[
 																						{
-																							"1.kind" : "\u8d4b\u503c\u8bed\u53e5",
+																							"1.kind" : "赋值语句",
 																							"2.inner" : 
 																							[
 																								{
-																									"1.kind" : "\u53d8\u91cf\u540d"
+																									"1.kind" : "变量名"
 																								},
 																								{
-																									"1.kind" : "\u8d4b\u503c\u7b26\u53f7",
+																									"1.kind" : "赋值符号",
 																									"2.inner" : 
 																									[
 																										{
@@ -95,15 +95,15 @@
 																									]
 																								},
 																								{
-																									"1.kind" : "\u8868\u8fbe\u5f0f",
+																									"1.kind" : "表达式",
 																									"2.inner" : 
 																									[
 																										{
-																											"1.kind" : "\u6807\u8bc6\u7b26",
+																											"1.kind" : "标识符",
 																											"2.inner" : 
 																											[
 																												{
-																													"1.kind" : "\u5e38\u91cf"
+																													"1.kind" : "常量"
 																												}
 																											]
 																										}
@@ -125,34 +125,34 @@
 													]
 												},
 												{
-													"1.kind" : "\u8bed\u53e5",
+													"1.kind" : "语句",
 													"2.inner" : 
 													[
 														{
-															"1.kind" : "\u8868\u8fbe\u5f0f\u8bed\u53e5",
+															"1.kind" : "表达式语句",
 															"2.inner" : 
 															[
 																{
-																	"1.kind" : "\u8868\u8fbe\u5f0f",
+																	"1.kind" : "表达式",
 																	"2.inner" : 
 																	[
 																		{
-																			"1.kind" : "\u64cd\u4f5c\u8bed\u53e5",
+																			"1.kind" : "操作语句",
 																			"2.inner" : 
 																			[
 																				{
-																					"1.kind" : "\u4e8c\u76ee\u64cd\u4f5c",
+																					"1.kind" : "二目操作",
 																					"2.inner" : 
 																					[
 																						{
-																							"1.kind" : "\u8d4b\u503c\u8bed\u53e5",
+																							"1.kind" : "赋值语句",
 																							"2.inner" : 
 																							[
 																								{
-																									"1.kind" : "\u53d8\u91cf\u540d"
+																									"1.kind" : "变量名"
 																								},
 																								{
-																									"1.kind" : "\u8d4b\u503c\u7b26\u53f7",
+																									"1.kind" : "赋值符号",
 																									"2.inner" : 
 																									[
 																										{
@@ -161,38 +161,38 @@
 																									]
 																								},
 																								{
-																									"1.kind" : "\u8868\u8fbe\u5f0f",
+																									"1.kind" : "表达式",
 																									"2.inner" : 
 																									[
 																										{
-																											"1.kind" : "\u64cd\u4f5c\u8bed\u53e5",
+																											"1.kind" : "操作语句",
 																											"2.inner" : 
 																											[
 																												{
-																													"1.kind" : "\u4e8c\u76ee\u64cd\u4f5c",
+																													"1.kind" : "二目操作",
 																													"2.inner" : 
 																													[
 																														{
-																															"1.kind" : "\u8ba1\u7b97\u8bed\u53e5",
+																															"1.kind" : "计算语句",
 																															"2.inner" : 
 																															[
 																																{
-																																	"1.kind" : "\u8868\u8fbe\u5f0f",
+																																	"1.kind" : "表达式",
 																																	"2.inner" : 
 																																	[
 																																		{
-																																			"1.kind" : "\u6807\u8bc6\u7b26",
+																																			"1.kind" : "标识符",
 																																			"2.inner" : 
 																																			[
 																																				{
-																																					"1.kind" : "\u53d8\u91cf\u540d"
+																																					"1.kind" : "变量名"
 																																				}
 																																			]
 																																		}
 																																	]
 																																},
 																																{
-																																	"1.kind" : "\u8ba1\u7b97\u7b26\u53f7",
+																																	"1.kind" : "计算符号",
 																																	"2.inner" : 
 																																	[
 																																		{
@@ -201,15 +201,15 @@
 																																	]
 																																},
 																																{
-																																	"1.kind" : "\u8868\u8fbe\u5f0f",
+																																	"1.kind" : "表达式",
 																																	"2.inner" : 
 																																	[
 																																		{
-																																			"1.kind" : "\u6807\u8bc6\u7b26",
+																																			"1.kind" : "标识符",
 																																			"2.inner" : 
 																																			[
 																																				{
-																																					"1.kind" : "\u5e38\u91cf"
+																																					"1.kind" : "常量"
 																																				}
 																																			]
 																																		}
@@ -241,26 +241,26 @@
 											]
 										},
 										{
-											"1.kind" : "\u8bed\u53e5",
+											"1.kind" : "语句",
 											"2.inner" : 
 											[
 												{
-													"1.kind" : "\u8df3\u8f6c\u8bed\u53e5",
+													"1.kind" : "跳转语句",
 													"2.inner" : 
 													[
 														{
 															"1.kind" : "return"
 														},
 														{
-															"1.kind" : "\u8868\u8fbe\u5f0f",
+															"1.kind" : "表达式",
 															"2.inner" : 
 															[
 																{
-																	"1.kind" : "\u6807\u8bc6\u7b26",
+																	"1.kind" : "标识符",
 																	"2.inner" : 
 																	[
 																		{
-																			"1.kind" : "\u5e38\u91cf"
+																			"1.kind" : "常量"
 																		}
 																	]
 																}
