@@ -136,12 +136,12 @@ vector<token> lexParse(FA& dfa,string inFile,string outFile)
         inputBuffer.pop(line);
         if(!line.length()) 
             continue;
-        vector<token> token = dfa.checkStr(line, sys_idx, err_idx,inputBuffer.getLineNumber());
-        tokens.insert(tokens.end(), token.begin(), token.end());
+        vector<token> _token = dfa.checkStr(line, sys_idx, err_idx,inputBuffer.getLineNumber());
+        tokens.insert(tokens.end(), _token.begin(), _token.end());
     }
     tokens.push_back({inputBuffer.getLineNumber(),Config::end_int});
-    for(auto token : tokens){
-        cout << token.symbol << " " ;
+    for(auto _token : tokens){
+        cout << _token.symbol << " " ;
     }
     return tokens;
 }
