@@ -10,6 +10,7 @@
 #include <cmath>
 #include <iomanip>
 #include "parserTree.hpp"
+#include "Exception.h"
 using namespace std;
 
 extern config con;
@@ -17,11 +18,11 @@ extern config con;
 class parser
 {
 public:
-	void analysis(const vector<int>& token
+	void analysis(const vector<token>& tokens
 		,const map<int,vector<pair<int, int>>>& analysisTable);
-	int find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign);
-	int find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign);
-    int find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime);
+	int find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign,int line);
+	int find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign,int line);
+    int find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime,int line);
 	parserTree& get_tree() { return tree; };
 private:
 	parserTree tree;
@@ -60,11 +61,11 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs){
 /// <summary>
 /// 主控程序，移进归约
 /// </summary>
-/// <param name="token"></param> 以状态唯一标识符的序列作为输入
+/// <param name="tokens"></param> 以状态唯一标识符的序列作为输入
 /// <param name="action"></param> action表
 /// <param name="_goto"></param> goto表，为了避免goto关键字冲突
 /// <returns></returns> 返回右值引用，是一个分析得到的状态序列
-void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& analysisTable)
+void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<int, int>>>& analysisTable)
 {
 	stack<int> signs;
 	vector<int> status;
@@ -73,17 +74,17 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
 
     int _ = 0;
     cout << "\n" << setiosflags(ios::left) << "分析过程: " << endl;
-	for (unsigned idx = 0; idx < token.size();) {
+	for (unsigned idx = 0; idx < tokens.size();) {
         // debug
         analysis_info(_, status, signs);
 
-		int next = find(analysisTable, status.back(), token[idx], true);
+		int next = find(analysisTable, status.back(), tokens[idx].symbol, true, tokens[idx].line);
 
 		if (next != parser_config::ERROR && next != 0){ 
 
 			while (true){
 				/* code */	
-				next = find(analysisTable, status.back(), token[idx], true);
+				next = find(analysisTable, status.back(), tokens[idx].symbol, true,tokens[idx].line);
 				if (next < 0 && next != parser_config::ERROR) {//action表里面小于0代表需要归约
 					/* code */	
 					int temp = abs(next);//找到要归约到的状态
@@ -106,6 +107,7 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
 							message += to_string(con.get_grammar()[temp].second[j]);
 							message += "，但是输入的符号的唯一标识号是：" + to_string(t_sign);
 							con.log(message);
+							throw parserException("sign " + con.get__symbols()[t_sign] +" is not allowed here!",tokens[idx].line);
 						}
                         cout << "\t\t\t状态 "<<t_status<<", 符号 "<<t_sign<<" 出栈"<< endl; 
 						signs.pop();
@@ -113,7 +115,7 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
                         analysis_info(_, status, signs);
 					}
 					signs.push(con.get_grammar()[temp].first); //首先是归约得到符号压栈
-					next = find(analysisTable, status.back(), signs.top(), false);
+					next = find(analysisTable, status.back(), signs.top(), false,tokens[idx].line);
 					status.push_back(next);
 					tree.reduction(con.get_grammar()[temp]);//归约语法树
 				}
@@ -122,11 +124,11 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
 			}
 
 			if (next > 0 && next != parser_config::ACCEPT) {//action表里面大于0代表需要移进
-                cout << "\t\t移进: Status: " << next << " 入栈, signs: " <<token[idx]<<" 入栈"<<endl;
+                cout << "\t\t移进: Status: " << next << " 入栈, signs: " <<tokens[idx].symbol<<" 入栈"<<endl;
 				status.push_back(next);
-				signs.push(token[idx]);//符号入栈
+				signs.push(tokens[idx].symbol);//符号入栈
                 analysis_info(_, status, signs);
-				tree.in(token[idx]);
+				tree.in(tokens[idx].symbol);
 				idx++;//继续读下一个状态
 
 			}
@@ -137,6 +139,7 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
 			}
 		}
 		else{
+			throw parserException("sign " + con.get__symbols()[idx] +" is not allowed here!", tokens[idx].line);
 			con.log("[ERROR] 移进失败，当前分析到的符号唯一标识符为：" + to_string(idx));
 			return;
 		}
@@ -152,7 +155,7 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
 /// <param name="status"></param> 当前状态
 /// <param name="sign"></param> 前看的符号
 /// <returns></returns> 该去往的状态号
-int parser::find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign)
+int parser::find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign,int line)
 {
 	auto iter = action.find(status);
 	if (iter == action.end()) {
@@ -166,12 +169,13 @@ int parser::find_action(const map<int, vector<pair<int, int>>>& action, int stat
 			return item.second;
 		}
 	}
+	throw parserException("sign " + con.get__symbols()[sign] +" is not allowed here!", line);
 	con.log("[ERROR] 当前状态下action表中没有接受当前前看符号的表项，当前前看符号唯一标识符为"
 		+ to_string(sign));
 	return parser_config::ERROR;
 }
 
-int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign)
+int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign,int line)
 {
 	auto iter = _goto.find(status);
 	if (iter == _goto.end()) {
@@ -185,20 +189,21 @@ int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status,
 			return item.second;
 		}
 	}
+	throw parserException("sign " + con.get__symbols()[sign] +" is not allowed here!", line);
 	con.log("[ERROR] 当前状态下goto表中没有接受当前前看符号的表项，当前前看符号唯一标识符为"
 		+ to_string(sign));
 	return parser_config::ERROR;
 }
 
-int parser::find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime){
+int parser::find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime,int line){
     // cout << '\t' << setw(15) << "Status: "+to_string(status) <<"  ";
     // cout << '\t' << setw(15) << "Sign: "+to_string(sign)<<"  ";
     // cout << '\t' << setw(15) << "Type: " + string(prime ? "action" : "goto")<<endl;
 
     if(prime){
-        return find_action(action, status, sign);
+        return find_action(action, status, sign, line);
     }
     else{
-        return find_goto(action, status, sign);
+        return find_goto(action, status, sign,line);
     }
 }

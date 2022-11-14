@@ -9,6 +9,10 @@
 using namespace std;
 
 
+typedef struct {
+	int line = 0;
+	int symbol = -1;
+}token;
 
 typedef struct{
 	string regex;

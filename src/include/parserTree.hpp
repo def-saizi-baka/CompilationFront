@@ -108,7 +108,7 @@ void parserTree::end()
 static int saveToFile(const string& file_name, const Json::Value& value)
 {
 	ofstream ofs; //标准输出流
-	ofs.open(file_name); //创建文件
+	ofs.open(file_name,ios::out); //创建文件
 	if (!ofs.is_open())
 	{
 		con.log("[ERROR] 未能创建json文件.");
@@ -151,14 +151,21 @@ Json::Value parserTree::build_tree(node* tree)
 	Json::Value jv_node;
 	string tag_name = con.get__symbols()[tree->symbol];
 	
-	jv_node["1.kind"] = tag_name;
+	jv_node["2.kind"] = tag_name;
+	if(tree == this->root)
+		jv_node["1.is_root"] = 0; //根节点
+	else if(tree->kids.size() == 0)
+		jv_node["1.is_root"] = 2;//叶子节点
+	else
+		jv_node["1.is_root"] = 1; //子树根节点
 	con.log("[INFO] 成功展开节点，节点类型为：" + tag_name);
+	
 	for (size_t i = 0; i < tree->kids.size(); i++)
 	{
 		node* subtree = tree->kids[i];
 		if (subtree != nullptr) {
 			Json::Value jv_son = build_tree(subtree);
-			jv_node["2.inner"].append(Json::Value(jv_son));
+			jv_node["3.inner"].append(Json::Value(jv_son));
 		}
 	}
 	return jv_node;

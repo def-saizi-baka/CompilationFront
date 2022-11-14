@@ -1,23 +1,6 @@
 #include <stdio.h>
-#include "FA.h"
 int func(int c)
 {
-    double a = 3.14;
-    for(int a =0;a<10;++a)
-    {
-        int b;
-        double y = a + b;
-    }
-    if(a>1)
-    {
-        func(1)
-    }
-    printf("123");
-    return -1;
-}
-int main()
-{
-    int a = 1;
-    func(a);
-    return 0;
+    int j;
+    int 汉字;
 }

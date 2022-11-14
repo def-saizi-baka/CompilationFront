@@ -7,6 +7,7 @@
 #include <queue>
 #include <algorithm>
 #include <sstream>
+#include "config.h"
 using namespace std;
 
 
@@ -72,7 +73,7 @@ class FA{
 
         FA toDFA();
         // 检查串是否能被接收
-        vector<int> checkStr(const string& in,int& sym_idx,int& err_t);
+        vector<token> checkStr(const string& in,int& sym_idx,int& err_t,int line);
 
         // 保存FA
         void saveDFA(const string& model_file);

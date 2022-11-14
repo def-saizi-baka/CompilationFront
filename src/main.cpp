@@ -4,6 +4,7 @@
 #include "Parser.hpp"
 #include "parserTree.hpp"
 #include "Item.h"
+#include "Exception.h"
 
 #define ONLY_LEX    0
 #define LEX_GRAMMER 1
@@ -34,7 +35,7 @@ struct cmdOptions{
         isSave = false;
         isLoad = true;
         processType = LEX_GRAMMER;
-        modelFile = "dfamodel";
+        modelFile = "./src/dfamodel";
         inFile = "";
         outFile = "";
     }
@@ -122,30 +123,30 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
     }
 }
 
-vector<int> lexParse(FA& dfa,string inFile,string outFile)
+vector<token> lexParse(FA& dfa,string inFile,string outFile)
 {
     int sys_idx, err_idx;
 
     // 词法分析获取到单词表示序列
     string inputFile = inFile;
     InputBuffer inputBuffer(inputFile);
-    vector<int> tokens;
+    vector<token> tokens;
     while(inputBuffer.readline() != InputState::END_OF_FILE){
         string line;
         inputBuffer.pop(line);
         if(!line.length()) 
             continue;
-        vector<int> token = dfa.checkStr(line, sys_idx, err_idx);
+        vector<token> token = dfa.checkStr(line, sys_idx, err_idx,inputBuffer.getLineNumber());
         tokens.insert(tokens.end(), token.begin(), token.end());
     }
-    tokens.push_back(Config::end_int);
+    tokens.push_back({inputBuffer.getLineNumber(),Config::end_int});
     for(auto token : tokens){
-        cout << token << " " ;
+        cout << token.symbol << " " ;
     }
     return tokens;
 }
 
-void lexParse(FA& dfa,string inFile,string outFile,vector<int>& tokens)
+void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens)
 {
     int sys_idx, err_idx;
     // 词法分析获取到单词表示序列
@@ -156,12 +157,12 @@ void lexParse(FA& dfa,string inFile,string outFile,vector<int>& tokens)
         inputBuffer.pop(line);
         if(!line.length()) 
             continue;
-        vector<int> token = dfa.checkStr(line, sys_idx, err_idx);
+        vector<token> token = dfa.checkStr(line, sys_idx, err_idx, inputBuffer.getLineNumber());
         tokens.insert(tokens.end(), token.begin(), token.end());
     }
-    tokens.push_back(Config::end_int);
+    tokens.push_back({inputBuffer.getLineNumber(),Config::end_int});
     for(auto token : tokens){
-        cout << token << " " ;
+        cout << token.symbol << " " ;
     }
 }
 
@@ -169,7 +170,7 @@ void gramParse(FA& dfa,string inFile,string outFile)
 {
     int sys_idx, err_idx;
 
-    vector<int> tokens;
+    vector<token> tokens;
     lexParse(dfa,inFile,outFile,tokens);
 
     // 语法分析，以json的格式输出语法树
@@ -215,7 +216,7 @@ void optionEXE(cmdOptions& ops)
 
         //
         if(ops.inFile == ""){
-            ops.inFile= "test_in.txt";
+            ops.inFile= "./src/test_in.txt";
         }else if(ops.outFile == ""){
             ops.outFile = "tree.json";
         }
@@ -232,8 +233,18 @@ void optionEXE(cmdOptions& ops)
 
 int main(int argc,char** argv)
 {
-    cmdOptions ops;
-    cmdParse(argc,argv,ops);
-    optionEXE(ops);
-    return 0;
+    try{
+        cmdOptions ops;
+        cmdParse(argc,argv,ops);
+        optionEXE(ops);
+        return 0;
+    }
+    catch(parserException& t){
+        cerr << t.what()  << endl;
+        return 0;
+    }
+    catch(lexException& t){
+        cerr << t.what()  << endl;
+        return 0;    
+    }
 }

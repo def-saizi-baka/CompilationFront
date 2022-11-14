@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "config.h"
+#include "Exception.h"
 
 using namespace std;
 
@@ -510,7 +511,7 @@ int getFirstPriState(set<int> end_set){
 }
 
 
-vector<int> FA::checkStr(const string& in,int& sym_idx,int& err_t){
+vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
 	int cur = this->begNode;
     vector<pair<string, int>> res;
     string nowBuffer;
@@ -552,8 +553,9 @@ vector<int> FA::checkStr(const string& in,int& sym_idx,int& err_t){
                     nowBuffer = tmp;
                 }
                 else{
-                    con.log("[ERROR] 词法分析出现错误, 分析到的出错串为: "+nowBuffer);
-                    return vector<int>{-1};
+                    con.log("[ERROR] 词法分析出现错误, 分析到的出错串为: " + nowBuffer);
+					throw lexException(string("token ") + nowBuffer + string(" is not allowed here!"), line);
+                    return vector<token>{token{line,-1}};
                 }
             }
             res.push_back(pair<string, int>{nowBuffer, end_state});
@@ -565,10 +567,10 @@ vector<int> FA::checkStr(const string& in,int& sym_idx,int& err_t){
         }
     }
 
-    vector<int> rres;
+    vector<token> rres;
     for(auto ss:res){
         cout << ss.first << " " << ss.second << endl;
-        rres.push_back(ss.second);
+        rres.push_back({line,ss.second});
     }
 	return rres;
 }
