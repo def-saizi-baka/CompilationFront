@@ -19,7 +19,7 @@ extern config con;
 class parser
 {
 public:
-	void analysis(const vector<int>& token
+	vector<int>&& analysis(const vector<int>& token
 		,const map<int,vector<pair<int, int>>>& analysisTable);
 	int find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign);
 	int find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign);
@@ -66,7 +66,7 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs){
 /// <param name="action"></param> action表
 /// <param name="_goto"></param> goto表，为了避免goto关键字冲突
 /// <returns></returns> 返回右值引用，是一个分析得到的状态序列
-void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& analysisTable)
+vector<int>&& parser::analysis(const vector<int>& token, const map<int, vector<pair<int, int>>>& analysisTable)
 {
 	stack<int> signs;
 	vector<int> status;
@@ -135,18 +135,19 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
 			else if(next == parser_config::ACCEPT){
 				this->tree.end();//结束，建树
 				con.log("[INFO] 移进归约成功完成");
-				return;
+				return move(status);
 			}
 
 
 		}
 		else{
 			con.log("[ERROR] 移进失败，当前分析到的符号唯一标识符为：" + to_string(idx));
-			return;
+			return move(status);
 		}
 
         _++;
 	}
+	return move(status);
 }
 
 /// <summary>
