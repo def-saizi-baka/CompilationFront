@@ -25,7 +25,8 @@
 -plog / --path_parserlog [filepath]             : 设置分析过程日志文件保存的路径;
                                                [filepath] 日志文件保存的路径;
 
-例如可以采用下面的命令行方法来运行	
 ```
-`main.exe -s dfamodel test_in.txt`
+
+例如可以采用下面的命令行方法来运行  	
+`main.exe -s dfamodel test_in.txt`  
 根目录下配置了`save_for_run.bat`,`load_for_run.bat`
