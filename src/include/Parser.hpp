@@ -135,8 +135,6 @@ void parser::analysis(const vector<int>& token, const map<int, vector<pair<int, 
 				con.log("[INFO] 移进归约成功完成");
 				return;
 			}
-
-
 		}
 		else{
 			con.log("[ERROR] 移进失败，当前分析到的符号唯一标识符为：" + to_string(idx));
