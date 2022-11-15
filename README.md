@@ -28,5 +28,5 @@
 ```
 
 例如可以采用下面的命令行方法来运行  	
-`main.exe -s dfamodel test_in.txt`  
+`main.exe -s dfamodel -i test_in.txt`  
 根目录下配置了`save_for_run.bat`,`load_for_run.bat`
