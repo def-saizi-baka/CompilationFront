@@ -77,8 +77,8 @@ void help()
 
     cout << "*************************************************************************************"<<endl;
     cout << "you can input cmd like : " << endl;
-    cout << "                              main.exe --lex -i in.txt -o out.json                       " << endl;
-    cout << "                              main.exe -i in.txt -o out.json                       " << endl;
+    cout << "                              main.exe --lex -i in.txt -lo out.txt                       " << endl;
+    cout << "                              main.exe -i in.txt -go out.json -lo out.txt                      " << endl;
 }
 
 void version()

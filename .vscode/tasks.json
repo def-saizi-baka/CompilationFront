@@ -13,7 +13,7 @@
                 "${fileDirname}\\IO\\inputBuffer.cpp", 
                 "${fileDirname}\\config\\config.cpp", 
                 "${fileDirname}\\dependency\\jsoncpp.cpp",
-                "${fileDirname}\\GRAM\\Gram.cpp",
+                "${fileDirname}\\Gram\\Gram.cpp",
                 "${fileDirname}\\exception\\Exception.cpp",
 
                 "-o",
