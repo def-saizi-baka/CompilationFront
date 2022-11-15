@@ -329,10 +329,10 @@ int main(int argc,char** argv)
     }
     catch(parserException& t){
         cerr << t.what()  << endl;
-        return 0;
+        return -2;
     }
     catch(lexException& t){
         cerr << t.what()  << endl;
-        return 0;    
+        return -2;    
     }
 }
