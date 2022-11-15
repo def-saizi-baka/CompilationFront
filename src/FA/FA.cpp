@@ -555,7 +555,7 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
                 else{
                     con.log("[ERROR] 词法分析出现错误, 分析到的出错串为: " + nowBuffer);
 					throw lexException(string("token ") + nowBuffer + string(" is not allowed here!"), line);
-                    return vector<token>{token{line,-1}};
+                    return vector<token>{token{line,"wrong",-1}};
                 }
             }
             res.push_back(pair<string, int>{nowBuffer, end_state});
@@ -569,8 +569,8 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
 
     vector<token> rres;
     for(auto ss:res){
-        cout << ss.first << " " << ss.second << endl;
-        rres.push_back({line,ss.second});
+        //cout << ss.first << " " << ss.second << endl;
+        rres.push_back({line, ss.first, ss.second});
     }
 	return rres;
 }

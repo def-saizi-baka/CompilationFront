@@ -23,14 +23,23 @@ public:
 	int find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign,int line);
 	int find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign,int line);
     int find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime,int line);
+	void setDebug(bool debug);
 	parserTree& get_tree() { return tree; };
 private:
 	parserTree tree;
+	bool debug;
 };
 
-void analysis_info(int id,const vector<int>& status,const stack<int>& signs){
- // 输出当前栈
-    cout << "\n" << setw(4) << id ;  // 规约步骤
+void parser::setDebug(bool debug)
+{
+	this->debug = debug;
+}
+
+void analysis_info(int id,const vector<int>& status,const stack<int>& signs,bool debug){
+ 	// 输出当前栈
+	if(debug)
+    	cout << "\n" << setw(4) << id ;  // 规约步骤
+
     stack<int> signs_tmp = signs;
     stack<int> signs_tmp2;
     while(!signs_tmp.empty()){
@@ -44,7 +53,8 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs){
         status_info+=to_string(sta);
         status_info+=", ";
     }
-    cout << setw(40) << status_info << "  ";
+	if(debug)
+    	cout << setw(40) << status_info << "  ";
 
     // signs
     string stack_info = "Sign栈: ";
@@ -54,8 +64,11 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs){
         if(!signs_tmp2.empty())
             stack_info+=", ";
     }
-    cout << setw(40) << stack_info << endl; // signs栈
-    cout << "============================================" << endl;
+	if(debug)
+    {
+		cout << setw(40) << stack_info << endl; // signs栈
+    	cout << "============================================" << endl;
+	}
 }
 
 /// <summary>
@@ -73,10 +86,12 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 	status.push_back(0);//从第0个状态开始
 
     int _ = 0;
-    cout << "\n" << setiosflags(ios::left) << "分析过程: " << endl;
+	if(this->debug)
+    	cout << "\n" << setiosflags(ios::left) << "分析过程: " << endl;
+
 	for (unsigned idx = 0; idx < tokens.size();) {
         // debug
-        analysis_info(_, status, signs);
+        analysis_info(_, status, signs, this->debug);
 
 		int next = find(analysisTable, status.back(), tokens[idx].symbol, true, tokens[idx].line);
 
@@ -89,14 +104,20 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 					/* code */	
 					int temp = abs(next);//找到要归约到的状态
 					int size = con.get_grammar()[temp].second.size();//找到需要出栈的字符的数目
-                    analysis_info(_, status, signs);
-                    cout << "\t\t规约: 要规约的语句: "<<temp<<",  出栈个数: "<< size << endl; 
+                    analysis_info(_, status, signs, this->debug);
+					if(this->debug)
+                    	cout << "\t\t规约: 要规约的语句: "<<temp<<",  出栈个数: "<< size << endl; 
+
                     pair<int, std::vector<int>> gram = con.get_grammar()[temp];
-                    cout << "\t\t规约语句: " << gram.first << " -> ";
-                    for(auto out : gram.second){
-                        cout << out << " ";
-                    }
-                    cout << endl;
+
+					if(this->debug)
+                    {
+						cout << "\t\t规约语句: " << gram.first << " -> ";
+						for(auto out : gram.second){
+							cout << out << " ";
+						}
+						cout << endl;
+					}
 
 					for (int j = size - 1; j >= 0; j--) {
 						int t_sign = signs.top();
@@ -109,10 +130,11 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 							con.log(message);
 							throw parserException("sign " + con.get__symbols()[t_sign] +" is not allowed here!",tokens[idx].line);
 						}
-                        cout << "\t\t\t状态 "<<t_status<<", 符号 "<<t_sign<<" 出栈"<< endl; 
+						if(this->debug)
+                        	cout << "\t\t\t状态 "<<t_status<<", 符号 "<<t_sign<<" 出栈"<< endl; 
 						signs.pop();
 						status.pop_back();
-                        analysis_info(_, status, signs);
+                        analysis_info(_, status, signs, this->debug);
 					}
 					signs.push(con.get_grammar()[temp].first); //首先是归约得到符号压栈
 					next = find(analysisTable, status.back(), signs.top(), false,tokens[idx].line);
@@ -124,10 +146,12 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 			}
 
 			if (next > 0 && next != parser_config::ACCEPT) {//action表里面大于0代表需要移进
-                cout << "\t\t移进: Status: " << next << " 入栈, signs: " <<tokens[idx].symbol<<" 入栈"<<endl;
+                if(this->debug)
+					cout << "\t\t移进: Status: " << next << " 入栈, signs: " <<tokens[idx].symbol<<" 入栈"<<endl;
+
 				status.push_back(next);
 				signs.push(tokens[idx].symbol);//符号入栈
-                analysis_info(_, status, signs);
+                analysis_info(_, status, signs, this->debug);
 				tree.in(tokens[idx].symbol);
 				idx++;//继续读下一个状态
 
@@ -164,7 +188,8 @@ int parser::find_action(const map<int, vector<pair<int, int>>>& action, int stat
 	}
 	for (const auto& item : (iter->second)) {
 		if (item.first == sign) {
-            cout <<"\tStatus: " << status << ",  symbol: " << item.first <<"  ,action: "<< item.second << endl;
+			if(this->debug)
+            	cout <<"\tStatus: " << status << ",  symbol: " << item.first <<"  ,action: "<< item.second << endl;
 			con.log("[INFO] 成功在action表中找到状态转移信息，当前状态唯一标识符为：" + to_string(status));
 			return item.second;
 		}
@@ -184,7 +209,8 @@ int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status,
 	}
 	for (const auto& item : (iter->second)) {
 		if (item.first == sign) {
-            cout <<"\tStatus: " << status << ",  symbol: " << item.first <<"  ,goto: "<< item.second << endl;
+			if(this->debug)
+            	cout <<"\tStatus: " << status << ",  symbol: " << item.first <<"  ,goto: "<< item.second << endl;
 			con.log("[INFO] 成功在goto表中找到状态转移信息，当前状态唯一标识符为：" + to_string(status));
 			return item.second;
 		}

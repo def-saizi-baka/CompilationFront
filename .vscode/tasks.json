@@ -3,7 +3,7 @@
         {
             "type": "cppbuild",
             "label": "C/C++: g++.exe 生成活动文件",
-            "command": "D:\\86183\\mingw64\\bin\\g++.exe",
+            "command": "D:\\MySoftware\\MinGW\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 
@@ -39,7 +39,7 @@
         {
             "type": "cppbuild",
             "label": "生成main.exe",
-            "command": "D:\\86183\\mingw64\\bin\\g++.exe",
+            "command": "D:\\MySoftware\\MinGW\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 
@@ -50,6 +50,7 @@
                 "${cwd}\\src\\config\\config.cpp", 
                 "${cwd}\\src\\dependency\\jsoncpp.cpp",
                 "${cwd}\\src\\GRAM\\Item.cpp",
+                "${cwd}\\src\\exception\\Exception.cpp",
 
                 "-o",
                 "${cwd}\\src\\main.exe",
@@ -69,7 +70,7 @@
         {
             "type": "cppbuild",
             "label": "生成FA测试exe",
-            "command": "D:\\86183\\mingw64\\bin\\g++.exe",
+            "command": "D:\\MySoftware\\MinGW\\bin\\g++.exe",
             "args": [
                 "-fdiagnostics-color=always",
                 "-g", 

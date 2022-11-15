@@ -17,6 +17,7 @@ struct cmdOptions{
     bool isLoad;
     bool unKnown;
     int  processType;
+    bool isDebug;
     string unKnownCmd;
     string modelFile;
     string inFile;
@@ -33,6 +34,7 @@ struct cmdOptions{
         isVersion = false;
         isSave = false;
         isLoad = true;
+        isDebug = false;
         processType = LEX_GRAMMER;
         modelFile = "./dfamodel";
         inFile = "";
@@ -43,32 +45,35 @@ struct cmdOptions{
 void help()
 {
     cout << "usage : "<<endl;
-    cout << "-h / --help                    : get the helpful information"<<endl;
-    cout << "-v / --version                 : get the version information"<<endl;
-    cout << "-s / --save    [filepath]      : save the dfa data for faster startup next time"<<endl;
-    cout << "                                   [filepath] the path where you save dfa data"<<endl;
-    cout << "-l / --load    [filepath]      : load the saved dfa data on disk"<<endl;
-    cout << "                                   use the ${cwd}/dfamodel file defaultly"<<endl;
-    cout << "                                   [filepath] the path where the dfa data saved"<<endl;
-    cout << "-i / --infile  [filepath]      : input the file which need to be parsed"<<endl;
-    cout << "                                   [filepath] the path of input file"<<endl;
-    cout << "-o / --outfile [filepath]      : output the parse result as json format"<<endl;
-    cout << "                                   [filepath] the path where the result saved"<<endl;
-    cout << "-pk / --path_keywords [filepath]      : set the path of the keywords configuration file"<<endl;
-    cout << "                                       [filepath] the path where the file saved"<<endl;
-    cout << "-pd / --path_delimiters [filepath]    : set the path of the delimiters configuration file"<<endl;
-    cout << "                                       [filepath] the path where the file saved"<<endl;
-    cout << "-po / --path_operator_symbols [filepath]      : set the path of the operator symbols configuration file"<<endl;
-    cout << "                                               [filepath] the path where the file saved"<<endl;
-    cout << "-pu / --path_unstop_symbols [filepath]      : set the path of the unstop symbols configuration file"<<endl;
-    cout << "                                               [filepath] the path where the file saved"<<endl;
-    cout << "-pg / --path_grammar [filepath]             : set the path of the grammar configuration file"<<endl;
-    cout << "                                               [filepath] the path where the file saved"<<endl;
-    cout << "-plog / --path_parserlog [filepath]             : set the path of the parser log file"<<endl;
-    cout << "                                               [filepath] the path where the file saved"<<endl;
+    cout << "-h / --help                                    : get the helpful information"<<endl;
+    cout << "-v / --version                                 : get the version information"<<endl;
+    cout << "-s / --save    [filepath]                      : save the dfa data for faster startup next time"<<endl;
+    cout << "                                                   [filepath] the path where you save dfa data"<<endl;
+    cout << "-l / --load    [filepath]                      : load the saved dfa data on disk"<<endl;
+    cout << "                                                   use the ${cwd}/dfamodel file defaultly"<<endl;
+    cout << "                                                   [filepath] the path where the dfa data saved"<<endl;
+    cout << "--lex                                          : only finish the lexical task"<<endl;
+    cout << "-i / --infile  [filepath]                      : input the file which need to be parsed"<<endl;
+    cout << "                                                   [filepath] the path of input file"<<endl;
+    cout << "-o / --outfile [filepath]                      : output the parse result as json format"<<endl;
+    cout << "                                                   [filepath] the path where the result saved"<<endl;
+    cout << "-d / --debug                                   : get all the debug info" << endl;
+    cout << "-pk / --path_keywords [filepath]               : set the path of the keywords configuration file"<<endl;
+    cout << "                                                   [filepath] the path where the file saved"<<endl;
+    cout << "-pd / --path_delimiters [filepath]             : set the path of the delimiters configuration file"<<endl;
+    cout << "                                                   [filepath] the path where the file saved"<<endl;
+    cout << "-po / --path_operator_symbols [filepath]       : set the path of the operator symbols configuration file"<<endl;
+    cout << "                                                   [filepath] the path where the file saved"<<endl;
+    cout << "-pu / --path_unstop_symbols [filepath]         : set the path of the unstop symbols configuration file"<<endl;
+    cout << "                                                   [filepath] the path where the file saved"<<endl;
+    cout << "-pg / --path_grammar [filepath]                : set the path of the grammar configuration file"<<endl;
+    cout << "                                                   [filepath] the path where the file saved"<<endl;
+    cout << "-plog / --path_parserlog [filepath]            : set the path of the parser log file"<<endl;
+    cout << "                                                   [filepath] the path where the file saved"<<endl;
 
     cout << "*************************************************************************************"<<endl;
     cout << "you can input cmd like : " << endl;
+    cout << "                              main.exe --lex -i in.txt -o out.json                       " << endl;
     cout << "                              main.exe -i in.txt -o out.json                       " << endl;
 }
 
@@ -130,6 +135,9 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
         else if(Option == "--lex"){
             ops.processType = ONLY_LEX;
         }
+        else if(Option == "-d" || Option == "--debug"){
+            ops.isDebug = true;
+        }
         else if(Option == "-pk" || Option == "--path_keywords"){
             con.path_keyword = string(argv[++i]);
         }
@@ -155,7 +163,7 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
     }
 }
 
-vector<token> lexParse(FA& dfa,string inFile,string outFile)
+void lexParse(FA& dfa,string inFile,string outFile)
 {
     int sys_idx, err_idx;
 
@@ -171,14 +179,19 @@ vector<token> lexParse(FA& dfa,string inFile,string outFile)
         vector<token> _token = dfa.checkStr(line, sys_idx, err_idx,inputBuffer.getLineNumber());
         tokens.insert(tokens.end(), _token.begin(), _token.end());
     }
-    tokens.push_back({inputBuffer.getLineNumber(),Config::end_int});
-    for(auto _token : tokens){
-        cout << _token.symbol << " " ;
+    tokens.push_back({inputBuffer.getLineNumber(),"$",Config::end_int});
+    
+    ofstream fout(outFile,ios::out);
+    if(!fout.is_open()){
+        cerr << "File" + outFile +" not found" <<endl;
+        exit(-1); 
     }
-    return tokens;
+    for(auto _token : tokens){
+        fout <<_token.value << "\t" <<_token.symbol<<"\t" << con.get_name(_token.symbol) << endl;
+    }
 }
 
-void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens)
+void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens,int isDebug)
 {
     int sys_idx, err_idx;
     // 词法分析获取到单词表示序列
@@ -192,23 +205,31 @@ void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens)
         vector<token> token = dfa.checkStr(line, sys_idx, err_idx, inputBuffer.getLineNumber());
         tokens.insert(tokens.end(), token.begin(), token.end());
     }
-    tokens.push_back({inputBuffer.getLineNumber(),Config::end_int});
-    for(auto token : tokens){
-        cout << token.symbol << " " ;
+    tokens.push_back({inputBuffer.getLineNumber(),"$",Config::end_int});
+    
+    if(isDebug){
+        cout << "******************************************************************************************************" <<endl;
+        cout << "                         This is the lexcial result :                                                 " <<endl;
+        cout << "******************************************************************************************************" <<endl;
+        for(auto _token : tokens){
+            cout <<_token.value << "\t" <<_token.symbol<<"\t" << con.get_name(_token.symbol) << endl;
+        }
     }
 }
 
-void gramParse(FA& dfa,string inFile,string outFile)
+void gramParse(FA& dfa,string inFile,string outFile,int isDebug)
 {
     int sys_idx, err_idx;
 
     vector<token> tokens;
-    lexParse(dfa,inFile,outFile,tokens);
+    lexParse(dfa,inFile,outFile,tokens,isDebug);
 
     // 语法分析，以json的格式输出语法树
     CFG cfg;
     // 设置是否打印过程信息
-    cfg.setDebug();
+    if(isDebug){
+        cfg.setDebug();
+    }
     cfg.initItems();
     cfg.initLRItems();
 	cfg.formFirstSet();
@@ -217,6 +238,13 @@ void gramParse(FA& dfa,string inFile,string outFile)
     map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
     
     parser Pa;
+    if(isDebug)
+    {
+        cout << "******************************************************************************************************" <<endl;
+        cout << "                         移进归约过程如下 :                                                 " <<endl;
+        cout << "******************************************************************************************************" <<endl;
+    }
+    Pa.setDebug(isDebug);
     Pa.analysis(tokens, analysisTable);
     Pa.get_tree().to_json(outFile);
 }
@@ -255,7 +283,7 @@ void optionEXE(cmdOptions& ops)
 
         if(ops.processType == LEX_GRAMMER){
             // 执行语法分析
-            gramParse(dfa,ops.inFile,ops.outFile);
+            gramParse(dfa,ops.inFile,ops.outFile,ops.isDebug);
         }else{
             lexParse(dfa,ops.inFile,ops.outFile);
         }
