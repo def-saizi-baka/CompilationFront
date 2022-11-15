@@ -15,8 +15,10 @@ usage :
 --lex                                          : 仅完成词法分析，输出为单词表示序列
 -i / --infile  [filepath]                      : 输入的待分析文件
                                                    [filepath] 输入文件路径
--o / --outfile [filepath]                      : 输出的结果文件
+-go / --gram_outfile [filepath]                : 输出的语法分析结果文件
                                                    [filepath] 输出文件路径
+-lo / --lex_outfile [filepath]                 : 输出的词法分析结果文件
+                                                    [filepath] 输出文件路径
 -d / --debug                                   : 启动debug模式，会在命令行输出有效的中间数据
 -pk / --path_keywords [filepath]               : 设置关键字的配置文件路径
                                                    [filepath] 的配置文件路径
@@ -31,4 +33,9 @@ usage :
 -plog / --path_parserlog [filepath]            : 设置运行日志的配置文件路径
                                                    [filepath] 运行日志的配置文件路径 
 ```
-
+以下是一些示例：
+```
+main.exe --lex -i test_in.txt -lo lex_res.txt
+main.exe -i test_in.txt -go grammar.json
+main.exe -i test_in.txt -go grammar.json -lo lex_res.txt
+```

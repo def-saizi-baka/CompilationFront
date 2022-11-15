@@ -22,6 +22,7 @@ struct cmdOptions{
     string modelFile;
     string inFile;
     string outFile;
+    string lexOutFile;
 
 
     cmdOptions()
@@ -39,6 +40,7 @@ struct cmdOptions{
         modelFile = "./dfamodel";
         inFile = "";
         outFile = "";
+        lexOutFile = "";
     }
 };
 
@@ -55,7 +57,9 @@ void help()
     cout << "--lex                                          : only finish the lexical task"<<endl;
     cout << "-i / --infile  [filepath]                      : input the file which need to be parsed"<<endl;
     cout << "                                                   [filepath] the path of input file"<<endl;
-    cout << "-o / --outfile [filepath]                      : output the parse result as json format"<<endl;
+    cout << "-go / --gram_outfile [filepath]                : output the grammar parse result as json format"<<endl;
+    cout << "                                                   [filepath] the path where the result saved"<<endl;
+    cout << "-lo / --lex_outfile [filepath]                 : output the lexical parse result as json format"<<endl;
     cout << "                                                   [filepath] the path where the result saved"<<endl;
     cout << "-d / --debug                                   : get all the debug info" << endl;
     cout << "-pk / --path_keywords [filepath]               : set the path of the keywords configuration file"<<endl;
@@ -131,8 +135,11 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
         else if(Option == "-i" || Option == "--infile"){
             ops.inFile = string(argv[++i]);
         } 
-        else if(Option == "-o" || Option == "--outfile") {
+        else if(Option == "-go" || Option == "--gram_outfile") {
             ops.outFile = string(argv[++i]);
+        }
+        else if(Option == "-lo" || Option == "--lex_outfile"){
+            ops.lexOutFile = string(argv[++i]);
         }
         else if(Option == "--lex"){
             ops.processType = ONLY_LEX;
@@ -208,6 +215,17 @@ void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens,int isD
         tokens.insert(tokens.end(), token.begin(), token.end());
     }
     tokens.push_back({inputBuffer.getLineNumber(),"$",Config::end_int});
+
+    if(outFile != ""){
+        ofstream fout(outFile,ios::out);
+        if(!fout.is_open()){
+            cerr << "File" + outFile +" not found" <<endl;
+            exit(-1); 
+        }
+        for(auto _token : tokens){
+            fout <<_token.value << "\t\t\t" <<_token.symbol<<"\t\t\t" << con.get_name(_token.symbol) << endl;
+        }
+    }
     
     if(isDebug){
         cout << "******************************************************************************************************" <<endl;
@@ -219,12 +237,12 @@ void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens,int isD
     }
 }
 
-void gramParse(FA& dfa,string inFile,string outFile,int isDebug)
+void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDebug)
 {
     int sys_idx, err_idx;
 
     vector<token> tokens;
-    lexParse(dfa,inFile,outFile,tokens,isDebug);
+    lexParse(dfa,inFile,lexOutFile,tokens,isDebug);
 
     // 语法分析，以json的格式输出语法树
     CFG cfg;
@@ -292,9 +310,9 @@ void optionEXE(cmdOptions& ops)
 
         if(ops.processType == LEX_GRAMMER){
             // 执行语法分析
-            gramParse(dfa,ops.inFile,ops.outFile,ops.isDebug);
+            gramParse(dfa,ops.inFile,ops.outFile,ops.lexOutFile,ops.isDebug);
         }else{
-            lexParse(dfa,ops.inFile,ops.outFile);
+            lexParse(dfa,ops.inFile,ops.lexOutFile);
         }
 
     }
