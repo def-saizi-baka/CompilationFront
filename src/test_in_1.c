@@ -1,10 +1,17 @@
 #include <stdio.h>
 #include "FA.h"
+
+double func(int a,char c)
+{
+    for(int b = 0;b<100;b++)
+    {
+        printf("%d %c",a,c);
+    }
+    return -1.23;
+}
+
 int main()
 {
-    ++a;
-    ++a;
+    func(3,'A');
     return 0;
 }
-// 这是第二个测试代码
-// 两份代码 在第一个++a

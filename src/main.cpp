@@ -91,18 +91,20 @@ void unKnown(string unKnownCmd)
 void saveDFA(FA& dfa,const string modelPath)
 {
     cout << "It will take some time for building dfa from regular expression,please wait ......"<<endl;
-    cout << "you can get the regular expression in config/delimiter.txt config/keywords.txt config/operator_symbol.txt "<<endl;
+    cout << "You can get the regular expression in config/delimiter.txt config/keywords.txt config/operator_symbol.txt "<<endl;
     cout << "If something error in program, we will inform you as quickily as possible"  << endl;
     string para = "dfamodel";
 	FA fa(para, READ_SYMBOLTABLE);
 	dfa = fa.toDFA();
     dfa.saveDFA(modelPath);
+    cout << "Save DFA successfully" <<endl;
 }
 
 void loadDFA(FA& dfa,const string modelPath)
 {
     cout << "loading the dfa......" <<endl;
     dfa.loadDFA(modelPath);
+    cout << "load the dfa successfully"<<endl;
 }
 
 void cmdParse(int argc,char** argv,cmdOptions& ops)
@@ -187,7 +189,7 @@ void lexParse(FA& dfa,string inFile,string outFile)
         exit(-1); 
     }
     for(auto _token : tokens){
-        fout <<_token.value << "\t" <<_token.symbol<<"\t" << con.get_name(_token.symbol) << endl;
+        fout <<_token.value << "\t\t\t" <<_token.symbol<<"\t\t\t" << con.get_name(_token.symbol) << endl;
     }
 }
 
@@ -212,7 +214,7 @@ void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens,int isD
         cout << "                         This is the lexcial result :                                                 " <<endl;
         cout << "******************************************************************************************************" <<endl;
         for(auto _token : tokens){
-            cout <<_token.value << "\t" <<_token.symbol<<"\t" << con.get_name(_token.symbol) << endl;
+            cout <<_token.value << "\t\t\t" <<_token.symbol<<"\t\t\t" << con.get_name(_token.symbol) << endl;
         }
     }
 }
@@ -230,13 +232,16 @@ void gramParse(FA& dfa,string inFile,string outFile,int isDebug)
     if(isDebug){
         cfg.setDebug();
     }
+    cout << endl;
+    cout << "building the ACTION table and GOTO table"<<endl;
     cfg.initItems();
     cfg.initLRItems();
 	cfg.formFirstSet();
     cfg.buildClosures();
     cfg.buildAnalysisTable();
     map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
-    
+    cout << "build the ACTION table and GOTO table successfully!" << endl;
+
     parser Pa;
     if(isDebug)
     {
@@ -245,8 +250,12 @@ void gramParse(FA& dfa,string inFile,string outFile,int isDebug)
         cout << "******************************************************************************************************" <<endl;
     }
     Pa.setDebug(isDebug);
+    cout << endl;
+    cout << "Analysing the C-like code..."<<endl;
     Pa.analysis(tokens, analysisTable);
     Pa.get_tree().to_json(outFile);
+    cout << "Analyse the C-like code successfully!"<<endl;
+    cout << "The grammar tree has been saved in " + outFile << endl;
 }
 
 void optionEXE(cmdOptions& ops)
