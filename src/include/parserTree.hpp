@@ -151,6 +151,7 @@ Json::Value parserTree::build_tree(node* tree)
 	Json::Value jv_node;
 	string tag_name = con.get__symbols()[tree->symbol];
 	
+	jv_node["0.int"] = tree->symbol;
 	jv_node["2.kind"] = tag_name;
 	if(tree == this->root)
 		jv_node["1.is_root"] = 0; //根节点
