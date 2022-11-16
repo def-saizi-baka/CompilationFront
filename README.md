@@ -1,5 +1,13 @@
-# Lexical_analyzer
-编译原理 词法分析器
+# 编译原理大作业
+## repo
+
+https://github.com/def-saizi-baka/Lexical_analyzer
+
+## 命令行
+
+编译运行
+
+进入src/ 目录，在windows下使用make.bat
 
 参数说明
 
@@ -35,7 +43,9 @@ usage :
 ```
 以下是一些示例：
 ```
+# 只做词法分析，将结果输出到lex_res.txt
 main.exe --lex -i test_in.txt -lo lex_res.txt
+# 语法分析，将结果输出
 main.exe -i test_in.txt -go grammar.json
 main.exe -i test_in.txt -go grammar.json -lo lex_res.txt
 ```
