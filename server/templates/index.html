@@ -13,6 +13,17 @@
     <link rel=stylesheet href='../static/css/background.css' type="text/css">
     <link rel=stylesheet href='../static/css/fun_area.css' type="text/css">
     <link rel=stylesheet href='../static/css/load.css' type="text/css">
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css">
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js">
+    </script>
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/mode/clike/clike.min.js">
+    </script>
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/theme/monokai.min.css">
+  
 </head>
 <body class="body">
     <div id="hidder">
@@ -55,7 +66,10 @@
 
     <script>
         var editor=CodeMirror.fromTextArea(document.getElementById("sourceInput"),{
-                mode:"text/x-java" //实现Java代码高亮
+            lineNumbers: true, /* 定义是否显示行号 */
+            mode: "text/x-c",  /* 定义语法的类型，如果是html则为：text/html */
+            theme: "monokai", /* 定义主题 */
+            matchBrackets: true,
         });
     </script>
 </body>

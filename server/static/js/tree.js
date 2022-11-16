@@ -16,7 +16,8 @@ window.onresize = renderNodes
 
 
 function renderNodes() {
-    console.log("1")
+    // console.log("1")
+    window.scrollTo(0, 0)
     if(!window.opener){
         return
     }
@@ -31,6 +32,11 @@ function renderNodes() {
         // alert("未找到父窗口树")
         return
     }
+    // 统计叶子节点个数
+    var left_num = getTreeSonNodeNum(cache_tree)
+
+    // 根据叶子节点数修改宽度
+    app.style.width = left_num*70
 
     const html = `
         <div class="tree-container">${renderNode(cache_tree, null)}</div>
@@ -64,6 +70,19 @@ function renderNode(tree, parentId) {
         </div>
     `
     return tree_html;
+}
+
+function getTreeSonNodeNum(root){
+    var node_children = root["3.inner"]
+    if(typeof(node_children) == "undefined")
+        return 1
+    
+    var node_num = 0;
+    for(var i=0; i<node_children.length; i++){
+        node_num+=getTreeSonNodeNum(node_children[i]);
+    }
+    return node_num;
+
 }
 
 function renderLines() {
@@ -162,7 +181,8 @@ function getNumFromPx(str) {
  * @returns 结果保存在cache_tree中
  */
 function submitSource(){
-    const codeElement = document.getElementById('sourceInput').value
+    // const codeElement = document.getElementById('sourceInput').value
+    const codeElement = window.editor.getValue();
     // 判断不为零
     if(codeElement.length == 0){
         alert("输入不能为空! 请在左侧输入栏输入待分析代码")
