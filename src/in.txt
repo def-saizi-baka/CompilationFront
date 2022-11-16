@@ -1,15 +1,1 @@
-#include<iostream>
-double a = -1.23;
-void func()
-{
-   for(int a=0;a<10;a++)
-   {
-       func(a);
-   }
-}
-int main()
-{
-    int a; 
-    printf();
-    return 0;
-}
+double a = -1;

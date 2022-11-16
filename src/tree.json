@@ -41,91 +41,20 @@
 					[
 						{
 							"1.is_root" : 1,
-							"2.kind" : "环境声明",
+							"2.kind" : "包含文件声明",
 							"3.inner" : 
 							[
 								{
-									"1.is_root" : 1,
-									"2.kind" : "变量定义语句",
-									"3.inner" : 
-									[
-										{
-											"1.is_root" : 1,
-											"2.kind" : "变量定义",
-											"3.inner" : 
-											[
-												{
-													"1.is_root" : 1,
-													"2.kind" : "类型名",
-													"3.inner" : 
-													[
-														{
-															"1.is_root" : 2,
-															"2.kind" : "double"
-														}
-													]
-												},
-												{
-													"1.is_root" : 1,
-													"2.kind" : "待定义变量",
-													"3.inner" : 
-													[
-														{
-															"1.is_root" : 1,
-															"2.kind" : "赋值语句",
-															"3.inner" : 
-															[
-																{
-																	"1.is_root" : 2,
-																	"2.kind" : "变量名"
-																},
-																{
-																	"1.is_root" : 1,
-																	"2.kind" : "赋值符号",
-																	"3.inner" : 
-																	[
-																		{
-																			"1.is_root" : 2,
-																			"2.kind" : "="
-																		}
-																	]
-																},
-																{
-																	"1.is_root" : 1,
-																	"2.kind" : "表达式",
-																	"3.inner" : 
-																	[
-																		{
-																			"1.is_root" : 1,
-																			"2.kind" : "标识符",
-																			"3.inner" : 
-																			[
-																				{
-																					"1.is_root" : 1,
-																					"2.kind" : "常量",
-																					"3.inner" : 
-																					[
-																						{
-																							"1.is_root" : 2,
-																							"2.kind" : "数值常量"
-																						}
-																					]
-																				}
-																			]
-																		}
-																	]
-																}
-															]
-														}
-													]
-												}
-											]
-										},
-										{
-											"1.is_root" : 2,
-											"2.kind" : ";"
-										}
-									]
+									"1.is_root" : 2,
+									"2.kind" : "#"
+								},
+								{
+									"1.is_root" : 2,
+									"2.kind" : "include"
+								},
+								{
+									"1.is_root" : 2,
+									"2.kind" : "字符串常量"
 								}
 							]
 						}
@@ -143,38 +72,109 @@
 							[
 								{
 									"1.is_root" : 1,
-									"2.kind" : "函数定义",
+									"2.kind" : "环境声明",
 									"3.inner" : 
 									[
 										{
 											"1.is_root" : 1,
-											"2.kind" : "类型名",
+											"2.kind" : "变量定义语句",
 											"3.inner" : 
 											[
 												{
-													"1.is_root" : 2,
-													"2.kind" : "int"
-												}
-											]
-										},
-										{
-											"1.is_root" : 1,
-											"2.kind" : "函数名",
-											"3.inner" : 
-											[
+													"1.is_root" : 1,
+													"2.kind" : "变量定义",
+													"3.inner" : 
+													[
+														{
+															"1.is_root" : 1,
+															"2.kind" : "类型名",
+															"3.inner" : 
+															[
+																{
+																	"1.is_root" : 2,
+																	"2.kind" : "double"
+																}
+															]
+														},
+														{
+															"1.is_root" : 1,
+															"2.kind" : "待定义变量",
+															"3.inner" : 
+															[
+																{
+																	"1.is_root" : 1,
+																	"2.kind" : "赋值语句",
+																	"3.inner" : 
+																	[
+																		{
+																			"1.is_root" : 2,
+																			"2.kind" : "变量名"
+																		},
+																		{
+																			"1.is_root" : 1,
+																			"2.kind" : "赋值符号",
+																			"3.inner" : 
+																			[
+																				{
+																					"1.is_root" : 2,
+																					"2.kind" : "="
+																				}
+																			]
+																		},
+																		{
+																			"1.is_root" : 1,
+																			"2.kind" : "表达式",
+																			"3.inner" : 
+																			[
+																				{
+																					"1.is_root" : 1,
+																					"2.kind" : "标识符",
+																					"3.inner" : 
+																					[
+																						{
+																							"1.is_root" : 1,
+																							"2.kind" : "常量",
+																							"3.inner" : 
+																							[
+																								{
+																									"1.is_root" : 2,
+																									"2.kind" : "数值常量"
+																								}
+																							]
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																}
+															]
+														}
+													]
+												},
 												{
 													"1.is_root" : 2,
-													"2.kind" : "变量名"
+													"2.kind" : ";"
 												}
 											]
-										},
-										{
-											"1.is_root" : 2,
-											"2.kind" : "("
-										},
+										}
+									]
+								}
+							]
+						},
+						{
+							"1.is_root" : 1,
+							"2.kind" : "程序",
+							"3.inner" : 
+							[
+								{
+									"1.is_root" : 1,
+									"2.kind" : "外部声明",
+									"3.inner" : 
+									[
 										{
 											"1.is_root" : 1,
-											"2.kind" : "带类型参数序列",
+											"2.kind" : "函数定义",
 											"3.inner" : 
 											[
 												{
@@ -184,39 +184,219 @@
 													[
 														{
 															"1.is_root" : 2,
-															"2.kind" : "int"
+															"2.kind" : "void"
+														}
+													]
+												},
+												{
+													"1.is_root" : 1,
+													"2.kind" : "函数名",
+													"3.inner" : 
+													[
+														{
+															"1.is_root" : 2,
+															"2.kind" : "变量名"
 														}
 													]
 												},
 												{
 													"1.is_root" : 2,
-													"2.kind" : "变量名"
-												}
-											]
-										},
-										{
-											"1.is_root" : 2,
-											"2.kind" : ")"
-										},
-										{
-											"1.is_root" : 1,
-											"2.kind" : "语句块",
-											"3.inner" : 
-											[
+													"2.kind" : "("
+												},
 												{
 													"1.is_root" : 2,
-													"2.kind" : "{"
+													"2.kind" : ")"
 												},
 												{
 													"1.is_root" : 1,
-													"2.kind" : "语句List",
+													"2.kind" : "语句块",
 													"3.inner" : 
 													[
+														{
+															"1.is_root" : 2,
+															"2.kind" : "{"
+														},
 														{
 															"1.is_root" : 1,
 															"2.kind" : "语句List",
 															"3.inner" : 
 															[
+																{
+																	"1.is_root" : 1,
+																	"2.kind" : "语句List",
+																	"3.inner" : 
+																	[
+																		{
+																			"1.is_root" : 1,
+																			"2.kind" : "语句List",
+																			"3.inner" : 
+																			[
+																				{
+																					"1.is_root" : 1,
+																					"2.kind" : "语句List",
+																					"3.inner" : 
+																					[
+																						{
+																							"1.is_root" : 1,
+																							"2.kind" : "语句",
+																							"3.inner" : 
+																							[
+																								{
+																									"1.is_root" : 1,
+																									"2.kind" : "变量定义语句",
+																									"3.inner" : 
+																									[
+																										{
+																											"1.is_root" : 1,
+																											"2.kind" : "变量定义",
+																											"3.inner" : 
+																											[
+																												{
+																													"1.is_root" : 1,
+																													"2.kind" : "类型名",
+																													"3.inner" : 
+																													[
+																														{
+																															"1.is_root" : 2,
+																															"2.kind" : "float"
+																														}
+																													]
+																												},
+																												{
+																													"1.is_root" : 1,
+																													"2.kind" : "待定义变量",
+																													"3.inner" : 
+																													[
+																														{
+																															"1.is_root" : 2,
+																															"2.kind" : "变量名"
+																														}
+																													]
+																												}
+																											]
+																										},
+																										{
+																											"1.is_root" : 2,
+																											"2.kind" : ";"
+																										}
+																									]
+																								}
+																							]
+																						}
+																					]
+																				},
+																				{
+																					"1.is_root" : 1,
+																					"2.kind" : "语句",
+																					"3.inner" : 
+																					[
+																						{
+																							"1.is_root" : 1,
+																							"2.kind" : "表达式语句",
+																							"3.inner" : 
+																							[
+																								{
+																									"1.is_root" : 1,
+																									"2.kind" : "表达式",
+																									"3.inner" : 
+																									[
+																										{
+																											"1.is_root" : 1,
+																											"2.kind" : "操作语句",
+																											"3.inner" : 
+																											[
+																												{
+																													"1.is_root" : 1,
+																													"2.kind" : "单目操作",
+																													"3.inner" : 
+																													[
+																														{
+																															"1.is_root" : 1,
+																															"2.kind" : "单目操作符",
+																															"3.inner" : 
+																															[
+																																{
+																																	"1.is_root" : 2,
+																																	"2.kind" : "++"
+																																}
+																															]
+																														},
+																														{
+																															"1.is_root" : 2,
+																															"2.kind" : "变量名"
+																														}
+																													]
+																												}
+																											]
+																										}
+																									]
+																								},
+																								{
+																									"1.is_root" : 2,
+																									"2.kind" : ";"
+																								}
+																							]
+																						}
+																					]
+																				}
+																			]
+																		},
+																		{
+																			"1.is_root" : 1,
+																			"2.kind" : "语句",
+																			"3.inner" : 
+																			[
+																				{
+																					"1.is_root" : 1,
+																					"2.kind" : "表达式语句",
+																					"3.inner" : 
+																					[
+																						{
+																							"1.is_root" : 1,
+																							"2.kind" : "表达式",
+																							"3.inner" : 
+																							[
+																								{
+																									"1.is_root" : 1,
+																									"2.kind" : "操作语句",
+																									"3.inner" : 
+																									[
+																										{
+																											"1.is_root" : 1,
+																											"2.kind" : "单目操作",
+																											"3.inner" : 
+																											[
+																												{
+																													"1.is_root" : 1,
+																													"2.kind" : "单目操作符",
+																													"3.inner" : 
+																													[
+																														{
+																															"1.is_root" : 2,
+																															"2.kind" : "--"
+																														}
+																													]
+																												},
+																												{
+																													"1.is_root" : 2,
+																													"2.kind" : "变量名"
+																												}
+																											]
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
+																							"1.is_root" : 2,
+																							"2.kind" : ";"
+																						}
+																					]
+																				}
+																			]
+																		}
+																	]
+																},
 																{
 																	"1.is_root" : 1,
 																	"2.kind" : "语句",
@@ -461,6 +641,75 @@
 																							"2.kind" : "{"
 																						},
 																						{
+																							"1.is_root" : 1,
+																							"2.kind" : "语句List",
+																							"3.inner" : 
+																							[
+																								{
+																									"1.is_root" : 1,
+																									"2.kind" : "语句",
+																									"3.inner" : 
+																									[
+																										{
+																											"1.is_root" : 1,
+																											"2.kind" : "函数调用语句",
+																											"3.inner" : 
+																											[
+																												{
+																													"1.is_root" : 1,
+																													"2.kind" : "函数调用",
+																													"3.inner" : 
+																													[
+																														{
+																															"1.is_root" : 1,
+																															"2.kind" : "函数名",
+																															"3.inner" : 
+																															[
+																																{
+																																	"1.is_root" : 2,
+																																	"2.kind" : "变量名"
+																																}
+																															]
+																														},
+																														{
+																															"1.is_root" : 2,
+																															"2.kind" : "("
+																														},
+																														{
+																															"1.is_root" : 1,
+																															"2.kind" : "参数序列",
+																															"3.inner" : 
+																															[
+																																{
+																																	"1.is_root" : 1,
+																																	"2.kind" : "标识符",
+																																	"3.inner" : 
+																																	[
+																																		{
+																																			"1.is_root" : 2,
+																																			"2.kind" : "变量名"
+																																		}
+																																	]
+																																}
+																															]
+																														},
+																														{
+																															"1.is_root" : 2,
+																															"2.kind" : ")"
+																														}
+																													]
+																												},
+																												{
+																													"1.is_root" : 2,
+																													"2.kind" : ";"
+																												}
+																											]
+																										}
+																									]
+																								}
+																							]
+																						},
+																						{
 																							"1.is_root" : 2,
 																							"2.kind" : "}"
 																						}
@@ -473,159 +722,8 @@
 															]
 														},
 														{
-															"1.is_root" : 1,
-															"2.kind" : "语句",
-															"3.inner" : 
-															[
-																{
-																	"1.is_root" : 1,
-																	"2.kind" : "跳转语句",
-																	"3.inner" : 
-																	[
-																		{
-																			"1.is_root" : 2,
-																			"2.kind" : "return"
-																		},
-																		{
-																			"1.is_root" : 1,
-																			"2.kind" : "表达式",
-																			"3.inner" : 
-																			[
-																				{
-																					"1.is_root" : 1,
-																					"2.kind" : "标识符",
-																					"3.inner" : 
-																					[
-																						{
-																							"1.is_root" : 1,
-																							"2.kind" : "常量",
-																							"3.inner" : 
-																							[
-																								{
-																									"1.is_root" : 2,
-																									"2.kind" : "数值常量"
-																								}
-																							]
-																						}
-																					]
-																				}
-																			]
-																		},
-																		{
-																			"1.is_root" : 2,
-																			"2.kind" : ";"
-																		}
-																	]
-																}
-															]
-														}
-													]
-												},
-												{
-													"1.is_root" : 2,
-													"2.kind" : "}"
-												}
-											]
-										}
-									]
-								}
-							]
-						},
-						{
-							"1.is_root" : 1,
-							"2.kind" : "程序",
-							"3.inner" : 
-							[
-								{
-									"1.is_root" : 1,
-									"2.kind" : "外部声明",
-									"3.inner" : 
-									[
-										{
-											"1.is_root" : 1,
-											"2.kind" : "环境声明",
-											"3.inner" : 
-											[
-												{
-													"1.is_root" : 1,
-													"2.kind" : "变量定义语句",
-													"3.inner" : 
-													[
-														{
-															"1.is_root" : 1,
-															"2.kind" : "变量定义",
-															"3.inner" : 
-															[
-																{
-																	"1.is_root" : 1,
-																	"2.kind" : "类型名",
-																	"3.inner" : 
-																	[
-																		{
-																			"1.is_root" : 2,
-																			"2.kind" : "double"
-																		}
-																	]
-																},
-																{
-																	"1.is_root" : 1,
-																	"2.kind" : "待定义变量",
-																	"3.inner" : 
-																	[
-																		{
-																			"1.is_root" : 1,
-																			"2.kind" : "赋值语句",
-																			"3.inner" : 
-																			[
-																				{
-																					"1.is_root" : 2,
-																					"2.kind" : "变量名"
-																				},
-																				{
-																					"1.is_root" : 1,
-																					"2.kind" : "赋值符号",
-																					"3.inner" : 
-																					[
-																						{
-																							"1.is_root" : 2,
-																							"2.kind" : "="
-																						}
-																					]
-																				},
-																				{
-																					"1.is_root" : 1,
-																					"2.kind" : "表达式",
-																					"3.inner" : 
-																					[
-																						{
-																							"1.is_root" : 1,
-																							"2.kind" : "标识符",
-																							"3.inner" : 
-																							[
-																								{
-																									"1.is_root" : 1,
-																									"2.kind" : "常量",
-																									"3.inner" : 
-																									[
-																										{
-																											"1.is_root" : 2,
-																											"2.kind" : "数值常量"
-																										}
-																									]
-																								}
-																							]
-																						}
-																					]
-																				}
-																			]
-																		}
-																	]
-																}
-															]
-														},
-														{
 															"1.is_root" : 2,
-															"2.kind" : ";"
+															"2.kind" : "}"
 														}
 													]
 												}
@@ -734,51 +832,8 @@
 																													"3.inner" : 
 																													[
 																														{
-																															"1.is_root" : 1,
-																															"2.kind" : "赋值语句",
-																															"3.inner" : 
-																															[
-																																{
-																																	"1.is_root" : 2,
-																																	"2.kind" : "变量名"
-																																},
-																																{
-																																	"1.is_root" : 1,
-																																	"2.kind" : "赋值符号",
-																																	"3.inner" : 
-																																	[
-																																		{
-																																			"1.is_root" : 2,
-																																			"2.kind" : "="
-																																		}
-																																	]
-																																},
-																																{
-																																	"1.is_root" : 1,
-																																	"2.kind" : "表达式",
-																																	"3.inner" : 
-																																	[
-																																		{
-																																			"1.is_root" : 1,
-																																			"2.kind" : "标识符",
-																																			"3.inner" : 
-																																			[
-																																				{
-																																					"1.is_root" : 1,
-																																					"2.kind" : "常量",
-																																					"3.inner" : 
-																																					[
-																																						{
-																																							"1.is_root" : 2,
-																																							"2.kind" : "数值常量"
-																																						}
-																																					]
-																																				}
-																																			]
-																																		}
-																																	]
-																																}
-																															]
+																															"1.is_root" : 2,
+																															"2.kind" : "变量名"
 																														}
 																													]
 																												}
@@ -801,244 +856,38 @@
 																					[
 																						{
 																							"1.is_root" : 1,
-																							"2.kind" : "选择语句",
+																							"2.kind" : "函数调用语句",
 																							"3.inner" : 
 																							[
 																								{
-																									"1.is_root" : 2,
-																									"2.kind" : "if"
-																								},
-																								{
-																									"1.is_root" : 2,
-																									"2.kind" : "("
-																								},
-																								{
 																									"1.is_root" : 1,
-																									"2.kind" : "表达式",
+																									"2.kind" : "函数调用",
 																									"3.inner" : 
 																									[
 																										{
 																											"1.is_root" : 1,
-																											"2.kind" : "操作语句",
+																											"2.kind" : "函数名",
 																											"3.inner" : 
 																											[
 																												{
-																													"1.is_root" : 1,
-																													"2.kind" : "二目操作",
-																													"3.inner" : 
-																													[
-																														{
-																															"1.is_root" : 1,
-																															"2.kind" : "计算语句",
-																															"3.inner" : 
-																															[
-																																{
-																																	"1.is_root" : 1,
-																																	"2.kind" : "表达式",
-																																	"3.inner" : 
-																																	[
-																																		{
-																																			"1.is_root" : 1,
-																																			"2.kind" : "标识符",
-																																			"3.inner" : 
-																																			[
-																																				{
-																																					"1.is_root" : 2,
-																																					"2.kind" : "变量名"
-																																				}
-																																			]
-																																		}
-																																	]
-																																},
-																																{
-																																	"1.is_root" : 1,
-																																	"2.kind" : "计算符号",
-																																	"3.inner" : 
-																																	[
-																																		{
-																																			"1.is_root" : 2,
-																																			"2.kind" : ">"
-																																		}
-																																	]
-																																},
-																																{
-																																	"1.is_root" : 1,
-																																	"2.kind" : "表达式",
-																																	"3.inner" : 
-																																	[
-																																		{
-																																			"1.is_root" : 1,
-																																			"2.kind" : "标识符",
-																																			"3.inner" : 
-																																			[
-																																				{
-																																					"1.is_root" : 1,
-																																					"2.kind" : "常量",
-																																					"3.inner" : 
-																																					[
-																																						{
-																																							"1.is_root" : 2,
-																																							"2.kind" : "数值常量"
-																																						}
-																																					]
-																																				}
-																																			]
-																																		}
-																																	]
-																																}
-																															]
-																														}
-																													]
-																												}
-																											]
-																										}
-																									]
-																								},
-																								{
-																									"1.is_root" : 2,
-																									"2.kind" : ")"
-																								},
-																								{
-																									"1.is_root" : 1,
-																									"2.kind" : "语句块",
-																									"3.inner" : 
-																									[
-																										{
-																											"1.is_root" : 2,
-																											"2.kind" : "{"
-																										},
-																										{
-																											"1.is_root" : 1,
-																											"2.kind" : "语句List",
-																											"3.inner" : 
-																											[
-																												{
-																													"1.is_root" : 1,
-																													"2.kind" : "语句",
-																													"3.inner" : 
-																													[
-																														{
-																															"1.is_root" : 1,
-																															"2.kind" : "跳转语句",
-																															"3.inner" : 
-																															[
-																																{
-																																	"1.is_root" : 2,
-																																	"2.kind" : "return"
-																																},
-																																{
-																																	"1.is_root" : 1,
-																																	"2.kind" : "表达式",
-																																	"3.inner" : 
-																																	[
-																																		{
-																																			"1.is_root" : 1,
-																																			"2.kind" : "标识符",
-																																			"3.inner" : 
-																																			[
-																																				{
-																																					"1.is_root" : 1,
-																																					"2.kind" : "常量",
-																																					"3.inner" : 
-																																					[
-																																						{
-																																							"1.is_root" : 2,
-																																							"2.kind" : "数值常量"
-																																						}
-																																					]
-																																				}
-																																			]
-																																		}
-																																	]
-																																},
-																																{
-																																	"1.is_root" : 2,
-																																	"2.kind" : ";"
-																																}
-																															]
-																														}
-																													]
+																													"1.is_root" : 2,
+																													"2.kind" : "变量名"
 																												}
 																											]
 																										},
 																										{
 																											"1.is_root" : 2,
-																											"2.kind" : "}"
+																											"2.kind" : "("
+																										},
+																										{
+																											"1.is_root" : 2,
+																											"2.kind" : ")"
 																										}
 																									]
 																								},
 																								{
 																									"1.is_root" : 2,
-																									"2.kind" : "else"
-																								},
-																								{
-																									"1.is_root" : 1,
-																									"2.kind" : "语句块",
-																									"3.inner" : 
-																									[
-																										{
-																											"1.is_root" : 2,
-																											"2.kind" : "{"
-																										},
-																										{
-																											"1.is_root" : 1,
-																											"2.kind" : "语句List",
-																											"3.inner" : 
-																											[
-																												{
-																													"1.is_root" : 1,
-																													"2.kind" : "语句",
-																													"3.inner" : 
-																													[
-																														{
-																															"1.is_root" : 1,
-																															"2.kind" : "跳转语句",
-																															"3.inner" : 
-																															[
-																																{
-																																	"1.is_root" : 2,
-																																	"2.kind" : "return"
-																																},
-																																{
-																																	"1.is_root" : 1,
-																																	"2.kind" : "表达式",
-																																	"3.inner" : 
-																																	[
-																																		{
-																																			"1.is_root" : 1,
-																																			"2.kind" : "标识符",
-																																			"3.inner" : 
-																																			[
-																																				{
-																																					"1.is_root" : 1,
-																																					"2.kind" : "常量",
-																																					"3.inner" : 
-																																					[
-																																						{
-																																							"1.is_root" : 2,
-																																							"2.kind" : "数值常量"
-																																						}
-																																					]
-																																				}
-																																			]
-																																		}
-																																	]
-																																},
-																																{
-																																	"1.is_root" : 2,
-																																	"2.kind" : ";"
-																																}
-																															]
-																														}
-																													]
-																												}
-																											]
-																										},
-																										{
-																											"1.is_root" : 2,
-																											"2.kind" : "}"
-																										}
-																									]
+																									"2.kind" : ";"
 																								}
 																							]
 																						}
@@ -1053,32 +902,35 @@
 																			[
 																				{
 																					"1.is_root" : 1,
-																					"2.kind" : "函数调用语句",
+																					"2.kind" : "跳转语句",
 																					"3.inner" : 
 																					[
 																						{
+																							"1.is_root" : 2,
+																							"2.kind" : "return"
+																						},
+																						{
 																							"1.is_root" : 1,
-																							"2.kind" : "函数调用",
+																							"2.kind" : "表达式",
 																							"3.inner" : 
 																							[
 																								{
 																									"1.is_root" : 1,
-																									"2.kind" : "函数名",
+																									"2.kind" : "标识符",
 																									"3.inner" : 
 																									[
 																										{
-																											"1.is_root" : 2,
-																											"2.kind" : "变量名"
+																											"1.is_root" : 1,
+																											"2.kind" : "常量",
+																											"3.inner" : 
+																											[
+																												{
+																													"1.is_root" : 2,
+																													"2.kind" : "数值常量"
+																												}
+																											]
 																										}
 																									]
-																								},
-																								{
-																									"1.is_root" : 2,
-																									"2.kind" : "("
-																								},
-																								{
-																									"1.is_root" : 2,
-																									"2.kind" : ")"
 																								}
 																							]
 																						},

@@ -1,6 +1,7 @@
 from flask import Flask, render_template,jsonify, request
 import os
 import subprocess
+import os
 
 app = Flask(__name__)
 
@@ -34,11 +35,19 @@ def getGramParse():
     os.chdir("../src")
     print(os.getcwd())
     try:
+        exe = ""
+        if(os.name == 'nt'):
+            exe = "./main.exe"
+        elif(os.name == 'posix'):
+            exe = "main"
+        else:
+            exe = "main"
         p = subprocess.run(
-            ['./main.exe', '-i', './in.txt', '-go', './tree.json', '-lo', './lex.txt'],
+            [exe, '-i', './in.txt', '-go', './out.json', '-lo', './lex.txt'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE, 
             timeout=10,
+            shell=False
         )
     except subprocess.TimeoutExpired:
         print('服务器繁忙')
