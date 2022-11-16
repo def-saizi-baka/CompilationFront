@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- 引入jQuery -->
+    <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <!-- 引入自定义js -->
+    <script type="text/javascript" src="../static/js/canvas_display.js"></script>
+    <script type="text/javascript" src="../static/js/upload.js"></script>
+    <script type="text/javascript" src="../static/js/func_choice.js"></script>
+    <!-- 引入Bootstrap
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" /> -->
+    <!-- 引入自定义的CSS-->>
+    <link rel=stylesheet href='../static/css/background.css' type="text/css">
+    <link rel=stylesheet href='../static/css/fun_area.css' type="text/css">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+</head>
+
+<body class="body">
+    <!-- 背景星空 -->
+    <div class="bg_star">
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+    </div>
+
+    <!-- 导航菜单栏 -->
+    <div class="menu">
+        <div class="menu_intro">
+            Fun of Image
+        </div>
+        <div class="menu_item" id="contact_us">
+            <a href="https://space.bilibili.com/22761084" target="_blank">联系我们</a>
+        </div>
+        <div class="menu_item" id="instruction">
+            <a onclick="alert('欢迎观看我们录的B站视频! ')">使用说明</a>
+        </div>
+        <div class="dropdown" id="func_choice">
+            <span>目录</span>
+            <div class="dropdown_content">
+                <div class="dropdown_item">
+                    <p><a onclick="func_change()">颜色空间</a></p>
+                </div>
+                <div class="dropdown_item">
+                    <p><a onclick="func_change('func_conv')">图像卷积</a></p>
+                </div>
+                <div class="dropdown_item">
+                    <p><a onclick="">图片格式</a></p>
+                </div>
+                <div class="dropdown_item">
+                    <p><a onclick="">标准协议</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="inputCode">
+        <textarea rows="20" cols="50">
+            我是一个文本框。
+        </textarea>
+    </div>
+
+    <div id="processedCode">
+        <textarea rows="20" cols="50">
+            我是高亮区
+        </textarea>
+    </div>
+
+    <!-- 底部标语 -->
+    <div class="text" id="slogan">
+        Let's enjoy the magic of Grammer Parser!
+    </div>
+
+    <!-- 权益声明 -->
+    <div class="text" id="copyright">
+        Copyright(C) 2022 DH.Chen, SH.Zhang, Y.Liu - AllRightsReserved
+    </div>
+
+</body>

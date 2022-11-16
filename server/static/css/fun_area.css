@@ -1,0 +1,70 @@
+#inputBlock{
+    display: flex;
+    width: 100%;
+    height: 500px;
+}
+
+#inputBlock .textInput{
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+    height: 100%;
+    align-items: center;
+}
+
+/* 两个输入框 */
+#sourceInput{
+    width: 100%;
+    height: 100%;
+    resize: none;
+}
+
+
+#hignLightInput{
+    width: 100%;
+    height: 100%;
+    resize: none;
+}
+
+/* 两个按钮 */
+#submitButt{
+    margin: 15px;
+    height: 10%;
+    width: 60%;
+    color: gray;
+}
+
+
+#submitButtom{
+    color: gray;
+    font-size: medium;
+    width: 30%;
+    height: 30%;
+}
+
+#hidder{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(105, 131, 139, 0.5);
+    z-index: 100;
+    /* display: flex; */
+    /* 完全居中 */
+    justify-content: center;
+    align-items: center;
+    display: none;
+}
+
+#loader{
+    display: flex;
+    width: 20%;
+    height: 15%;
+    justify-content: center;
+    align-items: left;
+}
+
+#loader div{
+    height: 100%;
+    width: 10px;
+    margin: 15px;
+}

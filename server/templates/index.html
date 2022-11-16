@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <!-- 引入jQuery -->
+    <script src="https://cdn.bootcss.com/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="../static/js/tree.js"></script>
+    <!-- 引入自定义js -->
+    <script type="text/javascript" src="../static/js/canvas_display.js"></script>
+    <!-- 引入Bootstrap
+    <link href="static/css/bootstrap.min.css" rel="stylesheet" /> -->
+    <!-- 引入自定义的CSS-->>
+    <link rel=stylesheet href='../static/css/background.css' type="text/css">
+    <link rel=stylesheet href='../static/css/fun_area.css' type="text/css">
+    <link rel=stylesheet href='../static/css/load.css' type="text/css">
+</head>
+<body class="body">
+    <div id="hidder">
+        <div class="line-scale" id="loader">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+    </div>
+    <!-- 背景星空 -->
+    <div class="bg_star">
+        <div id="stars"></div>
+        <div id="stars2"></div>
+        <div id="stars3"></div>
+    </div>
+<!--    <div id="inputCode">-->
+
+<!--    </div>-->
+    <!-- 输入框 -->
+    <div id="inputBlock">
+        <div class="textInput">
+            <textarea id="sourceInput" rows="20" cols="50" placeholder="请输入待分析代码"></textarea>
+            <button id="submitButt" onclick="submitSource()">点击分析语法</button>
+        </div>
+        <div style="width: 1%;"></div>
+        <div class="textInput">
+            <textarea id="hignLightInput" rows="20" cols="50" placeholder="文法分析结果" readonly
+            ></textarea>    
+            <button id="submitButt" onclick="generateTree()">查看语法生成树</button>
+        </div>
+    </div>
+
+
+    <!-- 权益声明 -->
+    <div class="text" id="copyright">
+        Copyright(C) 2022 DH.Chen, SH.Zhang, Y.Liu - AllRightsReserved
+    </div>
+
+    <script>
+        var editor=CodeMirror.fromTextArea(document.getElementById("sourceInput"),{
+                mode:"text/x-java" //实现Java代码高亮
+        });
+    </script>
+</body>
