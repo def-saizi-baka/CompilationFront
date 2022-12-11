@@ -125,7 +125,7 @@ bool Item::operator<(const Item& other) const{
 }
 
 CFG::CFG(){
-    vector<std::pair<int, std::vector<int>>> gramVec = con.get_grammar();
+    vector<std::pair<int, std::vector<int> > > gramVec = con.get_grammar();
     this->terSysboms = con.get_stop_symbols();
     this->nonTerSysboms = con.get_unstop_symbols();
     

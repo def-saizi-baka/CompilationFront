@@ -15,9 +15,7 @@ void config::init()
 	string regex;
 	int id;
 
-	system("chdir");
 	fin.open(path_keyword, ios::in);
-	std::cout << path_keyword << endl;
 	bool debug = fin.is_open();
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {

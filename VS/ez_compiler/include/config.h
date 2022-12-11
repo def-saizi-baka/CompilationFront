@@ -40,12 +40,12 @@ public:
 	const map<string, int>& get_symbols() const { return this->dic_symbols.symbols; };
 	map<int, string>& get__symbols(){ return this->dic_symbols._symbols; };
 
-	string path_keyword		= "config\\keywords.txt";
-	string path_operator	= "operator_symbol.txt";
-	string path_delimiter	= "delimiter.txt";
-	string path_unstop		= "unstop.txt";
-	string log_path			= "parser.log";
-	string grammar_path		= "grammar.txt";
+	string path_keyword		= "config/keywords.txt";
+	string path_operator	= "config/operator_symbol.txt";
+	string path_delimiter	= "config/delimiter.txt";
+	string path_unstop		= "config/unstop.txt";
+	string log_path			= "config/parser.log";
+	string grammar_path		= "config/grammar.txt";
 private:
 	struct {
 		map<string, int> stop_symbols;
