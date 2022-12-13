@@ -46,6 +46,7 @@ public:
 	string path_unstop		= "config/unstop.txt";
 	string log_path			= "config/parser.log";
 	string grammar_path		= "config/grammar.txt";
+
 private:
 	struct {
 		map<string, int> stop_symbols;

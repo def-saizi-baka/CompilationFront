@@ -510,13 +510,16 @@ int getFirstPriState(set<int> end_set){
     else return *(end_set.begin());
 }
 
-
+/*
+	将输入的一行语句分解成词语token
+*/
 vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
 	int cur = this->begNode;
     vector<pair<string, int>> res;
     string nowBuffer;
     int end_state = -1;
     unsigned int index = 0;
+	int last_M_state = NONE_ENDSTATE; // M回填
 
     while(index <= in.length()){
         // 判断是否存在转移函数
@@ -558,9 +561,50 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
                     return vector<token>{token{line,"wrong",-1}};
                 }
             }
+			// 在读到 { 前记录上一次的值
+			if (end_state == IF_ENDSTATE) {
+				last_M_state = IF_ENDSTATE;
+			}
+			else if (end_state == ELSE_END_STATE) {
+				// else 需要在前面多加一个 N 
+				res.push_back(pair<string, int>{N_String, N_STATE});
+				last_M_state = ELSE_END_STATE;
+			}
+
+			// 在读到 "{" 时根据上一次读到的是if/while/else来生成M/N
+			if (end_state == LEFT_BLOCK_STATE) {
+				switch (last_M_state){
+					// IF E then M S
+					case IF_ENDSTATE: {
+						res.push_back(pair<string, int>{M_String, M_STATE});
+						break;
+					}
+					
+					// IF E then M1 S1 N else M2 S2
+					case ELSE_END_STATE: {
+						res.push_back(pair<string, int>{M_String, M_STATE});
+						break;
+					}
+					case WHILE_ENDSTATE: {
+						res.push_back(pair<string, int>{M_String, M_STATE});
+						break;
+					}
+					default:
+						break;
+				}
+				// 修改last_M_state为一般状态
+				last_M_state == NONE_ENDSTATE;
+			}
+
             res.push_back(pair<string, int>{nowBuffer, end_state});
             cur = this->begNode;
             nowBuffer = "";
+
+			if (end_state == WHILE_ENDSTATE) {
+				// while 的第一个 M要加在循环条件前
+				last_M_state = IF_ENDSTATE;
+				res.push_back(pair<string, int>{M_String, M_STATE});
+			}
         }
         else{
             index++;                                            // 字符串指针指向下一个字符

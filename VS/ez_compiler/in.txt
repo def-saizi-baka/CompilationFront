@@ -1,6 +1,0 @@
-int main()
-{
-int a = 1;
-printf();
-double b = -123.123;
-}

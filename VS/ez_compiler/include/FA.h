@@ -19,6 +19,20 @@ using namespace std;
 #define KEEP_END		true
 #define READ_SYMBOLTABLE     4
 
+#define NONE_ENDSTATE -1
+#define IF_ENDSTATE 73
+#define ELSE_END_STATE 74
+#define WHILE_ENDSTATE 80
+// {
+#define LEFT_BLOCK_STATE 103
+// M
+#define M_String "{__M__}"
+#define M_STATE 10001
+// N
+#define N_String "{__N__}" 
+#define N_STATE 10002
+
+
 
 class FA;
 class DFA;
