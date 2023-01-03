@@ -98,17 +98,16 @@ void InterCode::merge(const vector<int>& L1, const vector<int>& L2, vector<int>&
 	L3.insert(L3.end(), L2.begin(), L2.end());
 }
 
-void InterCode::merge(vector<const vector<int>& >L, vector<int>& res)
+void InterCode::merge(vector<vector<int> >L, vector<int>& res)
 {
 	if (res.size() != 0)
 	{
 		cout << "may error" << endl;
 	}
 	
-	for (auto iter : L)
+	for (uint32_t i=0; i<L.size(); i++)
 	{
-		res.insert(res.end(), iter.begin(), iter.end());
-		res.insert(res.end(), iter.begin(), iter.end());
+		res.insert(res.end(), L[i].begin(), L[i].end());
 	}
 }
 
@@ -354,7 +353,7 @@ void InterCode::if_else_statement()
 	backpatch(E->getTrueList(), M1->getNextquad());
 	backpatch(E->getFalseList(), M2->getNextquad());
 
-	vector<const vector<int>& > list;
+	vector<vector<int> > list;
 	list.push_back(S1->getNextList());
 	list.push_back(N->getNextList());
 	list.push_back(S2->getNextList());

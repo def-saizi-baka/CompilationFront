@@ -48,6 +48,9 @@
     <ClInclude Include="include\json\json-forwards.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\intercode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="config\config.cpp">
@@ -72,6 +75,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="code\intercode.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

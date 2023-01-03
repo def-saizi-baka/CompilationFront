@@ -31,10 +31,10 @@ protected:
 	int type;
 public:
 	VN();
-	virtual vector<int>& getTrueList();
-	virtual vector<int>& getFalseList();
-	virtual vector<int>& getNextList();
-	virtual int getNextquad();
+	virtual vector<int>& getTrueList() = 0;
+	virtual vector<int>& getFalseList() = 0;
+	virtual vector<int>& getNextList() = 0;
+	virtual int getNextquad() = 0;
 };
 
 //非终结符 E
@@ -49,10 +49,16 @@ protected:
 public:
 	friend InterCode;
 	E(string);
-	E(string,string);
+	E(string,string){};
 
 	vector<int>& getTrueList();
 	vector<int>& getFalseList();
+	
+	vector<int>& getNextList() { 
+		return this->falselist;
+	}
+
+	int getNextquad() { return 0; }
 };
 
 // 非终结符 S
@@ -64,6 +70,16 @@ public:
 	friend InterCode;
 
 	vector<int>& getNextList();
+
+	vector<int>& getTrueList() {
+		return this->nextlist;
+	}
+
+	vector<int>& getFalseList() {
+		return this->nextlist;
+	}
+
+	int getNextquad() { return 0; }
 };
 
 // 非终结符 M 
@@ -71,10 +87,27 @@ class M : public VN
 {
 protected:
 	int quad;
+
 public:
 	friend InterCode;
 	M(int quad);
+
 	int getNextquad();
+
+	vector<int>& getTrueList() {
+		vector<int> a;
+		return a;
+	}
+
+	vector<int>& getFalseList() {
+		vector<int> a;
+		return a;
+	}
+
+	vector<int>& getNextList() {
+		vector<int> a;
+		return a;
+	}
 };
 
 // 非终结符 N
@@ -84,8 +117,19 @@ protected:
 	vector<int> nextlist;
 public:
 	friend InterCode;
-	N();
+	//N() {};
 	vector<int>& getNextList();
+
+	vector<int>& getTrueList() {
+		vector<int> a;
+		return a;
+	}
+	vector<int>& getFalseList() {
+		vector<int> a;
+		return a;
+	}
+
+	int getNextquad() { return 0; }
 };
 
 
@@ -102,7 +146,7 @@ public:
 	
 	vector<int> merge(const vector<int>& L1,const vector<int>& L2); // 合并两条链
 	void merge(const vector<int>& L1, const vector<int>& L2, vector<int>& L3);
-	void merge(vector<const vector<int>& >L, vector<int>& res);
+	void merge(vector<vector<int> >L, vector<int>& res);
 	void backpatch(vector<int>& L,int quad);
 	int findByAddr(int quad);
 	void emit(Quadruple temp);		// 	
