@@ -1,9 +1,0 @@
-int main()
-{
-int b=0;
-while(b<10){
-b = b+1;
-}
-int a = 1;
-double c = -123.123;
-}

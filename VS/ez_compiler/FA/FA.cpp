@@ -593,7 +593,7 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
 						break;
 				}
 				// ÐÞ¸Älast_M_stateÎªÒ»°ã×´Ì¬
-				last_M_state == NONE_ENDSTATE;
+				last_M_state = NONE_ENDSTATE;
 			}
 
             res.push_back(pair<string, int>{nowBuffer, end_state});

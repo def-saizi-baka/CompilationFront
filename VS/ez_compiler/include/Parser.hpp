@@ -152,7 +152,7 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 				status.push_back(next);
 				signs.push(tokens[idx].symbol);//符号入栈
                 analysis_info(_, status, signs, this->debug);
-				tree.in(tokens[idx].symbol);
+				tree.in(tokens[idx].value, tokens[idx].symbol);
 				idx++;//继续读下一个状态
 
 			}

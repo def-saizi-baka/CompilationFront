@@ -9,6 +9,7 @@ using namespace std;
 
 struct node {
 	int symbol = -1;//默认-1代表没有符号
+	string value;
 	int num = 0;
 	vector<node*> kids;
 	vector<node*> leaf;
@@ -18,7 +19,7 @@ struct node {
 class parserTree
 {
 public:
-	void in(int symbol); //移进
+	void in(string value, int symbol); //移进
 	void reduction(pair<int, vector<int>> grammar);//归约
 	void end();
 	void to_json(string name);
@@ -37,11 +38,12 @@ private:
 /// 移进，就把一个节点放到节点栈里面，这里用vector代替栈来使用了
 /// </summary>
 /// <param name="symbol"></param> 移进的符号的唯一标识符
-void parserTree::in(int symbol)
+void parserTree::in(string value, int symbol)
 {
 	try {
 		node* root = new node;
 		root->symbol = symbol;
+		root->value = value;
 		root->leaf.push_back(root);
 		this->roots.push_back(root);
 	}
@@ -168,6 +170,7 @@ Json::Value parserTree::build_tree(node* tree)
 		jv_node["1.is_root"] = 2;//叶子节点
 	else
 		jv_node["1.is_root"] = 1; //子树根节点
+	jv_node["4.value"] = tree->value;
 	con.log("[INFO] 成功展开节点，节点类型为：" + tag_name);
 
 	for (size_t i = 0; i < tree->kids.size(); i++)
