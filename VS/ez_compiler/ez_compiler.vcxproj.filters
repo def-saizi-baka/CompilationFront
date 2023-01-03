@@ -48,6 +48,9 @@
     <ClInclude Include="include\json\json-forwards.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="include\intercode.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="config\config.cpp">
@@ -74,10 +77,33 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="code\intercode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="config\parser.log">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="config\delimiter.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="config\grammar.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="config\keywords.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="config\operator_symbol.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+    <Text Include="config\unstop.txt">
+      <Filter>资源文件</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="gram.json">
+      <Filter>资源文件</Filter>
+    </None>
   </ItemGroup>
 </Project>
