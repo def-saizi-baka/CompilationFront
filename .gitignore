@@ -5,6 +5,7 @@ __pycache__/
 
 VS/.vs
 VS/Debug
+VS/ez_compiler/x64/
 
 # C extensions
 *.so

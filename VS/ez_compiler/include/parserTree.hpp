@@ -7,10 +7,12 @@ extern config con;
 using namespace std;
 
 
-struct node{
+struct node {
 	int symbol = -1;//默认-1代表没有符号
 	int num = 0;
 	vector<node*> kids;
+	vector<node*> leaf;
+	node* father = nullptr;
 };
 
 class parserTree
@@ -22,6 +24,9 @@ public:
 	void to_json(string name);
 	void traverse(node* root, void (*visit)(int symbol));
 	Json::Value build_tree(node* tree);
+	const vector<node*>& get_back_leaf();
+	bool get_back_reduction_list(vector<node*>& res);
+
 	~parserTree();
 private:
 	vector<node*> roots;
@@ -37,6 +42,7 @@ void parserTree::in(int symbol)
 	try {
 		node* root = new node;
 		root->symbol = symbol;
+		root->leaf.push_back(root);
 		this->roots.push_back(root);
 	}
 	catch (const bad_alloc& e) {
@@ -50,18 +56,18 @@ void parserTree::in(int symbol)
 void parserTree::reduction(pair<int, vector<int>> grammar)
 {
 	try {
-		if(grammar.second.size() < 1){
+		if (grammar.second.size() < 1) {
 			string message = "[ERROR] 语法生成式为空,该语法生成式为：";
 			message += to_string(grammar.first) + " → ";
-				for (const auto& t : grammar.second) {
-					message += to_string(t);
-					message += "|";
-				}
-				if (*message.rbegin() == '|')
-					message.pop_back();
-				con.log(message);
+			for (const auto& t : grammar.second) {
+				message += to_string(t);
+				message += "|";
+			}
+			if (*message.rbegin() == '|')
+				message.pop_back();
 			con.log(message);
-			return ;
+			con.log(message);
+			return;
 		}
 		node* root = new node;
 		root->symbol = grammar.first;
@@ -71,7 +77,10 @@ void parserTree::reduction(pair<int, vector<int>> grammar)
 			if (grammar.second[i] == temp->symbol) {//这里就是对应上了
 				this->roots.pop_back();
 				root->num++;
+				temp->father = root;//设定父节点
 				root->kids.insert(root->kids.begin(), temp);
+				// 做两个vector的合并，保留根节点的信息（即保留原始符号信息）
+				root->leaf.insert(root->leaf.begin(), temp->leaf.begin(), temp->leaf.end()); // 头插入所有叶节点信息
 			}
 			else {
 				string message = "[ERROR] 生成语法分析树过程中，发现需归约符号和语法生成式不匹配,该语法生成式为：";
@@ -108,7 +117,7 @@ void parserTree::end()
 static int saveToFile(const string& file_name, const Json::Value& value)
 {
 	ofstream ofs; //标准输出流
-	ofs.open(file_name,ios::out); //创建文件
+	ofs.open(file_name, ios::out); //创建文件
 	if (!ofs.is_open())
 	{
 		con.log("[ERROR] 未能创建json文件.");
@@ -150,17 +159,17 @@ Json::Value parserTree::build_tree(node* tree)
 {
 	Json::Value jv_node;
 	string tag_name = con.get__symbols()[tree->symbol];
-	
+
 	jv_node["0.int"] = tree->symbol;
 	jv_node["2.kind"] = tag_name;
-	if(tree == this->root)
+	if (tree == this->root)
 		jv_node["1.is_root"] = 0; //根节点
-	else if(tree->kids.size() == 0)
+	else if (tree->kids.size() == 0)
 		jv_node["1.is_root"] = 2;//叶子节点
 	else
 		jv_node["1.is_root"] = 1; //子树根节点
 	con.log("[INFO] 成功展开节点，节点类型为：" + tag_name);
-	
+
 	for (size_t i = 0; i < tree->kids.size(); i++)
 	{
 		node* subtree = tree->kids[i];
@@ -171,6 +180,44 @@ Json::Value parserTree::build_tree(node* tree)
 	}
 	return jv_node;
 }
+
+/// <summary>
+/// 该函数只允许获得目前栈里面最顶端的归约节点的叶节点序列
+/// </summary>
+/// <returns></returns>
+const vector<node*>& parserTree::get_back_leaf()
+{
+	if (this->roots.size() == 0) {
+		con.log("[ERROR] 当前还未开始归约，不可获取当前栈顶子树的叶节点");
+		return vector<node*>();
+	}
+	return this->roots.back()->leaf;
+}
+
+//通过这个函数，可以得到某子树从根节点的推导序列
+bool parserTree::get_back_reduction_list(vector<node*>& res)
+{
+	if (res.size() != 0) {
+		con.log("[INFO] 输入的待修改的节点容器非空，清空容器，仍继续运行");
+		res.clear(); // 拆空该序列
+	}
+	auto tmp = this->roots.back();
+	bool is_one = false;
+	if (tmp->leaf.size() != 1) {
+		con.log("[INFO] 获得的目前栈顶节点的叶节点不止一个，仍继续运行，求解这所有叶节点的向上归约序列");
+		is_one = true;
+	}
+	for (auto& t : tmp->kids) {
+		while (t != nullptr && t->symbol != tmp->symbol) {
+			res.push_back(t);
+			t = t->father;
+		}
+	}
+	return is_one;
+}
+
+
+
 
 
 parserTree::~parserTree()
