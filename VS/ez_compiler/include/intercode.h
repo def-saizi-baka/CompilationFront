@@ -1,8 +1,12 @@
-#ifndef INTRERCODE_H
+#ifndef INTRECODE_H
 #define INTERCODE_H
 
+#pragma once
+#include "parserTree.h"
 #include <string>
 #include <vector>
+
+//#include "config.h"
 using namespace std;
 
 
@@ -20,7 +24,6 @@ private:
 public:
 	friend InterCode;
 	Quadruple(const int cur, const string op, const string left_num, const string right_num, const string res);
-
 
 };
 
@@ -43,13 +46,14 @@ class E : public VN
 protected:
 	string name;	// 对应的属性
 	string value;	// 对应的值，常量则为数值，变量则为变量名，M为quad
+
 	vector<int> truelist;
 	vector<int> falselist;
 	vector<int> nextlist;
 public:
 	friend InterCode;
-	E(string);
-	E(string,string){};
+	E(string name);
+	E(string name, string value);
 
 	vector<int>& getTrueList();
 	vector<int>& getFalseList();
@@ -151,8 +155,12 @@ public:
 	int findByAddr(int quad);
 	void emit(Quadruple temp);		// 	
 
+	// 生成表达式
+	void expression_statement(const node& root);
+	// 操作表达式
+	void operationStatement(const node& root);
 	void defineConst();
-	void defineVariable();
+	void defineVariable(const node& root);
 
 	void assignStatement();
 
@@ -174,7 +182,7 @@ public:
 	// 循环语句
 	void while_do_statement();
 
-	void genCode(int reduceType, vector<E> operand);
+	void genCode(const node& root);
 
 };
 #endif // !INTRERCODE_H

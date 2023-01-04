@@ -1,7 +1,7 @@
 #include "include/FA.h"
 #include "include/inputBuffer.h"
 #include "include/Parser.hpp"
-#include "include/parserTree.hpp"
+#include "include/parserTree.h"
 #include "include/Gram.h"
 #include "include/Exception.h"
 
@@ -252,11 +252,7 @@ void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDeb
     }
     cout << endl;
     cout << "building the ACTION table and GOTO table"<<endl;
-    cfg.initItems();
-    cfg.initLRItems();
-	cfg.formFirstSet();
-    cfg.buildClosures();
-    cfg.buildAnalysisTable();
+    cfg.load(true);
     map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
     cout << "build the ACTION table and GOTO table successfully!" << endl;
 

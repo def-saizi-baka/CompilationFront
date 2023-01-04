@@ -1,8 +1,9 @@
 #include "../include/intercode.h"
 #include <iostream>
 #include <sstream>
+#include "../include/symbolTable.h"
 
-
+//extern config con;
 // 此处宏定义没有用，单纯分工合作的时候，我先填上去
 // 归约的种类应该从Parse类中读取静态变量
 #define DEFINE_CONST 0
@@ -11,6 +12,8 @@
 #define BOOL_EXPR 3
 
 #define NOT_FOUND_INDEX -1
+
+symbolTable sysTable;
 
 // 四元式类
 Quadruple::Quadruple(const int cur,const string op, const string left_num, const string right_num, const string res)
@@ -29,10 +32,14 @@ VN::VN()
 }
 
 // 表达式元素
-E::E(string name):VN()
+E::E(string _name):VN()
 {
+	this->name = _name;
+}
+
+E::E(string name, string val) :VN() {
 	this->name = name;
-	this->value = value;
+	this->value = val;
 }
 
 // 返回真链
@@ -157,9 +164,137 @@ void InterCode::defineConst()
 	// 防止重定义
 }
 
-// 定义语句翻译
-void InterCode::defineVariable()
+void InterCode::operationStatement(const node& root) {
+	/*
+		<操作语句> → <二目操作>
+		<操作语句> → <单目操作>
+	*/
+	const node* now_1 = root.kids[0];
+	switch (root.kids[0]->symbol)
+	{
+		case 1029:	// 二目操作
+		{
+		
+			/*
+				<二目操作> → <赋值语句>
+				<二目操作> → <计算语句>
+			*/
+			const node* now_2 = now_1->kids[0];	// 现在根节点为 now_2 (赋值语句1030)
+			switch (now_1->kids[0]->symbol)
+			{
+				case 1030:	// <二目操作1029> → <赋值语句1030>
+				{
+					/*
+					<赋值语句> → <变量名> <赋值符号> <函数调用>
+					<赋值语句> → <变量名> <赋值符号> <表达式>
+					*/
+					string varName = now_2->kids[0]->value;	// 取变量名
+					// 判断是 <函数调用>还是<表达式>
+					if (now_2->kids[2]->symbol == 1023) {
+						// 表达式
+						E* e = (E*)eleStack.back();
+						eleStack.pop_back();
+						// 生成一条赋值语句
+						emit(Quadruple(nextquad, ":=", varName, e->value, "T?"));
+						// 生成E压栈
+						E* e_added = new E("", "T?");
+						eleStack.push_back(e_added);
+					}
+					else if(now_2->kids[2]->symbol == 1017) {
+						// 函数调用未实现
+					}
+					else {
+						// 未知错误
+					}
+					break;
+				}
+				
+				case 1032:  // // <二目操作1029> → <计算语句>
+				{
+					// <计算语句> → <表达式> <计算符号> <表达式>
+					E* e_left = (E*)eleStack.back();	// 右操作数
+					eleStack.pop_back();
+					E* e_right = (E*)eleStack.back();	// 左操作数
+					eleStack.pop_back();
+					// nextquad 操作符 左操作数 右操作数 临时变量
+					emit(Quadruple(nextquad, now_2->kids[1]->value, e_left->value, e_right->value, "T?"));
+					// 当前表达式压栈
+					E* e_added = new E("", "T?");
+					eleStack.push_back(e_added);
+					break;
+				}					
+				default:
+					break;
+				}
+		}
+
+
+		break;
+		case 1037:	// 单目操作1037 now_1
+			/*
+				<操作语句> → <单目操作1037>
+				<单目操作> → <单目操作符1038><变量名>
+				<单目操作> → <变量名><单目操作符>
+			*/
+		{
+			if (now_1->kids[0]->symbol == 1038) {
+				// <单目操作> → <单目操作符1038><变量名>
+				string varName = now_1->leaf[0]->value;
+				string varOperator = now_1->leaf[1]->value;
+				emit(Quadruple(nextquad, varOperator, "", varName, "T?"));
+				E* e_added = new E("", "T?");
+				eleStack.push_back(e_added);
+			}
+			else{
+				// <单目操作> → <变量名><单目操作符>
+				string varName = now_1->leaf[1]->value;
+				string varOperator = now_1->leaf[0]->value;
+				emit(Quadruple(nextquad, varOperator, varName, "", "T?"));
+				E* e_added = new E("", "T?");
+				eleStack.push_back(e_added);
+			}
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+// 定义语句翻译 不支持非常量
+void InterCode::defineVariable(const node& root)
 {
+	// 左孩子的叶节点是变量类型
+	const node* defineTree = root.kids[0];
+	string valType = defineTree->kids[0]->leaf[0]->value; //int
+
+	if (defineTree->leaf.size() > 2) {
+		// 右孩子是一个类似赋值语句的东西
+		const node* assignmentTree = defineTree->kids[1]->kids[0];
+		string valName = assignmentTree->kids[0]->value;
+
+		if (sysTable.look(valName) != NULL) {
+			cout << "重定义的变量: "<< valName << endl;
+			exit(-1);
+		}
+
+		// 获取表达式的值
+		E* e = (E*)eleStack.back();
+		eleStack.pop_back();
+		// 符号表新增定义
+		sysTable.enter(valName, string_type(valName), false);
+		this->emit(Quadruple{ nextquad,":=", e->value, "", valName });
+	}
+
+	else {
+		string valName = defineTree->leaf[1]->value;
+		if (sysTable.look(valName) != NULL) {
+			cout << "重定义的变量: " << valName << endl;
+			exit(-1);
+		}
+		// 符号表新增一个定义
+		sysTable.enter(valType, string_type(valName), false);
+	}
+
 	// int a = 1;
 	// operand = {a,1}
 	// 防止重定义
@@ -168,6 +303,7 @@ void InterCode::defineVariable()
 // 赋值语句翻译
 void InterCode::assignStatement()
 {
+	// 无需特判该函数，已在表达式处理函数中实现赋值
 	// operand
 	// TODO
 
@@ -203,7 +339,6 @@ void InterCode::NStatement()
 
 	// 压栈，地址在nextlist回填
 	emit(Quadruple(nextquad, "j", "-", "-", ""));
-	nextquad++;
 
 }
 
@@ -368,9 +503,9 @@ void InterCode::if_else_statement()
 	delete M2;
 	delete N;
 	delete S1;
-	delete S1;
 	delete M1;
 	delete E;
+	// 这里是不是没弹出 while也是？
 
 	eleStack.push_back((VN*)reduction);
 }
@@ -394,21 +529,59 @@ void InterCode::while_do_statement()
 	stringstream ss;
 	ss << M1->getNextquad();
 	emit(Quadruple(nextquad,"j", "-", "-",ss.str()));
-	nextquad++;
+
+	for (int i = 0; i < 4; i++)
+	{
+		eleStack.pop_back();
+	}
+
+	delete M2;
+	delete S1;
+	delete M1;
+	delete E;
+}
+
+// 计算表达式的
+void InterCode::expression_statement(const node& root) {
+	/* 分类讨论 */ 
+	/*
+		<表达式> → <操作语句>
+		<表达式>→<标识符>
+		<表达式>→<(> <表达式> <)>
+	*/
+	switch (root.kids[0]->symbol)
+	{
+		case 1026:	// <表达式> → <操作语句1026>
+			operationStatement(*(root.kids[0]));
+			break;
+		case 1008:	// <表达式>→<标识符1008>
+		{
+			string valName = root.leaf[0]->value;
+			E* e = new E("", valName);
+			eleStack.push_back((VN*)e);
+		}
+			break;
+		case 100:	// <表达式>→<(> <表达式> < )>
+			break;
+		default:
+			break;
+	}
 }
 
 
-
-
-void InterCode::genCode(int reduceType,vector<E> operand)
+void InterCode::genCode(const node& root)
 {
-	switch (reduceType)
+	switch (root.symbol)
 	{
+		case 1034: // 变量定义语句
+			defineVariable(root);
+			break;
+		case 1023: // 表达式
+			expression_statement(root);
+			break;
+
 		case DEFINE_CONST:
 			defineConst();
-			break;
-		case DEFINE_VARIABLE:
-			defineVariable();
 			break;
 		case ASSIGNMENT:
 			assignStatement();

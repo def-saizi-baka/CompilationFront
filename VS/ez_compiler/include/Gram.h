@@ -139,7 +139,9 @@ class CFG{
         void buildClosures();                                    // 构建闭包
         void buildAnalysisTable();                               // 构建action和goto表
         
-
+        void save(string path = "analysisTableModel");
+        void load(string path = "analysisTableModel");
+        void load(bool simpleLoad, string path = "analysisTableModel");// select决定是否要进行直接加载,true为直接加载，必须提供
         friend class Closure;
 };
 

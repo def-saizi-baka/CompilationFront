@@ -582,6 +582,94 @@ void CFG::showFirstSet()
 
 }
 
+void CFG::save(string path)
+{
+	try {
+		ofstream fout;
+		fout.open(path, ios::out | ios::binary);
+		assert(fout.is_open());
+		unsigned int size = 0;
+		vector<int> sizes;
+		for (auto it = this->analysisTable.begin(); it != this->analysisTable.end(); it++) {
+			unsigned int meta_size = sizeof(int) + it->second.size() * sizeof(pair<int, int>);
+			size += meta_size;
+			sizes.push_back(it->second.size());
+		}
+		size += sizes.size() * sizeof(int) + sizeof(int);
+
+		char* buffer = new char[size] { 0 };
+		unsigned int cnt = 0;
+
+		int sizes_size = sizes.size();
+		memcpy(buffer + cnt, (void*)(&sizes_size), sizeof(int));
+		cnt += sizeof(int);
+
+		memcpy(buffer + cnt, sizes.data(), sizes.size() * sizeof(int));
+		cnt += sizes.size() * sizeof(int);
+
+		for (const auto& t : this->analysisTable) {
+			memcpy(buffer + cnt, (void*)(&t.first), sizeof(int));
+			cnt += sizeof(int);
+			memcpy(buffer + cnt, (void*)t.second.data(), t.second.size() * sizeof(pair<int, int>));
+			cnt += t.second.size() * sizeof(pair<int, int>);
+		}
+		fout.write(buffer, size);
+		fout.close();
+		con.log("[INFO] 当前进行action表和goto表的保存，具体保存路径为" + path + "，保存的表大小为" + to_string(size) + "字节");
+	}
+	catch (const std::bad_alloc& e) {
+		cout << e.what() << std::endl;
+		con.log(e.what());
+	}
+}
+
+void CFG::load(string path)
+{
+	ifstream fin;
+	fin.open(path, ios::in | ios::binary);
+	assert(fin.is_open());
+	unsigned int cnt = 0;
+	vector<int>sizes;
+	int sizes_size;
+	fin.read((char*)(&sizes_size), sizeof(int));
+	for (int i = 0; i < sizes_size; i++) {
+		int temp;
+		fin.read((char*)(&temp), sizeof(int));
+		sizes.push_back(temp);
+	}
+
+	while (fin.peek() != EOF) {
+		int first;
+		fin.read((char*)(&first), sizeof(int));
+		vector<pair<int, int>> secondp;
+		for (int i = 0; i < sizes[cnt]; i++) {
+			int second, third;
+			fin.read((char*)(&second), sizeof(int));
+			fin.read((char*)(&third), sizeof(int));
+			secondp.push_back(make_pair(second, third));
+		}
+		cnt++;
+		this->analysisTable[first] = secondp;
+	}
+	fin.close();
+	con.log("[INFO] 已经成功将action表和goto表加载入内存");
+}
+
+void CFG::load(bool simpleLoad, string path)
+{
+	if (simpleLoad) { //true代表直接加载模型
+		load(path);
+	}
+	else { // false就不直接加载，需要完成计算
+		initItems();
+		initLRItems();
+		formFirstSet();
+		buildClosures();
+		buildAnalysisTable();
+		save();
+	}
+}
+
 FIRST::FIRST()
 {
 	this->sure = false;

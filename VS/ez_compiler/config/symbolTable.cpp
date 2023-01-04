@@ -52,6 +52,15 @@ string get_name(type t)
 	}
 }
 
+type string_type(string& s)
+{
+	auto iter = dic.find(s);
+	if (iter == dic.end())
+		return type::ERROR;
+	else
+		return iter->second;
+}
+
 string symbol::get_name() const
 {
 	return this->_name;

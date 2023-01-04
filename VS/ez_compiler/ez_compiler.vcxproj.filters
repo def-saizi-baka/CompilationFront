@@ -36,7 +36,7 @@
     <ClInclude Include="include\Parser.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="include\parserTree.hpp">
+    <ClInclude Include="include\parserTree.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="include\symbolTable.h">
@@ -78,6 +78,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="code\intercode.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Gram\parserTree.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

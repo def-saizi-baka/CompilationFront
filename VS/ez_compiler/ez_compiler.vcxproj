@@ -29,7 +29,7 @@
     <ClInclude Include="include\json\json-forwards.h" />
     <ClInclude Include="include\json\json.h" />
     <ClInclude Include="include\Parser.hpp" />
-    <ClInclude Include="include\parserTree.hpp" />
+    <ClInclude Include="include\parserTree.h" />
     <ClInclude Include="include\symbolTable.h" />
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +40,7 @@
     <ClCompile Include="exception\Exception.cpp" />
     <ClCompile Include="FA\FA.cpp" />
     <ClCompile Include="Gram\Gram.cpp" />
+    <ClCompile Include="Gram\parserTree.cpp" />
     <ClCompile Include="IO\inputBuffer.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

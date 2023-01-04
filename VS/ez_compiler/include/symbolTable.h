@@ -1,6 +1,6 @@
 #pragma once
 #include "config.h"
-
+#include <map>
 extern config con;
 enum class type;
 class symbol;
@@ -15,6 +15,23 @@ enum class type {
 	STRING,
 	NONE,
 	ERROR
+};
+
+const std::map<string, type> dic = {
+	make_pair("bool",type::BOOL),
+	make_pair("int",type::INT),
+	make_pair("unsigned int",type::UNSIGNED_INT),
+	make_pair("short",type::SHORT),
+	make_pair("unsigned short",type::UNSIGNED_SHORT),
+	make_pair("long",type::LONG),
+	make_pair("unsigned long",type::UNSIGNED_LONG),
+	make_pair("long long",type::LONG_LONG),
+	make_pair("unsigned long long",type::UNSIGNED_LONG_LONG),
+	make_pair("char",type::CHAR),
+	make_pair("unsigned char",type::UNSIGNED_CHAR),
+	make_pair("wchar_t",type::WCHAR_T),
+	make_pair("string",type::STRING),
+	make_pair("NULL",type::NONE)
 };
 
 class symbol
@@ -72,3 +89,4 @@ private:
 
 static int hashf(const string& name);
 string get_name(type t);
+type string_type(string& s);

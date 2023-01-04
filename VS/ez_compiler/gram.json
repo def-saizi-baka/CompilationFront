@@ -26,10 +26,10 @@
 									"0.int" : 63,
 									"1.is_root" : 2,
 									"2.kind" : "int",
-									"3.value" : "int"
+									"4.value" : "int"
 								}
 							],
-							"3.value" : ""
+							"4.value" : ""
 						},
 						{
 							"0.int" : 1006,
@@ -41,22 +41,22 @@
 									"0.int" : 200,
 									"1.is_root" : 2,
 									"2.kind" : "变量名",
-									"3.value" : "main"
+									"4.value" : "main"
 								}
 							],
-							"3.value" : ""
+							"4.value" : ""
 						},
 						{
 							"0.int" : 100,
 							"1.is_root" : 2,
 							"2.kind" : "(",
-							"3.value" : "("
+							"4.value" : "("
 						},
 						{
 							"0.int" : 102,
 							"1.is_root" : 2,
 							"2.kind" : ")",
-							"3.value" : ")"
+							"4.value" : ")"
 						},
 						{
 							"0.int" : 1014,
@@ -68,7 +68,7 @@
 									"0.int" : 103,
 									"1.is_root" : 2,
 									"2.kind" : "{",
-									"3.value" : "{"
+									"4.value" : "{"
 								},
 								{
 									"0.int" : 1015,
@@ -122,10 +122,10 @@
 																									"0.int" : 63,
 																									"1.is_root" : 2,
 																									"2.kind" : "int",
-																									"3.value" : "int"
+																									"4.value" : "int"
 																								}
 																							],
-																							"3.value" : ""
+																							"4.value" : ""
 																						},
 																						{
 																							"0.int" : 1036,
@@ -143,7 +143,7 @@
 																											"0.int" : 200,
 																											"1.is_root" : 2,
 																											"2.kind" : "变量名",
-																											"3.value" : "b"
+																											"4.value" : "b"
 																										},
 																										{
 																											"0.int" : 1031,
@@ -155,10 +155,10 @@
 																													"0.int" : 36,
 																													"1.is_root" : 2,
 																													"2.kind" : "=",
-																													"3.value" : "="
+																													"4.value" : "="
 																												}
 																											],
-																											"3.value" : ""
+																											"4.value" : ""
 																										},
 																										{
 																											"0.int" : 1023,
@@ -182,40 +182,40 @@
 																																	"0.int" : 301,
 																																	"1.is_root" : 2,
 																																	"2.kind" : "数值常量",
-																																	"3.value" : "0"
+																																	"4.value" : "0"
 																																}
 																															],
-																															"3.value" : ""
+																															"4.value" : ""
 																														}
 																													],
-																													"3.value" : ""
+																													"4.value" : ""
 																												}
 																											],
-																											"3.value" : ""
+																											"4.value" : ""
 																										}
 																									],
-																									"3.value" : ""
+																									"4.value" : ""
 																								}
 																							],
-																							"3.value" : ""
+																							"4.value" : ""
 																						}
 																					],
-																					"3.value" : ""
+																					"4.value" : ""
 																				},
 																				{
 																					"0.int" : 111,
 																					"1.is_root" : 2,
 																					"2.kind" : ";",
-																					"3.value" : ";"
+																					"4.value" : ";"
 																				}
 																			],
-																			"3.value" : ""
+																			"4.value" : ""
 																		}
 																	],
-																	"3.value" : ""
+																	"4.value" : ""
 																}
 															],
-															"3.value" : ""
+															"4.value" : ""
 														},
 														{
 															"0.int" : 1016,
@@ -233,19 +233,19 @@
 																			"0.int" : 80,
 																			"1.is_root" : 2,
 																			"2.kind" : "while",
-																			"3.value" : "while"
+																			"4.value" : "while"
 																		},
 																		{
 																			"0.int" : 10001,
 																			"1.is_root" : 2,
 																			"2.kind" : "{__M__}",
-																			"3.value" : "{__M__}"
+																			"4.value" : "{__M__}"
 																		},
 																		{
 																			"0.int" : 100,
 																			"1.is_root" : 2,
 																			"2.kind" : "(",
-																			"3.value" : "("
+																			"4.value" : "("
 																		},
 																		{
 																			"0.int" : 1023,
@@ -287,13 +287,13 @@
 																															"0.int" : 200,
 																															"1.is_root" : 2,
 																															"2.kind" : "变量名",
-																															"3.value" : "b"
+																															"4.value" : "b"
 																														}
 																													],
-																													"3.value" : ""
+																													"4.value" : ""
 																												}
 																											],
-																											"3.value" : ""
+																											"4.value" : ""
 																										},
 																										{
 																											"0.int" : 1033,
@@ -305,10 +305,10 @@
 																													"0.int" : 24,
 																													"1.is_root" : 2,
 																													"2.kind" : "<",
-																													"3.value" : "<"
+																													"4.value" : "<"
 																												}
 																											],
-																											"3.value" : ""
+																											"4.value" : ""
 																										},
 																										{
 																											"0.int" : 1023,
@@ -332,40 +332,40 @@
 																																	"0.int" : 301,
 																																	"1.is_root" : 2,
 																																	"2.kind" : "数值常量",
-																																	"3.value" : "10"
+																																	"4.value" : "10"
 																																}
 																															],
-																															"3.value" : ""
+																															"4.value" : ""
 																														}
 																													],
-																													"3.value" : ""
+																													"4.value" : ""
 																												}
 																											],
-																											"3.value" : ""
+																											"4.value" : ""
 																										}
 																									],
-																									"3.value" : ""
+																									"4.value" : ""
 																								}
 																							],
-																							"3.value" : ""
+																							"4.value" : ""
 																						}
 																					],
-																					"3.value" : ""
+																					"4.value" : ""
 																				}
 																			],
-																			"3.value" : ""
+																			"4.value" : ""
 																		},
 																		{
 																			"0.int" : 102,
 																			"1.is_root" : 2,
 																			"2.kind" : ")",
-																			"3.value" : ")"
+																			"4.value" : ")"
 																		},
 																		{
 																			"0.int" : 10001,
 																			"1.is_root" : 2,
 																			"2.kind" : "{__M__}",
-																			"3.value" : "{__M__}"
+																			"4.value" : "{__M__}"
 																		},
 																		{
 																			"0.int" : 1014,
@@ -377,7 +377,7 @@
 																					"0.int" : 103,
 																					"1.is_root" : 2,
 																					"2.kind" : "{",
-																					"3.value" : "{"
+																					"4.value" : "{"
 																				},
 																				{
 																					"0.int" : 1015,
@@ -425,7 +425,7 @@
 																																			"0.int" : 200,
 																																			"1.is_root" : 2,
 																																			"2.kind" : "变量名",
-																																			"3.value" : "b"
+																																			"4.value" : "b"
 																																		},
 																																		{
 																																			"0.int" : 1031,
@@ -437,10 +437,10 @@
 																																					"0.int" : 36,
 																																					"1.is_root" : 2,
 																																					"2.kind" : "=",
-																																					"3.value" : "="
+																																					"4.value" : "="
 																																				}
 																																			],
-																																			"3.value" : ""
+																																			"4.value" : ""
 																																		},
 																																		{
 																																			"0.int" : 1023,
@@ -482,13 +482,13 @@
 																																															"0.int" : 200,
 																																															"1.is_root" : 2,
 																																															"2.kind" : "变量名",
-																																															"3.value" : "b"
+																																															"4.value" : "b"
 																																														}
 																																													],
-																																													"3.value" : ""
+																																													"4.value" : ""
 																																												}
 																																											],
-																																											"3.value" : ""
+																																											"4.value" : ""
 																																										},
 																																										{
 																																											"0.int" : 1033,
@@ -500,10 +500,10 @@
 																																													"0.int" : 10,
 																																													"1.is_root" : 2,
 																																													"2.kind" : "+",
-																																													"3.value" : "+"
+																																													"4.value" : "+"
 																																												}
 																																											],
-																																											"3.value" : ""
+																																											"4.value" : ""
 																																										},
 																																										{
 																																											"0.int" : 1023,
@@ -527,73 +527,73 @@
 																																																	"0.int" : 301,
 																																																	"1.is_root" : 2,
 																																																	"2.kind" : "数值常量",
-																																																	"3.value" : "1"
+																																																	"4.value" : "1"
 																																																}
 																																															],
-																																															"3.value" : ""
+																																															"4.value" : ""
 																																														}
 																																													],
-																																													"3.value" : ""
+																																													"4.value" : ""
 																																												}
 																																											],
-																																											"3.value" : ""
+																																											"4.value" : ""
 																																										}
 																																									],
-																																									"3.value" : ""
+																																									"4.value" : ""
 																																								}
 																																							],
-																																							"3.value" : ""
+																																							"4.value" : ""
 																																						}
 																																					],
-																																					"3.value" : ""
+																																					"4.value" : ""
 																																				}
 																																			],
-																																			"3.value" : ""
+																																			"4.value" : ""
 																																		}
 																																	],
-																																	"3.value" : ""
+																																	"4.value" : ""
 																																}
 																															],
-																															"3.value" : ""
+																															"4.value" : ""
 																														}
 																													],
-																													"3.value" : ""
+																													"4.value" : ""
 																												}
 																											],
-																											"3.value" : ""
+																											"4.value" : ""
 																										},
 																										{
 																											"0.int" : 111,
 																											"1.is_root" : 2,
 																											"2.kind" : ";",
-																											"3.value" : ";"
+																											"4.value" : ";"
 																										}
 																									],
-																									"3.value" : ""
+																									"4.value" : ""
 																								}
 																							],
-																							"3.value" : ""
+																							"4.value" : ""
 																						}
 																					],
-																					"3.value" : ""
+																					"4.value" : ""
 																				},
 																				{
 																					"0.int" : 104,
 																					"1.is_root" : 2,
 																					"2.kind" : "}",
-																					"3.value" : "}"
+																					"4.value" : "}"
 																				}
 																			],
-																			"3.value" : ""
+																			"4.value" : ""
 																		}
 																	],
-																	"3.value" : ""
+																	"4.value" : ""
 																}
 															],
-															"3.value" : ""
+															"4.value" : ""
 														}
 													],
-													"3.value" : ""
+													"4.value" : ""
 												},
 												{
 													"0.int" : 1016,
@@ -623,10 +623,10 @@
 																					"0.int" : 63,
 																					"1.is_root" : 2,
 																					"2.kind" : "int",
-																					"3.value" : "int"
+																					"4.value" : "int"
 																				}
 																			],
-																			"3.value" : ""
+																			"4.value" : ""
 																		},
 																		{
 																			"0.int" : 1036,
@@ -644,7 +644,7 @@
 																							"0.int" : 200,
 																							"1.is_root" : 2,
 																							"2.kind" : "变量名",
-																							"3.value" : "a"
+																							"4.value" : "a"
 																						},
 																						{
 																							"0.int" : 1031,
@@ -656,10 +656,10 @@
 																									"0.int" : 36,
 																									"1.is_root" : 2,
 																									"2.kind" : "=",
-																									"3.value" : "="
+																									"4.value" : "="
 																								}
 																							],
-																							"3.value" : ""
+																							"4.value" : ""
 																						},
 																						{
 																							"0.int" : 1023,
@@ -683,40 +683,40 @@
 																													"0.int" : 301,
 																													"1.is_root" : 2,
 																													"2.kind" : "数值常量",
-																													"3.value" : "1"
+																													"4.value" : "1"
 																												}
 																											],
-																											"3.value" : ""
+																											"4.value" : ""
 																										}
 																									],
-																									"3.value" : ""
+																									"4.value" : ""
 																								}
 																							],
-																							"3.value" : ""
+																							"4.value" : ""
 																						}
 																					],
-																					"3.value" : ""
+																					"4.value" : ""
 																				}
 																			],
-																			"3.value" : ""
+																			"4.value" : ""
 																		}
 																	],
-																	"3.value" : ""
+																	"4.value" : ""
 																},
 																{
 																	"0.int" : 111,
 																	"1.is_root" : 2,
 																	"2.kind" : ";",
-																	"3.value" : ";"
+																	"4.value" : ";"
 																}
 															],
-															"3.value" : ""
+															"4.value" : ""
 														}
 													],
-													"3.value" : ""
+													"4.value" : ""
 												}
 											],
-											"3.value" : ""
+											"4.value" : ""
 										},
 										{
 											"0.int" : 1016,
@@ -746,10 +746,10 @@
 																			"0.int" : 66,
 																			"1.is_root" : 2,
 																			"2.kind" : "double",
-																			"3.value" : "double"
+																			"4.value" : "double"
 																		}
 																	],
-																	"3.value" : ""
+																	"4.value" : ""
 																},
 																{
 																	"0.int" : 1036,
@@ -767,7 +767,7 @@
 																					"0.int" : 200,
 																					"1.is_root" : 2,
 																					"2.kind" : "变量名",
-																					"3.value" : "c"
+																					"4.value" : "c"
 																				},
 																				{
 																					"0.int" : 1031,
@@ -779,10 +779,10 @@
 																							"0.int" : 36,
 																							"1.is_root" : 2,
 																							"2.kind" : "=",
-																							"3.value" : "="
+																							"4.value" : "="
 																						}
 																					],
-																					"3.value" : ""
+																					"4.value" : ""
 																				},
 																				{
 																					"0.int" : 1023,
@@ -806,56 +806,56 @@
 																											"0.int" : 301,
 																											"1.is_root" : 2,
 																											"2.kind" : "数值常量",
-																											"3.value" : "-123.123"
+																											"4.value" : "-123.123"
 																										}
 																									],
-																									"3.value" : ""
+																									"4.value" : ""
 																								}
 																							],
-																							"3.value" : ""
+																							"4.value" : ""
 																						}
 																					],
-																					"3.value" : ""
+																					"4.value" : ""
 																				}
 																			],
-																			"3.value" : ""
+																			"4.value" : ""
 																		}
 																	],
-																	"3.value" : ""
+																	"4.value" : ""
 																}
 															],
-															"3.value" : ""
+															"4.value" : ""
 														},
 														{
 															"0.int" : 111,
 															"1.is_root" : 2,
 															"2.kind" : ";",
-															"3.value" : ";"
+															"4.value" : ";"
 														}
 													],
-													"3.value" : ""
+													"4.value" : ""
 												}
 											],
-											"3.value" : ""
+											"4.value" : ""
 										}
 									],
-									"3.value" : ""
+									"4.value" : ""
 								},
 								{
 									"0.int" : 104,
 									"1.is_root" : 2,
 									"2.kind" : "}",
-									"3.value" : "}"
+									"4.value" : "}"
 								}
 							],
-							"3.value" : ""
+							"4.value" : ""
 						}
 					],
-					"3.value" : ""
+					"4.value" : ""
 				}
 			],
-			"3.value" : ""
+			"4.value" : ""
 		}
 	],
-	"3.value" : ""
+	"4.value" : ""
 }
