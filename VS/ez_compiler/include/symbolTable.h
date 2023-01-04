@@ -1,11 +1,13 @@
 #pragma once
 #include "config.h"
 #include <map>
+ 
 extern config con;
 enum class type;
 class symbol;
 class metaSymbolTable;
 class symbolTable;
+const string temp = "T";
 
 enum class type {
 	BOOL,
@@ -56,6 +58,8 @@ public:
 	symbol* look(string name);
 private:
 	map<int, symbol*> table;
+	int num = 0;
+	friend class symbolTable;
 };
 
 class symbolTable
@@ -67,6 +71,7 @@ public:
 	symbol* look(string name);
 	void mktable();
 	void detable();
+	string get_temp();
 private:
 	bool is_delete;
 	struct node {

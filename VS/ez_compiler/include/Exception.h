@@ -33,5 +33,28 @@ public:
     virtual std::string what();
 };
 
+class MultipleDefinitionsException :public Exception
+{
+public:
+    MultipleDefinitionsException(std::string message, int line) : Exception(message, line) {};
+    virtual ~MultipleDefinitionsException() = default;
+    virtual std::string what();
+};
+
+class UndefinedDefinitionsException : public Exception
+{
+public:
+    UndefinedDefinitionsException(std::string message, int line) : Exception(message, line) {};
+    virtual ~UndefinedDefinitionsException() = default;
+    virtual std::string what();
+};
+
+class ConstantModificationException :public Exception
+{
+public:
+    ConstantModificationException(std::string message, int line) : Exception(message, line) {};
+    virtual ~ConstantModificationException() = default;
+    virtual std::string what();
+};
 
 #endif /* PARSEREXCEPTION_HPP */

@@ -3,6 +3,7 @@
 
 #pragma once
 #include "parserTree.h"
+#include "Exception.h" 
 #include <string>
 #include <vector>
 
@@ -24,7 +25,8 @@ private:
 public:
 	friend InterCode;
 	Quadruple(const int cur, const string op, const string left_num, const string right_num, const string res);
-
+	friend ostream& operator<<(ostream& out, const Quadruple& t);
+	friend ofstream& operator<<(ofstream& out, const Quadruple& t);
 };
 
 // 非终结符基类
@@ -142,11 +144,15 @@ class InterCode
 {
 private:
 	vector<Quadruple> code;
-	int nextquad;			// 当前待写地址
-	vector<VN*> eleStack;     // E栈
+	int nextquad;				// 当前待写地址
+	vector<VN*> eleStack;		// E栈
 	vector<int> operand;		// 操作数栈
+	int line;					// 当前对应的输入代码行
+	parserTree* pst;			// 引用传入
 public:
 	InterCode();
+
+	InterCode(parserTree& pst);
 	
 	vector<int> merge(const vector<int>& L1,const vector<int>& L2); // 合并两条链
 	void merge(const vector<int>& L1, const vector<int>& L2, vector<int>& L3);
@@ -182,8 +188,11 @@ public:
 	// 循环语句
 	void while_do_statement();
 
-	void genCode(const node& root);
+	void genCode(const node& root,int line);
 
+	void outputCode(const char* filename=NULL);
+	
+	
 };
 #endif // !INTRERCODE_H
 
