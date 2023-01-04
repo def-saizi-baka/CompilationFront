@@ -65,4 +65,5 @@
         "numeric": "cpp",
         "valarray": "cpp"
     },
+    "files.encoding": "gbk"
 }

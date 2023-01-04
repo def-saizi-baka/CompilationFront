@@ -1,4 +1,4 @@
-#include "config.h"
+#include "../include/config.h"
 
 config::config()
 {
@@ -20,7 +20,7 @@ void config::init()
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
-		ssm << temp;//å…¨éƒ¨æ”¾ä¸‹å»
+		ssm << temp;//È«²¿·ÅÏÂÈ¥
 		ssm >> content;
 		ssm >> id;
 		ssm >> raw;
@@ -41,7 +41,7 @@ void config::init()
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
-		ssm << temp;//å…¨éƒ¨æ”¾ä¸‹å»
+		ssm << temp;//È«²¿·ÅÏÂÈ¥
 		ssm >> content;
 		ssm >> id;
 		ssm >> raw;
@@ -63,7 +63,7 @@ void config::init()
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
-		ssm << temp;//å…¨éƒ¨æ”¾ä¸‹å»
+		ssm << temp;//È«²¿·ÅÏÂÈ¥
 		ssm >> content;
 		ssm >> id;
 		ssm >> raw;
@@ -85,7 +85,7 @@ void config::init()
 	assert(fin.is_open());
 	while (fin.peek() != EOF) {
 		getline(fin, temp);
-		ssm << temp;//å…¨éƒ¨æ”¾ä¸‹å»
+		ssm << temp;//È«²¿·ÅÏÂÈ¥
 		ssm >> content;
 		ssm >> id;
 		ssm.clear();
@@ -94,7 +94,7 @@ void config::init()
 		this->dic_symbols._symbols[id] = content;
 	}
 	fin.close();
-	this->dic_symbols.symbols[this->dic_symbols.end] = Config::end_int; //åŠ ä¸Šæ ˆåº•ç¬¦å·
+	this->dic_symbols.symbols[this->dic_symbols.end] = Config::end_int; //¼ÓÉÏÕ»µ×·ûºÅ
 	this->dic_symbols._symbols[Config::end_int] = this->dic_symbols.end;
 
 	logFile.open(log_path, ios::out);
@@ -104,21 +104,21 @@ void config::init()
 	assert(fin.is_open());
 	while (fin.peek()!= EOF){
 		getline(fin, temp);
-		auto pos = temp.find("â†’");
+		auto pos = temp.find("¡ú");
 		if (pos == string::npos) {
-			log("[ERROR] è¯­æ³•è¡¨è¾¾å¼é”™è¯¯ï¼Œç¼ºå°‘â†’");
+			log("[ERROR] Óï·¨±í´ïÊ½´íÎó£¬È±ÉÙ¡ú");
 			return;
 		}
-		//åˆ‡åˆ†å­—ç¬¦ä¸²
-		string src = temp.substr(0, pos); //èµ·å§‹çŠ¶æ€
-		string des = temp.substr(pos + 2); //åˆ°è¾¾çŠ¶æ€
+		//ÇĞ·Ö×Ö·û´®
+		string src = temp.substr(0, pos); //ÆğÊ¼×´Ì¬
+		string des = temp.substr(pos + 2); //µ½´ï×´Ì¬
 		vector<int> src_list, des_list;
 		get_phases_list(src_list, *this, src);
 		get_phases_list(des_list, *this, des);
 		if (src_list.size() != 1) 
-			log("[ERROR] èµ·å§‹çŠ¶æ€é›†åˆåº”è¯¥æœ‰ä¸”åªèƒ½æœ‰1ä¸ª");
+			log("[ERROR] ÆğÊ¼×´Ì¬¼¯ºÏÓ¦¸ÃÓĞÇÒÖ»ÄÜÓĞ1¸ö");
 		this->grammar.push_back(make_pair(src_list[0], des_list));
-		log(string("[INFO] æˆåŠŸå¯¼å…¥è¯­æ³•è¡¨è¾¾å¼" + temp));
+		log(string("[INFO] ³É¹¦µ¼ÈëÓï·¨±í´ïÊ½" + temp));
 	}
 	fin.close();
 }
@@ -149,30 +149,30 @@ const map<string, int>& config::get_stop_symbols()const
 const map<string, int>& config::get_unstop_symbols()const
 {
 	return this->dic_symbols.unstop_symbols;
-	// TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
+	// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
 }
 
 const map<string, int>& config::get_keywords()const
 {
 	return this->dic_symbols.keywords;
-	// TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
+	// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
 }
 
 const map<string, int>& config::get_operators()const
 {
 	return this->dic_symbols.operators;
-	// TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
+	// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
 }
 
 const map<string, int>& config::get_delimiters()const
 {
 	return this->dic_symbols.delimiters;
-	// TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
+	// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
 }
 
 const vector<regex_exp>& config::get_regex() const
 {
 	return this->regexList;
-	// TODO: åœ¨æ­¤å¤„æ’å…¥ return è¯­å¥
+	// TODO: ÔÚ´Ë´¦²åÈë return Óï¾ä
 }
 

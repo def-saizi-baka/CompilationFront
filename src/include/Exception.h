@@ -4,7 +4,7 @@
 #include <string>
 #include <exception>
 
-//鎶借薄鐨勮娉曞垎鏋愬櫒鐨勫紓甯哥被
+//抽象的语法分析器的异常类
 class Exception :public std::exception
 {
 public:
@@ -16,7 +16,7 @@ protected:
     int line;
 };
 
-//璇硶鍒嗘瀽鍣ㄤ骇鐢熺殑閿欒
+//语法分析器产生的错误
 class parserException : public Exception
 {
 public:

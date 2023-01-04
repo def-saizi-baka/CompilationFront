@@ -32,5 +32,5 @@ private:
 	string path;
 	ifstream fin;
 	int line;
-	bool isExegesis;//鏄惁鍦ㄦ敞閲婃€�
+	bool isExegesis;//是否在注释��??
 };

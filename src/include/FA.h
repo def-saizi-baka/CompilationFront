@@ -19,6 +19,20 @@ using namespace std;
 #define KEEP_END		true
 #define READ_SYMBOLTABLE     4
 
+#define NONE_ENDSTATE -1
+#define IF_ENDSTATE 73
+#define ELSE_END_STATE 74
+#define WHILE_ENDSTATE 80
+// {
+#define LEFT_BLOCK_STATE 103
+// M
+#define M_String "{__M__}"
+#define M_STATE 10001
+// N
+#define N_String "{__N__}" 
+#define N_STATE 10002
+
+
 
 class FA;
 class DFA;
@@ -44,8 +58,8 @@ class FA{
     protected:
         int begNode;
         int endNode;
-        vector<VNode> mgraph;       // èŠ‚ç‚¹è¡¨
-        set<char>  symbolTable;    // å­—æ¯è¡¨
+        vector<VNode> mgraph;       // ½Úµã±í
+        set<char>  symbolTable;    // ×ÖÄ¸±í
 
         static map<char, int> pri_op;
         void initOP();
@@ -68,17 +82,17 @@ class FA{
 
         void showFA();
         
-        // æŸ¥æ‰¾ç´¢å¼•ä¸ºsrc_idèŠ‚ç‚¹è¾“å…¥trans_chåè½¬ç§»èƒ½åˆ°çš„èŠ‚ç‚¹é›†åˆ
+        // ²éÕÒË÷ÒıÎªsrc_id½ÚµãÊäÈëtrans_chºó×ªÒÆÄÜµ½µÄ½Úµã¼¯ºÏ
         set<int> findNextNode(int src_id, char trans_ch);
 
         FA toDFA();
-        // æ£€æŸ¥ä¸²æ˜¯å¦èƒ½è¢«æ¥æ”¶
+        // ¼ì²é´®ÊÇ·ñÄÜ±»½ÓÊÕ
         vector<token> checkStr(const string& in,int& sym_idx,int& err_t,int line);
 
-        // ä¿å­˜FA
+        // ±£´æFA
         void saveDFA(const string& model_file);
 
-        // åŠ è½½FA
+        // ¼ÓÔØFA
         void loadDFA(const string& model_file);
 
 };

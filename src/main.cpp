@@ -1,9 +1,9 @@
-#include "FA.h"
-#include "inputBuffer.h"
-#include "Parser.hpp"
-#include "parserTree.hpp"
-#include "Gram.h"
-#include "Exception.h"
+#include "include/FA.h"
+#include "include/inputBuffer.h"
+#include "include/Parser.hpp"
+#include "include/parserTree.h"
+#include "include/Gram.h"
+#include "include/Exception.h"
 
 #define ONLY_LEX    0
 #define LEX_GRAMMER 1
@@ -27,8 +27,8 @@ struct cmdOptions{
 
     cmdOptions()
     {
-        // é»˜è®¤ä½¿ç”¨è‡ªå¸¦çš„dfaæ¨¡å‹åŠ è½½
-        // é»˜è®¤è¿›è¡Œè¯æ³•+è¯­æ³•åˆ†æ
+        // Ä¬ÈÏÊ¹ÓÃ×Ô´øµÄdfaÄ£ĞÍ¼ÓÔØ
+        // Ä¬ÈÏ½øĞĞ´Ê·¨+Óï·¨·ÖÎö
         unKnown = false;
         unKnownCmd = "";
         isHelp = false;
@@ -176,7 +176,7 @@ void lexParse(FA& dfa,string inFile,string outFile)
 {
     int sys_idx, err_idx;
 
-    // è¯æ³•åˆ†æè·å–åˆ°å•è¯è¡¨ç¤ºåºåˆ—
+    // ´Ê·¨·ÖÎö»ñÈ¡µ½µ¥´Ê±íÊ¾ĞòÁĞ
     string inputFile = inFile;
     InputBuffer inputBuffer(inputFile);
     vector<token> tokens;
@@ -203,7 +203,7 @@ void lexParse(FA& dfa,string inFile,string outFile)
 void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens,int isDebug)
 {
     int sys_idx, err_idx;
-    // è¯æ³•åˆ†æè·å–åˆ°å•è¯è¡¨ç¤ºåºåˆ—
+    // ´Ê·¨·ÖÎö»ñÈ¡µ½µ¥´Ê±íÊ¾ĞòÁĞ
     string inputFile = inFile;
     InputBuffer inputBuffer(inputFile);
     while(inputBuffer.readline() != InputState::END_OF_FILE){
@@ -239,24 +239,20 @@ void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens,int isD
 
 void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDebug)
 {
-    int sys_idx, err_idx;
+    //int sys_idx, err_idx;
 
     vector<token> tokens;
     lexParse(dfa,inFile,lexOutFile,tokens,isDebug);
 
-    // è¯­æ³•åˆ†æï¼Œä»¥jsonçš„æ ¼å¼è¾“å‡ºè¯­æ³•æ ‘
+    // Óï·¨·ÖÎö£¬ÒÔjsonµÄ¸ñÊ½Êä³öÓï·¨Ê÷
     CFG cfg;
-    // è®¾ç½®æ˜¯å¦æ‰“å°è¿‡ç¨‹ä¿¡æ¯
+    // ÉèÖÃÊÇ·ñ´òÓ¡¹ı³ÌĞÅÏ¢
     if(isDebug){
         cfg.setDebug();
     }
     cout << endl;
     cout << "building the ACTION table and GOTO table"<<endl;
-    cfg.initItems();
-    cfg.initLRItems();
-	cfg.formFirstSet();
-    cfg.buildClosures();
-    cfg.buildAnalysisTable();
+    cfg.load(true);
     map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
     cout << "build the ACTION table and GOTO table successfully!" << endl;
 
@@ -264,7 +260,7 @@ void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDeb
     if(isDebug)
     {
         cout << "******************************************************************************************************" <<endl;
-        cout << "                         ç§»è¿›å½’çº¦è¿‡ç¨‹å¦‚ä¸‹ :                                                 " <<endl;
+        cout << "                         ÒÆ½ø¹éÔ¼¹ı³ÌÈçÏÂ :                                                 " <<endl;
         cout << "******************************************************************************************************" <<endl;
     }
     Pa.setDebug(isDebug);
@@ -293,7 +289,7 @@ void optionEXE(cmdOptions& ops)
             return ;
         }
         
-        // dfaæ•°æ®çš„åŠ è½½å’Œä¿å­˜
+        // dfaÊı¾İµÄ¼ÓÔØºÍ±£´æ
         if(ops.isSave){
             saveDFA(dfa,ops.modelFile);
         }
@@ -309,7 +305,7 @@ void optionEXE(cmdOptions& ops)
         }
 
         if(ops.processType == LEX_GRAMMER){
-            // æ‰§è¡Œè¯­æ³•åˆ†æ
+            // Ö´ĞĞÓï·¨·ÖÎö
             gramParse(dfa,ops.inFile,ops.outFile,ops.lexOutFile,ops.isDebug);
         }else{
             lexParse(dfa,ops.inFile,ops.lexOutFile);
@@ -318,7 +314,7 @@ void optionEXE(cmdOptions& ops)
     }
 }
 
-int main(int argc,char** argv)
+int main(int argc,char** argv) 
 {
     try{
         cmdOptions ops;

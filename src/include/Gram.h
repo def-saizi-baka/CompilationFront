@@ -9,23 +9,24 @@
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <cstring>
 #include "config.h"
 
 #define ACTION_REDUCE	0
 #define ACTION_MOVE		1
 
-#define EPSILON			999 // è¿™é‡Œä¹Ÿæ˜¯å·æ‡’äº†ï¼Œç¼åˆçš„æ—¶å€™è¦æ¢æˆç¬¦å·è¡¨çš„ç¬¦å·
+#define EPSILON			999 // ÕâÀïÒ²ÊÇÍµÀÁÁË£¬·ìºÏµÄÊ±ºòÒª»»³É·ûºÅ±íµÄ·ûºÅ
 using namespace std;
 
 class CFG;
 
-// å•æ¡è¯­æ³•äº§ç”Ÿå¼ï¼Œæ³¨æ„ä¸Itemçš„åŒºåˆ«
+// µ¥ÌõÓï·¨²úÉúÊ½£¬×¢ÒâÓëItemµÄÇø±ğ
 class Gram{
     protected:
         int left;
         vector<int> right;
     public:
-        // ä»é…ç½®æ–‡ä»¶ä¸­è¯»å–åˆå§‹æ–‡æ³•
+        // ´ÓÅäÖÃÎÄ¼şÖĞ¶ÁÈ¡³õÊ¼ÎÄ·¨
         Gram(int left, const vector<int>& right);
         Gram(const Gram& tmp);
         
@@ -36,36 +37,36 @@ class Gram{
 };
 
 
-// ç»§æ‰¿äº†Gramçš„å±æ€§ï¼Œå¢åŠ äº†dotPosç­‰å±æ€§
+// ¼Ì³ĞÁËGramµÄÊôĞÔ£¬Ôö¼ÓÁËdotPosµÈÊôĞÔ
 class Item : public Gram{
     private:
-        // dosPosè¡¨ç¤ºç‚¹å­˜åœ¨äºé¡¹ç›®å³ä¾§çš„å“ªä¸ªä½ç½®ï¼Œä¾‹1002 -> .1003 1004,dosPos = 0
-        // å½“ç‚¹å¤„äºæœ€åä½ç½®ï¼Œå°†dosPosè®¾ç½®ä¸º -1 
-        uint32_t dotPos;                 // ç‚¹çš„ä½ç½®
-        int forward;        // å‰çº¿æœç´¢ç¬¦å·
-        int type;                   // å½“å‰æ“ä½œæ˜¯ç§»è¿›è¿˜æ˜¯è§„çº¦
-        int id;             // ç¬¬å‡ æ¡äº§ç”Ÿå¼
+        // dosPos±íÊ¾µã´æÔÚÓÚÏîÄ¿ÓÒ²àµÄÄÄ¸öÎ»ÖÃ£¬Àı1002 -> .1003 1004,dosPos = 0
+        // µ±µã´¦ÓÚ×îºóÎ»ÖÃ£¬½«dosPosÉèÖÃÎª -1 
+        uint32_t dotPos;                 // µãµÄÎ»ÖÃ
+        int forward;        // Ç°ÏßËÑË÷·ûºÅ
+        int type;                   // µ±Ç°²Ù×÷ÊÇÒÆ½ø»¹ÊÇ¹æÔ¼
+        int id;             // µÚ¼¸Ìõ²úÉúÊ½
     public:
-        // å®é™…åªåˆå§‹åŒ–äº†left å’Œ right
+        // Êµ¼ÊÖ»³õÊ¼»¯ÁËleft ºÍ right
         Item(int left, const vector<int>& right, uint32_t dotPos=0);
 
         Item(const Gram&, uint32_t dotPos=0);
 
-        // è·å–ç±»å‹
+        // »ñÈ¡ÀàĞÍ
         int getType(){return this->type;}
         int getDotPos(){return this->dotPos;}
-        // è·å–ç‚¹åé¢çš„ä¸€ä¸ªå…ƒç´ , è‡ªè¡Œä¿è¯æ˜¯å¦è¶Šç•Œ
+        // »ñÈ¡µãºóÃæµÄÒ»¸öÔªËØ, ×ÔĞĞ±£Ö¤ÊÇ·ñÔ½½ç
         int getDotNext(){return this->right[this->dotPos];}
         int getForward(){return this->forward;}
         int getId(){return this->id;}
-        // è·å–ç‚¹åé¢çš„æ‰€æœ‰å…ƒç´ 
+        // »ñÈ¡µãºóÃæµÄËùÓĞÔªËØ
         vector<int> getDotNextAll();
 
         void setId(int id){this->id = id;}
         void setForward(int a){this->forward = a;}
-        // ç‚¹å‘å·¦ç§»åŠ¨ä¸€æ ¼
+        // µãÏò×óÒÆ¶¯Ò»¸ñ
         void dotRightMove();
-        // ä»å…¶ä»–Itemä¸­åˆ›å»ºæ–°çš„Itemï¼ŒdotPosçš„ç§»åŠ¨
+        // ´ÓÆäËûItemÖĞ´´½¨ĞÂµÄItem£¬dotPosµÄÒÆ¶¯
         // Item(const Item&);
 
         void showItem();
@@ -101,45 +102,47 @@ class Closure;
 
 class CFG{
     private:
-        vector<Gram> initGram;                  // åˆå§‹è¯­æ³•
-        vector<Item> allItem;	                // æ‹“å±•è¯­æ³• 
-        vector<Item> LRItem;				    // LR0é¡¹ç›®
+        vector<Gram> initGram;                  // ³õÊ¼Óï·¨
+        vector<Item> allItem;	                // ÍØÕ¹Óï·¨ 
+        vector<Item> LRItem;				    // LR0ÏîÄ¿
 
-        map<string, int> terSysboms;                 // ç»ˆç»“ç¬¦å·é›†åˆ
-        map<string, int> nonTerSysboms;              // éç»ˆç»“ç¬¦å·é›†åˆ
+        map<string, int> terSysboms;                 // ÖÕ½á·ûºÅ¼¯ºÏ
+        map<string, int> nonTerSysboms;              // ·ÇÖÕ½á·ûºÅ¼¯ºÏ
 
 
-        vector<Closure> closures;               // é—­åŒ…
-        vector< set<pair<int, int>> > closuresRelation;    // é—­åŒ…ä¹‹é—´çš„å…³ç³», ä¸‹æ ‡ä»£è¡¨ç¬¬å‡ ä¸ªæ¯”è¾ƒé¡¹ç›®é›†, é‡Œé¢çš„é›†åˆä¸­çš„pair<è¾“å…¥ç¬¦å·, è½¬ç§»åˆ°çš„é—­åŒ…é›†åˆ>
+        vector<Closure> closures;               // ±Õ°ü
+        vector< set<pair<int, int>> > closuresRelation;    // ±Õ°üÖ®¼äµÄ¹ØÏµ, ÏÂ±ê´ú±íµÚ¼¸¸ö±È½ÏÏîÄ¿¼¯, ÀïÃæµÄ¼¯ºÏÖĞµÄpair<ÊäÈë·ûºÅ, ×ªÒÆµ½µÄ±Õ°ü¼¯ºÏ>
 
         map<int, vector< pair<int, int> >> analysisTable;
 
-        map<int, set<int> > leftToGramIndex;	// æ ¹æ®ç”Ÿæˆå¼å·¦ä¾§å¿«é€Ÿé”å®šå¯¹åº”çš„ç”Ÿæˆå¼
-        //map<int, set<int>> firstSet;			// ä¿å­˜å…¨éƒ¨éç»ˆç»“ç¬¦çš„FIRSTé›†,
+        map<int, set<int> > leftToGramIndex;	// ¸ù¾İÉú³ÉÊ½×ó²à¿ìËÙËø¶¨¶ÔÓ¦µÄÉú³ÉÊ½
+        //map<int, set<int>> firstSet;			// ±£´æÈ«²¿·ÇÖÕ½á·ûµÄFIRST¼¯,
         map<int, FIRST> firstSet;
-        int begState;							// åˆå§‹ç»ˆç»“ç¬¦çš„çŠ¶æ€
-        bool debug = false;                     // è°ƒè¯•æ¨¡å¼
+        int begState;							// ³õÊ¼ÖÕ½á·ûµÄ×´Ì¬
+        bool debug = false;                     // µ÷ÊÔÄ£Ê½
 
-        void formFirstSet(int value);			// æ±‚å–æŸä¸ªç¬¦å·çš„éç»ˆç»“ç¬¦,ä¸»è¦æ˜¯ç”¨äºç”ŸæˆfirstSet
+        void formFirstSet(int value);			// ÇóÈ¡Ä³¸ö·ûºÅµÄ·ÇÖÕ½á·û,Ö÷ÒªÊÇÓÃÓÚÉú³ÉfirstSet
     public:
         CFG();
         CFG(const string& grammerFile);
-        //void expandGrammmer();								//ç”Ÿæˆæ‹“å¹¿æ–‡æ³•,ä¸ªäººæ„Ÿè§‰æ²¡å¿…è¦ï¼Œç›´æ¥CFGåˆå§‹åŒ–çš„æ—¶å€™ç›´æ¥æ‹“å¹¿æ–‡æ³•å°±å®Œäº‹äº†
-        void initItems();                                       // ç›´æ¥CFGåˆå§‹åŒ–çš„æ—¶å€™ç›´æ¥æ‹“å¹¿æ–‡æ³•
-        void initLRItems();										// ç”Ÿæˆæ‰€æœ‰LR(0)é¡¹ç›®
-        void formFirstSet();									// ç”Ÿæˆæ‰€æœ‰ç¬¦å·çš„Firsté›†
+        //void expandGrammmer();								//Éú³ÉÍØ¹ãÎÄ·¨,¸öÈË¸Ğ¾õÃ»±ØÒª£¬Ö±½ÓCFG³õÊ¼»¯µÄÊ±ºòÖ±½ÓÍØ¹ãÎÄ·¨¾ÍÍêÊÂÁË
+        void initItems();                                       // Ö±½ÓCFG³õÊ¼»¯µÄÊ±ºòÖ±½ÓÍØ¹ãÎÄ·¨
+        void initLRItems();										// Éú³ÉËùÓĞLR(0)ÏîÄ¿
+        void formFirstSet();									// Éú³ÉËùÓĞ·ûºÅµÄFirst¼¯
 
-        void setDebug(){this->debug = true;}                    // è®¾ç½®è¾“å‡ºå…¨éƒ¨å†…å®¹
-        set<int> getFirstSet(int value);						// è·å–å•ä¸ªéç»ˆç»“ç¬¦çš„FIRSTé›†
-        set<int> getFirstSet(vector<int> gramStr);					// è·å–æŸä¸ªä¸²çš„éç»ˆç»“ç¬¦
+        void setDebug(){this->debug = true;}                    // ÉèÖÃÊä³öÈ«²¿ÄÚÈİ
+        set<int> getFirstSet(int value);						// »ñÈ¡µ¥¸ö·ÇÖÕ½á·ûµÄFIRST¼¯
+        set<int> getFirstSet(vector<int> gramStr);					// »ñÈ¡Ä³¸ö´®µÄ·ÇÖÕ½á·û
         map<int, std::vector<std::pair<int, int>>> getAnalysisTable(){return this->analysisTable;}
-        Item getInitItem();                                     // è·å–é¡¹ç›®åˆå§‹é¡¹
+        Item getInitItem();                                     // »ñÈ¡ÏîÄ¿³õÊ¼Ïî
         void showCFG();
         void showFirstSet();
-        void buildClosures();                                    // æ„å»ºé—­åŒ…
-        void buildAnalysisTable();                               // æ„å»ºactionå’Œgotoè¡¨
+        void buildClosures();                                    // ¹¹½¨±Õ°ü
+        void buildAnalysisTable();                               // ¹¹½¨actionºÍgoto±í
         
-
+        void save(string path = "analysisTableModel");
+        void load(string path = "analysisTableModel");
+        void load(bool simpleLoad, string path = "analysisTableModel");// select¾ö¶¨ÊÇ·ñÒª½øĞĞÖ±½Ó¼ÓÔØ,trueÎªÖ±½Ó¼ÓÔØ£¬±ØĞëÌá¹©
         friend class Closure;
 };
 
@@ -147,9 +150,9 @@ class Closure{
     private:
         set<Item>family;
     public:
-        // åˆå§‹åŒ–ä¸€ä¸ªé—­åŒ…, å¹¶è¿›è¡Œæ‰©å±•
+        // ³õÊ¼»¯Ò»¸ö±Õ°ü, ²¢½øĞĞÀ©Õ¹
         Closure(CFG& cfg,const set<Item>& itemSet);
-        // è¯¥æ„é€ å‡½æ•°ä¸ä¼šè¿›è¡Œæ‰©å±•
+        // ¸Ã¹¹Ôìº¯Êı²»»á½øĞĞÀ©Õ¹
         Closure(set<Item>& itemSet);
         set<Item> GO(int input);
 

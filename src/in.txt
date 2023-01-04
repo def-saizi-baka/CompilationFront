@@ -1,6 +1,7 @@
-int main()
-{
-int a = 1;
-printf();
-double b = -123.123;
+int main(){
+	const int a = 1;
+  	if(a == 1){
+    	int b = 1;
+    }
+  
 }

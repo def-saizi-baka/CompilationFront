@@ -6,20 +6,21 @@
 #include <sstream>
 #include <vector>
 #include "const.h"
+#include <iostream>
 using namespace std;
 
 
-typedef struct {
+struct token{
 	int line = 0;
 	string value = "";
 	int symbol = -1;
-}token;
+};
 
-typedef struct{
+struct regex_exp{
 	string regex;
 	int endType = -1;
 	bool raw = false;
-} regex_exp;
+} ;
 
 class config
 {
@@ -39,12 +40,13 @@ public:
 	const map<string, int>& get_symbols() const { return this->dic_symbols.symbols; };
 	map<int, string>& get__symbols(){ return this->dic_symbols._symbols; };
 
-	string path_keyword = "./config/keywords.txt";
-	string path_operator = "./config/operator_symbol.txt";
-	string path_delimiter = "./config/delimiter.txt";
-	string path_unstop = "./config/unstop.txt";
-	string log_path = "./config/parser.log";
-	string grammar_path = "./config/grammar.txt";
+	string path_keyword		= "config/keywords.txt";
+	string path_operator	= "config/operator_symbol.txt";
+	string path_delimiter	= "config/delimiter.txt";
+	string path_unstop		= "config/unstop.txt";
+	string log_path			= "config/parser.log";
+	string grammar_path		= "config/grammar.txt";
+
 private:
 	struct {
 		map<string, int> stop_symbols;
@@ -54,9 +56,9 @@ private:
 		map<string, int> delimiters;
 		map<string, int> symbols;
 		map<int, string> _symbols;
-		string end = Config::end; //ç”¨ä½œå½’çº¦çš„ç»ˆæ­¢ç¬¦
-	}dic_symbols; //ç¬¦å·å­—å…¸ï¼ŒæŠŠæ¯ä¸€ä¸ªç¬¦å·æ˜ å°„åˆ°ä¸€ä¸ªintå€¼ 
-	vector<pair<int, vector<int>>> grammar;//æ‰€æœ‰æ–‡æ³•è¡¨
+		string end = Config::end; //ÓÃ×÷¹éÔ¼µÄÖÕÖ¹·û
+	}dic_symbols; //·ûºÅ×Öµä£¬°ÑÃ¿Ò»¸ö·ûºÅÓ³Éäµ½Ò»¸öintÖµ 
+	vector<pair<int, vector<int>>> grammar;//ËùÓĞÎÄ·¨±í
 	ofstream logFile;
 	vector<regex_exp> regexList;
 };
@@ -76,10 +78,10 @@ static void get_phases_list(vector<int>& res, config& con, string input)
 			if (j < i + 2)
 				continue;
 			else {
-				string temp = input.substr(i + 1, j - i - 1);//å¾—åˆ°çŠ¶æ€å
+				string temp = input.substr(i + 1, j - i - 1);//µÃµ½×´Ì¬Ãû
 				temp.erase(0, temp.find_first_not_of(" "));
 				temp.erase(temp.find_last_not_of(" ") + 1);
-				//ä»¥ä¸Šè¿™äº›æ“ä½œæ˜¯é¿å…å»é™¤ç©ºæ ¼
+				//ÒÔÉÏÕâĞ©²Ù×÷ÊÇ±ÜÃâÈ¥³ı¿Õ¸ñ
 				while(true){
 					int t = temp.find("large");
 					if(t != string::npos){
@@ -97,7 +99,7 @@ static void get_phases_list(vector<int>& res, config& con, string input)
 					if (iter_unstop != con.get_unstop_symbols().end())
 						res.push_back(iter_unstop->second);
 					else {
-						con.log(string("[ERROR] æ²¡æœ‰è¿™ä¸ªçŠ¶æ€ ") + temp);
+						con.log(string("[ERROR] Ã»ÓĞÕâ¸ö×´Ì¬ ") + temp);
 					}
 				}
 			}

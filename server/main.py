@@ -46,7 +46,7 @@ def getGramParse():
             shell=False,
         )
     except subprocess.TimeoutExpired:
-        print('服务器繁忙')
+        print('server busy')
 
     os.chdir(old_cwd) # 恢复工作路径
     print(os.getcwd())
@@ -57,14 +57,14 @@ def getGramParse():
     else:
         # 读取语法结果json
         with open(output_path, 'rb') as f:
-            tree_data = f.read().decode('utf-8')
+            tree_data = f.read().decode('gbk')
         # 读取此法结果txt
         with open(lexput_path, 'rb') as f:
-            lex_data = f.read().decode('utf-8')
+            lex_data = f.read().decode('gbk')
 
 
     try:
-        output = p.stderr.decode('utf-8') # 注意这里是win环境
+        output = p.stderr.decode('gbk') # 注意这里是win环境
     except UnicodeDecodeError:
         print('编码错误')
     
@@ -92,4 +92,4 @@ def getGramParse():
 
 
 if __name__ == '__main__':
-    app.run(port=5500, host="127.0.0.1", debug=True)
+    app.run(port=5501, host="0.0.0.0", debug=True)

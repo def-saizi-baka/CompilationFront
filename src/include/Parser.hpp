@@ -9,8 +9,9 @@
 #include <stack>
 #include <cmath>
 #include <iomanip>
-#include "parserTree.hpp"
+#include "parserTree.h"
 #include "Exception.h"
+#include "intercode.h"
 using namespace std;
 
 extern config con;
@@ -36,9 +37,9 @@ void parser::setDebug(bool debug)
 }
 
 void analysis_info(int id,const vector<int>& status,const stack<int>& signs,bool debug){
- 	// è¾“å‡ºå½“å‰æ ˆ
+ 	// Êä³öµ±Ç°Õ»
 	if(debug)
-    	cout << "\n" << setw(4) << id ;  // è§„çº¦æ­¥éª¤
+    	cout << "\n" << setw(4) << id ;  // ¹æÔ¼²½Öè
 
     stack<int> signs_tmp = signs;
     stack<int> signs_tmp2;
@@ -48,7 +49,7 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs,bool
     }
 
     // State
-    string status_info= "Stateæ ˆ: ";
+    string status_info= "StateÕ»: ";
     for(auto sta : status){
         status_info+=to_string(sta);
         status_info+=", ";
@@ -57,7 +58,7 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs,bool
     	cout << setw(40) << status_info << "  ";
 
     // signs
-    string stack_info = "Signæ ˆ: ";
+    string stack_info = "SignÕ»: ";
     while(!signs_tmp2.empty()){
         stack_info+=to_string(signs_tmp2.top());
         signs_tmp2.pop();
@@ -66,28 +67,29 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs,bool
     }
 	if(debug)
     {
-		cout << setw(40) << stack_info << endl; // signsæ ˆ
+		cout << setw(40) << stack_info << endl; // signsÕ»
     	cout << "============================================" << endl;
 	}
 }
 
 /// <summary>
-/// ä¸»æ§ç¨‹åºï¼Œç§»è¿›å½’çº¦
+/// Ö÷¿Ø³ÌĞò£¬ÒÆ½ø¹éÔ¼
 /// </summary>
-/// <param name="tokens"></param> ä»¥çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦çš„åºåˆ—ä½œä¸ºè¾“å…¥
-/// <param name="action"></param> actionè¡¨
-/// <param name="_goto"></param> gotoè¡¨ï¼Œä¸ºäº†é¿å…gotoå…³é”®å­—å†²çª
-/// <returns></returns> è¿”å›å³å€¼å¼•ç”¨ï¼Œæ˜¯ä¸€ä¸ªåˆ†æå¾—åˆ°çš„çŠ¶æ€åºåˆ—
+/// <param name="tokens"></param> ÒÔ×´Ì¬Î¨Ò»±êÊ¶·ûµÄĞòÁĞ×÷ÎªÊäÈë
+/// <param name="action"></param> action±í
+/// <param name="_goto"></param> goto±í£¬ÎªÁË±ÜÃâgoto¹Ø¼ü×Ö³åÍ»
+/// <returns></returns> ·µ»ØÓÒÖµÒıÓÃ£¬ÊÇÒ»¸ö·ÖÎöµÃµ½µÄ×´Ì¬ĞòÁĞ
 void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<int, int>>>& analysisTable)
 {
+	InterCode interCode;
 	stack<int> signs;
 	vector<int> status;
 	signs.push(Config::end_int);
-	status.push_back(0);//ä»ç¬¬0ä¸ªçŠ¶æ€å¼€å§‹
+	status.push_back(0);//´ÓµÚ0¸ö×´Ì¬¿ªÊ¼
 
     int _ = 0;
 	if(this->debug)
-    	cout << "\n" << setiosflags(ios::left) << "åˆ†æè¿‡ç¨‹: " << endl;
+    	cout << "\n" << setiosflags(ios::left) << "·ÖÎö¹ı³Ì: " << endl;
 
 	for (unsigned idx = 0; idx < tokens.size();) {
         // debug
@@ -100,19 +102,19 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 			while (true){
 				/* code */	
 				next = find(analysisTable, status.back(), tokens[idx].symbol, true,tokens[idx].line);
-				if (next < 0 && next != parser_config::ERROR) {//actionè¡¨é‡Œé¢å°äº0ä»£è¡¨éœ€è¦å½’çº¦
+				if (next < 0 && next != parser_config::ERROR) {//action±íÀïÃæĞ¡ÓÚ0´ú±íĞèÒª¹éÔ¼
 					/* code */	
-					int temp = abs(next);//æ‰¾åˆ°è¦å½’çº¦åˆ°çš„çŠ¶æ€
-					int size = con.get_grammar()[temp].second.size();//æ‰¾åˆ°éœ€è¦å‡ºæ ˆçš„å­—ç¬¦çš„æ•°ç›®
+					int temp = abs(next);//ÕÒµ½Òª¹éÔ¼µ½µÄ×´Ì¬
+					int size = con.get_grammar()[temp].second.size();//ÕÒµ½ĞèÒª³öÕ»µÄ×Ö·ûµÄÊıÄ¿
                     analysis_info(_, status, signs, this->debug);
 					if(this->debug)
-                    	cout << "\t\tè§„çº¦: è¦è§„çº¦çš„è¯­å¥: "<<temp<<",  å‡ºæ ˆä¸ªæ•°: "<< size << endl; 
+                    	cout << "\t\t¹æÔ¼: Òª¹æÔ¼µÄÓï¾ä: "<<temp<<",  ³öÕ»¸öÊı: "<< size << endl; 
 
                     pair<int, std::vector<int>> gram = con.get_grammar()[temp];
 
 					if(this->debug)
                     {
-						cout << "\t\tè§„çº¦è¯­å¥: " << gram.first << " -> ";
+						cout << "\t\t¹æÔ¼Óï¾ä: " << gram.first << " -> ";
 						for(auto out : gram.second){
 							cout << out << " ";
 						}
@@ -122,49 +124,50 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 					for (int j = size - 1; j >= 0; j--) {
 						int t_sign = signs.top();
 						int t_status = status.back();
-						if (con.get_grammar()[temp].second[j] != t_sign) {//è¿™ç§å°±æ˜¯é”™è¯¯å‘ç”Ÿ
-							string message = "[ERROR] å½’çº¦äº§ç”Ÿé”™è¯¯ï¼Œè¯·æ£€æŸ¥è¾“å…¥ï¼Œå½“å‰æ–‡æ³•ç”Ÿæˆå¼ä¸­å‰\
-									çœ‹å¾—åˆ°çš„ç¬¦å·å”¯ä¸€æ ‡è¯†å·æ˜¯ï¼š";
+						if (con.get_grammar()[temp].second[j] != t_sign) {//ÕâÖÖ¾ÍÊÇ´íÎó·¢Éú
+							string message = "[ERROR] ¹éÔ¼²úÉú´íÎó£¬Çë¼ì²éÊäÈë£¬µ±Ç°ÎÄ·¨Éú³ÉÊ½ÖĞÇ°\
+									¿´µÃµ½µÄ·ûºÅÎ¨Ò»±êÊ¶ºÅÊÇ£º";
 							message += to_string(con.get_grammar()[temp].second[j]);
-							message += "ï¼Œä½†æ˜¯è¾“å…¥çš„ç¬¦å·çš„å”¯ä¸€æ ‡è¯†å·æ˜¯ï¼š" + to_string(t_sign);
+							message += "£¬µ«ÊÇÊäÈëµÄ·ûºÅµÄÎ¨Ò»±êÊ¶ºÅÊÇ£º" + to_string(t_sign);
 							con.log(message);
 							throw parserException("sign " + con.get__symbols()[t_sign] +" is not allowed here!",tokens[idx].line);
 						}
 						if(this->debug)
-                        	cout << "\t\t\tçŠ¶æ€ "<<t_status<<", ç¬¦å· "<<t_sign<<" å‡ºæ ˆ"<< endl; 
+                        	cout << "\t\t\t×´Ì¬ "<<t_status<<", ·ûºÅ "<<t_sign<<" ³öÕ»"<< endl; 
 						signs.pop();
 						status.pop_back();
                         analysis_info(_, status, signs, this->debug);
 					}
-					signs.push(con.get_grammar()[temp].first); //é¦–å…ˆæ˜¯å½’çº¦å¾—åˆ°ç¬¦å·å‹æ ˆ
+					signs.push(con.get_grammar()[temp].first); //Ê×ÏÈÊÇ¹éÔ¼µÃµ½·ûºÅÑ¹Õ»
 					next = find(analysisTable, status.back(), signs.top(), false,tokens[idx].line);
 					status.push_back(next);
-					tree.reduction(con.get_grammar()[temp]);//å½’çº¦è¯­æ³•æ ‘
+					tree.reduction(con.get_grammar()[temp]);//¹éÔ¼Óï·¨Ê÷
+					interCode.genCode(*tree.roots.back());
 				}
 				else
 					break;
 			}
 
-			if (next > 0 && next != parser_config::ACCEPT) {//actionè¡¨é‡Œé¢å¤§äº0ä»£è¡¨éœ€è¦ç§»è¿›
+			if (next > 0 && next != parser_config::ACCEPT) {//action±íÀïÃæ´óÓÚ0´ú±íĞèÒªÒÆ½ø
                 if(this->debug)
-					cout << "\t\tç§»è¿›: Status: " << next << " å…¥æ ˆ, signs: " <<tokens[idx].symbol<<" å…¥æ ˆ"<<endl;
+					cout << "\t\tÒÆ½ø: Status: " << next << " ÈëÕ», signs: " <<tokens[idx].symbol<<" ÈëÕ»"<<endl;
 
 				status.push_back(next);
-				signs.push(tokens[idx].symbol);//ç¬¦å·å…¥æ ˆ
+				signs.push(tokens[idx].symbol);//·ûºÅÈëÕ»
                 analysis_info(_, status, signs, this->debug);
-				tree.in(tokens[idx].symbol);
-				idx++;//ç»§ç»­è¯»ä¸‹ä¸€ä¸ªçŠ¶æ€
+				tree.in(tokens[idx].value, tokens[idx].symbol);
+				idx++;//¼ÌĞø¶ÁÏÂÒ»¸ö×´Ì¬
 
 			}
 			else if(next == parser_config::ACCEPT){
-				this->tree.end();//ç»“æŸï¼Œå»ºæ ‘
-				con.log("[INFO] ç§»è¿›å½’çº¦æˆåŠŸå®Œæˆ");
+				this->tree.end();//½áÊø£¬½¨Ê÷
+				con.log("[INFO] ÒÆ½ø¹éÔ¼³É¹¦Íê³É");
 				return;
 			}
 		}
 		else{
 			throw parserException("sign " + con.get__symbols()[idx] +" is not allowed here!", tokens[idx].line);
-			con.log("[ERROR] ç§»è¿›å¤±è´¥ï¼Œå½“å‰åˆ†æåˆ°çš„ç¬¦å·å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(idx));
+			con.log("[ERROR] ÒÆ½øÊ§°Ü£¬µ±Ç°·ÖÎöµ½µÄ·ûºÅÎ¨Ò»±êÊ¶·ûÎª£º" + to_string(idx));
 			return;
 		}
 
@@ -173,29 +176,29 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 }
 
 /// <summary>
-/// æŸ¥æ‰¾actionè¡¨
+/// ²éÕÒaction±í
 /// </summary>
-/// <param name="action"></param> actionè¡¨
-/// <param name="status"></param> å½“å‰çŠ¶æ€
-/// <param name="sign"></param> å‰çœ‹çš„ç¬¦å·
-/// <returns></returns> è¯¥å»å¾€çš„çŠ¶æ€å·
+/// <param name="action"></param> action±í
+/// <param name="status"></param> µ±Ç°×´Ì¬
+/// <param name="sign"></param> Ç°¿´µÄ·ûºÅ
+/// <returns></returns> ¸ÃÈ¥ÍùµÄ×´Ì¬ºÅ
 int parser::find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign,int line)
 {
 	auto iter = action.find(status);
 	if (iter == action.end()) {
-		con.log("[ERROR] å½“å‰çŠ¶æ€åœ¨actionè¡¨ä¸­æ— æ³•æ‰¾åˆ°ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
+		con.log("[ERROR] µ±Ç°×´Ì¬ÔÚaction±íÖĞÎŞ·¨ÕÒµ½£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
 		return parser_config::ERROR;
 	}
 	for (const auto& item : (iter->second)) {
 		if (item.first == sign) {
 			if(this->debug)
             	cout <<"\tStatus: " << status << ",  symbol: " << item.first <<"  ,action: "<< item.second << endl;
-			con.log("[INFO] æˆåŠŸåœ¨actionè¡¨ä¸­æ‰¾åˆ°çŠ¶æ€è½¬ç§»ä¿¡æ¯ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
+			con.log("[INFO] ³É¹¦ÔÚaction±íÖĞÕÒµ½×´Ì¬×ªÒÆĞÅÏ¢£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
 			return item.second;
 		}
 	}
 	throw parserException("sign " + con.get__symbols()[sign] +" is not allowed here!", line);
-	con.log("[ERROR] å½“å‰çŠ¶æ€ä¸‹actionè¡¨ä¸­æ²¡æœ‰æ¥å—å½“å‰å‰çœ‹ç¬¦å·çš„è¡¨é¡¹ï¼Œå½“å‰å‰çœ‹ç¬¦å·å”¯ä¸€æ ‡è¯†ç¬¦ä¸º"
+	con.log("[ERROR] µ±Ç°×´Ì¬ÏÂaction±íÖĞÃ»ÓĞ½ÓÊÜµ±Ç°Ç°¿´·ûºÅµÄ±íÏî£¬µ±Ç°Ç°¿´·ûºÅÎ¨Ò»±êÊ¶·ûÎª"
 		+ to_string(sign));
 	return parser_config::ERROR;
 }
@@ -204,19 +207,19 @@ int parser::find_goto(const map<int, vector<pair<int, int>>>& _goto, int status,
 {
 	auto iter = _goto.find(status);
 	if (iter == _goto.end()) {
-		con.log("[ERROR] å½“å‰çŠ¶æ€åœ¨gotoè¡¨ä¸­æ— æ³•æ‰¾åˆ°ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
+		con.log("[ERROR] µ±Ç°×´Ì¬ÔÚgoto±íÖĞÎŞ·¨ÕÒµ½£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
 		return parser_config::ERROR;
 	}
 	for (const auto& item : (iter->second)) {
 		if (item.first == sign) {
 			if(this->debug)
             	cout <<"\tStatus: " << status << ",  symbol: " << item.first <<"  ,goto: "<< item.second << endl;
-			con.log("[INFO] æˆåŠŸåœ¨gotoè¡¨ä¸­æ‰¾åˆ°çŠ¶æ€è½¬ç§»ä¿¡æ¯ï¼Œå½“å‰çŠ¶æ€å”¯ä¸€æ ‡è¯†ç¬¦ä¸ºï¼š" + to_string(status));
+			con.log("[INFO] ³É¹¦ÔÚgoto±íÖĞÕÒµ½×´Ì¬×ªÒÆĞÅÏ¢£¬µ±Ç°×´Ì¬Î¨Ò»±êÊ¶·ûÎª£º" + to_string(status));
 			return item.second;
 		}
 	}
 	throw parserException("sign " + con.get__symbols()[sign] +" is not allowed here!", line);
-	con.log("[ERROR] å½“å‰çŠ¶æ€ä¸‹gotoè¡¨ä¸­æ²¡æœ‰æ¥å—å½“å‰å‰çœ‹ç¬¦å·çš„è¡¨é¡¹ï¼Œå½“å‰å‰çœ‹ç¬¦å·å”¯ä¸€æ ‡è¯†ç¬¦ä¸º"
+	con.log("[ERROR] µ±Ç°×´Ì¬ÏÂgoto±íÖĞÃ»ÓĞ½ÓÊÜµ±Ç°Ç°¿´·ûºÅµÄ±íÏî£¬µ±Ç°Ç°¿´·ûºÅÎ¨Ò»±êÊ¶·ûÎª"
 		+ to_string(sign));
 	return parser_config::ERROR;
 }

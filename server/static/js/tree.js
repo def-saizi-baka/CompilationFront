@@ -48,7 +48,11 @@ function renderNodes() {
 }
 
 function renderNode(tree, parentId) {
-    var node_name = tree["2.kind"]
+    if(tree["2.kind"] != tree["4.value"])
+        var node_name = tree["2.kind"]+tree["4.value"]
+    else
+        var node_name = tree["2.kind"]
+
     var node_children = tree["3.inner"]
     var is_root = tree["1.is_root"]
     now_id++

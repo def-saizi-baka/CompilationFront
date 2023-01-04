@@ -1,189 +1,92 @@
 #pragma once
+#include "config.h"
 #include <map>
-#include <iostream>
-#include <string>
-#include <set>
-#include <fstream>
-#include <sstream>
-
-using namespace std;
+extern config con;
+enum class type;
+class symbol;
+class metaSymbolTable;
 class symbolTable;
-const string path_keyword = "./keywords.txt";
-const string path_operator = "./operator_symbol.txt";
-const string path_delimiter = "./delimiter.txt";
 
-enum class Type {
-	identification, //标识符
-	const_number_int, //常数
-	const_number_double,
-	const_number_char,
-	const_number_str,
-	keywords, //关键字
-	operator_symbol, //运算符
-	delimiter, //界符
-	none //默认无类型
+enum class type {
+	BOOL,
+	INT, UNSIGNED_INT, SHORT, UNSIGNED_SHORT, LONG, UNSIGNED_LONG, LONG_LONG, UNSIGNED_LONG_LONG,
+	FLOAT, DOUBLE, LONG_DOUBLE,
+	CHAR, UNSIGNED_CHAR, WCHAR_T,
+	STRING,
+	NONE,
+	ERROR
 };
 
-ostream& operator<<(ostream& out, const Type t);
+const std::map<string, type> dic = {
+	make_pair("bool",type::BOOL),
+	make_pair("int",type::INT),
+	make_pair("unsigned int",type::UNSIGNED_INT),
+	make_pair("short",type::SHORT),
+	make_pair("unsigned short",type::UNSIGNED_SHORT),
+	make_pair("long",type::LONG),
+	make_pair("unsigned long",type::UNSIGNED_LONG),
+	make_pair("long long",type::LONG_LONG),
+	make_pair("unsigned long long",type::UNSIGNED_LONG_LONG),
+	make_pair("char",type::CHAR),
+	make_pair("unsigned char",type::UNSIGNED_CHAR),
+	make_pair("wchar_t",type::WCHAR_T),
+	make_pair("string",type::STRING),
+	make_pair("NULL",type::NONE)
+};
 
-typedef struct {
-	string name;
-	string type;
-	//这里到时候还要给具体的值留一个位置
-}id;
-
-typedef struct {
-	union {
-		bool nameBool;
-		int nameInt;
-		short nameShort;
-		long nameLong;
-		long long nameLongLong;
-		unsigned nameUInt;
-		unsigned short nameUShort;
-		unsigned long nameULong;
-		unsigned long long nameULongLong;
-	}name;
-	string type;
-}idInt;
-
-typedef struct {
-	union {
-		double nameD;
-		float nameF;
-		long double nameLD;
-	}name;
-	string type;
-	//这里到时候还要给具体的值留一个位置
-}idDouble;
-
-typedef struct {
-	union {
-		char name;
-		unsigned char nameU;
-		wchar_t nameW;
-	}name;
-	string type;
-	//这里到时候还要给具体的值留一个位置
-}idChar;
-
-typedef struct {
-	string name;
-	string type;
-	//这里到时候还要给具体的值留一个位置
-}idStr;
-
-
-typedef struct {
-	string name;
-	Type Type;
-	id id;
-	idInt idInt;
-	idDouble idDouble;
-	idChar idChar;
-	idStr idStr;
-	string type;
-}input;
-
-class info 
+class symbol
 {
-private:
-	string name;
-	Type type;
 public:
-	friend class symbolTable;
-	info();
-	info(string name, Type type);
-	info(const info& i);
-	virtual void print()const;
-	virtual bool insert(const input& t) { return true; };
+	symbol(string name, type t, bool is_const) :_name(name), _type(t), is_const(is_const) {};
+	string get_name() const;
+	string get_type_name() const;
+	type get_type() const;
+	bool get_const() const;
+private:
+	string _name;
+	type _type = type::ERROR;
+	bool is_const = false;
 };
 
-//这是标识符的节点类型
-class identificationInfo : public info
+class metaSymbolTable
 {
-	friend class symbolTable;
-private:
-	map<int,id> symbols;
 public:
-	identificationInfo() :info(string("标识符"), Type::identification) {};
-	identificationInfo(const info t) :info(t) {};
-	identificationInfo(const identificationInfo& t) : info(t) {};	
-	int hashf(string& name);
-	virtual void print()const;
-	virtual bool insert(const input& t);
-};
-
-//常数的节点类型
-
-class intInfo : public info
-{
-	friend class symbolTable;
+	~metaSymbolTable();
+	bool enter(string name, type t, bool is_const);
+	symbol* look(string name);
 private:
-	map<string,idInt> symbols;
-public:
-	string hashf(idInt);
-	intInfo(const info t) :info(t) {};
-	intInfo() :info("整型", Type::const_number_int) {};
-	intInfo(const intInfo& t) :info(t) {};
-	virtual void print()const;
-	virtual bool insert(const input& t);
+	map<int, symbol*> table;
 };
-
-
-class doubleInfo : public info
-{
-	friend class symbolTable;
-private:
-	map<string,idDouble> symbols;
-public:
-	string hashf(idDouble);
-	doubleInfo(const info t) :info(t) {};
-	doubleInfo() :info("浮点型", Type::const_number_double) {};
-	doubleInfo(const intInfo& t) :info(t) {};
-	virtual void print()const;
-	virtual bool insert(const input& t);
-};
-
-
-class charInfo : public info
-{
-	friend class symbolTable;
-private:
-	map<string,idChar> symbols;
-public:
-	string hashf(idChar);
-	charInfo(const info t) :info(t) {};
-	charInfo() :info("字符型", Type::const_number_char) {};
-	charInfo(const intInfo& t) :info(t) {};
-	virtual void print()const;
-	virtual bool insert(const input& t);
-};
-
-
-class strInfo : public info
-{
-	friend class symbolTable;
-private:
-	map<string, idStr> symbols;
-public:
-	string&& hashf(idStr);
-	strInfo(const info t) :info(t) {};
-	strInfo() :info("字符串型", Type::const_number_str) {};
-	strInfo(const intInfo& t) :info(t) {};
-	virtual void print() const;
-	virtual bool insert(const input& t);
-};
-
 
 class symbolTable
 {
 public:
-	symbolTable();
-	bool insert(const input& t);
-	void print();
+	symbolTable(bool is_delete = true);
 	~symbolTable();
+	bool enter(string name, type t, bool is_const);
+	symbol* look(string name);
+	void mktable();
+	void detable();
 private:
-	map<int, info*> symbolTables;
+	bool is_delete;
+	struct node {
+		metaSymbolTable table;
+		node* father = nullptr;
+		vector<node*> kids;
+
+		void destory(node* t) {
+			if (t == nullptr)
+				return;
+			for (auto& item : t->kids) {
+				destory(item);
+			}
+			delete t;
+		}
+	};
+	node* current;
+	node* root;
 };
 
+static int hashf(const string& name);
+string get_name(type t);
+type string_type(string& s);
