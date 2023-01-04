@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <queue>
 #include "config.h"
 #include "json/json.h"
 extern config con;
@@ -27,6 +28,7 @@ public:
 	Json::Value build_tree(node* tree);
 	const vector<node*>& get_back_leaf();
 	bool get_back_reduction_list(vector<node*>& res);
+	bool get_kids(const node* tree, int symbol, vector<node*>&kids);//tree子树，获得symbol的孩子
 	vector<node*> roots;
 	~parserTree();
 private:

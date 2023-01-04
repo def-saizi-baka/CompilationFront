@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include "../include/symbolTable.h"
+#include <fstream>
 
 //extern config con;
 // 此处宏定义没有用，单纯分工合作的时候，我先填上去
@@ -13,7 +14,7 @@
 
 #define NOT_FOUND_INDEX -1
 
-symbolTable sysTable;
+symbolTable symTable;
 
 // 四元式类
 Quadruple::Quadruple(const int cur,const string op, const string left_num, const string right_num, const string res)
@@ -25,6 +26,19 @@ Quadruple::Quadruple(const int cur,const string op, const string left_num, const
 	this->res = res;
 }
 
+ostream& operator<<(ostream& out, const Quadruple& t)
+{
+	out << to_string(t.cur) << ":";
+	out << "(" << t.op << "," << t.left_num << "," << t.right_num << "," << t.res << ")\n";
+	return out; 
+}
+
+ofstream& operator<<(ofstream& out, const Quadruple& t)
+{
+	out << to_string(t.cur) << ":";
+	out << "(" << t.op << "," << t.left_num << "," << t.right_num << "," << t.res << ")\n";
+	return out; 
+}
 
 VN::VN()
 {
@@ -82,6 +96,13 @@ vector<int>& N::getNextList()
 InterCode::InterCode()
 {
 	this->nextquad = 100;	//起始待写地址设置为100
+	this->pst = nullptr;
+}
+
+InterCode::InterCode(parserTree& pst)
+{
+	this->nextquad = 100;
+	this->pst = &pst;
 }
 
 // 合并TrueList、FalseList
@@ -174,7 +195,6 @@ void InterCode::operationStatement(const node& root) {
 	{
 		case 1029:	// 二目操作
 		{
-		
 			/*
 				<二目操作> → <赋值语句>
 				<二目操作> → <计算语句>
@@ -189,37 +209,45 @@ void InterCode::operationStatement(const node& root) {
 					<赋值语句> → <变量名> <赋值符号> <表达式>
 					*/
 					string varName = now_2->kids[0]->value;	// 取变量名
+					// 检查变量名是否未定义
+					symbol* it = symTable.look(varName);
+					if (it != nullptr) { //此处为已定义
+
+					}
+					else {//此处为未定义
+						string msg = "symbol " + varName + " is undefined.";
+						throw UndefinedDefinitionsException(msg, this->line);
+					}
+
 					// 判断是 <函数调用>还是<表达式>
 					if (now_2->kids[2]->symbol == 1023) {
 						// 表达式
 						E* e = (E*)eleStack.back();
 						eleStack.pop_back();
 						// 生成一条赋值语句
-						emit(Quadruple(nextquad, ":=", varName, e->value, "T?"));
+						emit(Quadruple(nextquad, ":=", e->value, "_", varName));
 						// 生成E压栈
-						E* e_added = new E("", "T?");
+						// TODO 
+						E* e_added = new E("", symTable.get_temp());
 						eleStack.push_back(e_added);
 					}
 					else if(now_2->kids[2]->symbol == 1017) {
 						// 函数调用未实现
 					}
-					else {
-						// 未知错误
-					}
 					break;
 				}
-				
 				case 1032:  // // <二目操作1029> → <计算语句>
 				{
 					// <计算语句> → <表达式> <计算符号> <表达式>
-					E* e_left = (E*)eleStack.back();	// 右操作数
+					E* e_right = (E*)eleStack.back();	// 右操作数
 					eleStack.pop_back();
-					E* e_right = (E*)eleStack.back();	// 左操作数
+					E* e_left = (E*)eleStack.back();	// 左操作数
 					eleStack.pop_back();
 					// nextquad 操作符 左操作数 右操作数 临时变量
-					emit(Quadruple(nextquad, now_2->kids[1]->value, e_left->value, e_right->value, "T?"));
+					string temp = symTable.get_temp();
+					emit(Quadruple(nextquad, now_2->kids[1]->leaf[0]->value, e_left->value, e_right->value,temp));
 					// 当前表达式压栈
-					E* e_added = new E("", "T?");
+					E* e_added = new E("", temp);
 					eleStack.push_back(e_added);
 					break;
 				}					
@@ -241,8 +269,10 @@ void InterCode::operationStatement(const node& root) {
 				// <单目操作> → <单目操作符1038><变量名>
 				string varName = now_1->leaf[0]->value;
 				string varOperator = now_1->leaf[1]->value;
-				emit(Quadruple(nextquad, varOperator, "", varName, "T?"));
-				E* e_added = new E("", "T?");
+
+				string temp = symTable.get_temp();
+				emit(Quadruple(nextquad, varOperator, "", varName, temp));
+				E* e_added = new E("", temp);
 				eleStack.push_back(e_added);
 			}
 			else{
@@ -272,27 +302,31 @@ void InterCode::defineVariable(const node& root)
 		const node* assignmentTree = defineTree->kids[1]->kids[0];
 		string valName = assignmentTree->kids[0]->value;
 
-		if (sysTable.look(valName) != NULL) {
-			cout << "重定义的变量: "<< valName << endl;
-			exit(-1);
+		if (symTable.look(valName) != NULL) {
+			//cout << "重定义的变量: "<< valName << endl;
+			string msg = "symbol " + valName + " is multiply defined.";
+			throw MultipleDefinitionsException(msg, this->line);
+			//exit(-1);
 		}
 
 		// 获取表达式的值
 		E* e = (E*)eleStack.back();
 		eleStack.pop_back();
 		// 符号表新增定义
-		sysTable.enter(valName, string_type(valName), false);
+		symTable.enter(valName, string_type(valName), false);
+		// 增加四元式
 		this->emit(Quadruple{ nextquad,":=", e->value, "", valName });
 	}
-
 	else {
 		string valName = defineTree->leaf[1]->value;
-		if (sysTable.look(valName) != NULL) {
-			cout << "重定义的变量: " << valName << endl;
-			exit(-1);
+		if (symTable.look(valName) != NULL) {
+			//cout << "重定义的变量: " << valName << endl;
+			string msg = "symbol " + valName + " is multiply defined.";
+			throw MultipleDefinitionsException(msg, this->line);
+			//exit(-1);
 		}
 		// 符号表新增一个定义
-		sysTable.enter(valType, string_type(valName), false);
+		symTable.enter(valType, string_type(valName), false);
 	}
 
 	// int a = 1;
@@ -441,7 +475,6 @@ void InterCode::notStatement()
 // 实现基本类似关系表达式
 void InterCode::relopStatement()
 {
-	
 }
 
 //if E then S1
@@ -556,7 +589,28 @@ void InterCode::expression_statement(const node& root) {
 			break;
 		case 1008:	// <表达式>→<标识符1008>
 		{
+			// TODO
 			string valName = root.leaf[0]->value;
+
+			vector<node*> kids;
+			// 如果value 对应的是变量/常变量
+			if (this->pst->get_kids(&root, con.get_symbols()["标识符"], kids)) {
+				for(const auto& t :kids ){
+					if(t->symbol == con.get_symbols()["变量名"]){
+						if (symTable.look(valName) == nullptr) {
+							string msg = "symbol " + valName + " is undefined.";
+							throw UndefinedDefinitionsException(msg, this->line);
+						}
+						
+						break;
+					}
+					else if(t->symbol == con.get_symbols()["常量"]){
+						break;
+					}
+				}
+			}
+
+
 			E* e = new E("", valName);
 			eleStack.push_back((VN*)e);
 		}
@@ -569,17 +623,24 @@ void InterCode::expression_statement(const node& root) {
 }
 
 
-void InterCode::genCode(const node& root)
+void InterCode::genCode(const node& root,int line)
 {
+	int count = 0;
+	this->line = line;
 	switch (root.symbol)
 	{
 		case 1034: // 变量定义语句
+			//cout << "1034" << endl;
 			defineVariable(root);
+			//this->outputCode();
+			//cout << endl;
 			break;
 		case 1023: // 表达式
+			//cout << "1023" << endl;
 			expression_statement(root);
+			//this->outputCode();
+			//cout << endl;
 			break;
-
 		case DEFINE_CONST:
 			defineConst();
 			break;
@@ -590,4 +651,26 @@ void InterCode::genCode(const node& root)
 		default:
 			return;
 	}
+}
+
+void InterCode::outputCode(const char* filename)
+{
+	cout << "********************************************" << endl;
+	cout << "          InterCode                         " << endl;
+	if (filename == NULL)
+	{
+		int i = code.size() - 1;
+		for (uint32_t i = 0; i < code.size();i++)
+		{
+			cout << code[i] << endl;
+		}
+		code = vector<Quadruple>();
+	}
+	else 
+	{
+		// 输出到文件
+		ofstream fout(filename, ios::out);
+		// TODO
+	}
+	cout << "********************************************" << endl;
 }

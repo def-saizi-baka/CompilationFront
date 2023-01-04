@@ -188,9 +188,23 @@ bool parserTree::get_back_reduction_list(vector<node*>& res)
 	return is_one;
 }
 
-
-
-
+bool parserTree::get_kids(const node* tree, int symbol, vector<node*>&kids)
+{
+	std::queue<const node*>q;
+	q.push(tree);
+	while (!q.empty()) {
+		const node* p = q.front();
+		q.pop();
+		if (p->symbol == symbol) {
+			kids = p->kids;
+			return true;
+		}
+		for (const auto& t : p->kids) {
+			q.push(t);
+		}
+	}
+	return false;
+}
 
 parserTree::~parserTree()
 {

@@ -252,6 +252,7 @@ void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDeb
     }
     cout << endl;
     cout << "building the ACTION table and GOTO table"<<endl;
+    // ¼ÓÔØACTIONºÍGOTO±í
     cfg.load(true);
     map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
     cout << "build the ACTION table and GOTO table successfully!" << endl;
@@ -330,5 +331,17 @@ int main(int argc,char** argv)
     catch(lexException& t){
         cerr << t.what()  << endl;
         return -2;    
+    }
+    catch (UndefinedDefinitionsException& t) {
+        cerr << t.what() << endl;
+        return -2;
+    }
+    catch (MultipleDefinitionsException& t) {
+        cerr << t.what() << endl;
+        return -2;
+    }
+    catch (ConstantModificationException& t) {
+        cerr << t.what() << endl;
+        return -2;
     }
 }

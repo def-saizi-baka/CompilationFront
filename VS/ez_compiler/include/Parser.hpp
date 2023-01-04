@@ -81,7 +81,7 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs,bool
 /// <returns></returns> 返回右值引用，是一个分析得到的状态序列
 void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<int, int>>>& analysisTable)
 {
-	InterCode interCode;
+	InterCode interCode(this->tree);
 	stack<int> signs;
 	vector<int> status;
 	signs.push(Config::end_int);
@@ -142,7 +142,7 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 					next = find(analysisTable, status.back(), signs.top(), false,tokens[idx].line);
 					status.push_back(next);
 					tree.reduction(con.get_grammar()[temp]);//归约语法树
-					interCode.genCode(*tree.roots.back());
+					interCode.genCode(*tree.roots.back(),tokens[idx].line);
 				}
 				else
 					break;
@@ -162,6 +162,8 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 			else if(next == parser_config::ACCEPT){
 				this->tree.end();//结束，建树
 				con.log("[INFO] 移进归约成功完成");
+				interCode.outputCode();
+				con.log("[INFO] 中间代码生成完成");
 				return;
 			}
 		}

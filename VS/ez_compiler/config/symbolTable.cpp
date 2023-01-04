@@ -170,3 +170,8 @@ void symbolTable::detable()
 		this->current = current->father;
 	}
 }
+
+string symbolTable::get_temp()
+{
+	 return temp + to_string(this->current->table.num ++); 
+}
