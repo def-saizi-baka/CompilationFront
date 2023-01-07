@@ -6,7 +6,10 @@ __pycache__/
 VS/.vs
 VS/Debug
 VS/ez_compiler/x64
+VS/ez_compiler/Debug
+VS/ez_compiler/Release
 VS/x64
+VS/Release
 
 
 # C extensions

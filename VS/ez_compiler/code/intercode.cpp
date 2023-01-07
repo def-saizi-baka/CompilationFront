@@ -5,12 +5,6 @@
 #include <fstream>
 
 //extern config con;
-// 此处宏定义没有用，单纯分工合作的时候，我先填上去
-// 归约的种类应该从Parse类中读取静态变量
-#define DEFINE_CONST 0
-#define DEFINE_VARIABLE 1
-#define ASSIGNMENT 2
-#define BOOL_EXPR 3
 
 #define NOT_FOUND_INDEX -1
 
@@ -38,11 +32,6 @@ ofstream& operator<<(ofstream& out, const Quadruple& t)
 	out << to_string(t.cur) << ":";
 	out << "(" << t.op << "," << t.left_num << "," << t.right_num << "," << t.res << ")";
 	return out; 
-}
-
-VN::VN()
-{
-	this->type = 0;
 }
 
 // 表达式元素
@@ -777,14 +766,15 @@ void InterCode::statemmentList(const node& root)
 // 语句块生成
 void InterCode::statementBlock(const node& root)
 {
-	// 不需要做额外操作
+	
 	if (root.kids.size() == 2) //< 语句块 > → < { > < } >
 	{
-
+		S* S1 = new S(nextquad);
+		eleStack.push_back((VN*)S1);
 	}
 	else  // <语句块> → <{><语句List><}>
 	{
-		
+		// 不需要做额外操作
 	}
 }
 
@@ -814,7 +804,7 @@ void InterCode::genCode(const node& root,int line)
 			statemmentList(root);
 			break;
 		case 1014:	// 语句块:
-			//statementBlock(root);
+			statementBlock(root);
 			break;
 		case 1020:	// 选择语句
 			if (root.kids.size() > 6)
@@ -835,8 +825,8 @@ void InterCode::genCode(const node& root,int line)
 			return;
 	}
 
-	// this->outputCode();
-	// cout << endl;
+	 this->outputCode();
+	 cout << endl;
 }
 
 

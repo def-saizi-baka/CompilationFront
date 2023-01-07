@@ -32,10 +32,7 @@ public:
 // 非终结符基类
 class VN
 {
-protected:
-	int type;
 public:
-	VN();
 	virtual vector<int>& getTrueList() = 0;
 	virtual vector<int>& getFalseList() = 0;
 	virtual vector<int>& getNextList() = 0;
@@ -51,7 +48,6 @@ protected:
 
 	vector<int> truelist;
 	vector<int> falselist;
-	vector<int> nextlist;
 public:
 	friend InterCode;
 	E(string name);

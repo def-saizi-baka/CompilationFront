@@ -323,7 +323,8 @@ int main(int argc,char** argv)
         cmdOptions ops;
         cmdParse(argc,argv,ops);
         con.init();
-        //ops.isDebug = true;
+        //ops.isSave = true;
+        ops.modelFile = "dfamodel";
         optionEXE(ops);
         return 0;
     }

@@ -24,7 +24,7 @@ public:
 	vector<int> find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign,int line);
 	vector<int> find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign,int line);
 	vector<int> find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime,int line);
-	int solveConfilct(vector<int>& next_list,int symbol);
+	int solveConfilct(vector<int>& next_list,int symbol, bool is_in_bool);
 	void setDebug(bool debug);
 	parserTree& get_tree() { return tree; };
 private:
@@ -73,7 +73,7 @@ void analysis_info(int id,const vector<int>& status,const stack<int>& signs,bool
 	}
 }
 
-int parser::solveConfilct(vector<int>& next_list,int symbol)
+int parser::solveConfilct(vector<int>& next_list, int symbol, bool is_in_bool)
 {
 	int next;
 	if (next_list.size() == 1) {
@@ -88,15 +88,22 @@ int parser::solveConfilct(vector<int>& next_list,int symbol)
 			}
 			exit(-1);
 		}
-		int expression;	// 表达式
-		int next_state;
+		int expression = 0;	// 表达式
+		int next_state = 0;
+		int expr_other = 0;
 		if (next_list[0] > 0) {
 			expression = next_list[1];
 			next_state = next_list[0];
 		}
-		else {
+		else if (next_list[1] > 0) {
 			expression = next_list[0];
 			next_state = next_list[1];
+		}
+		else
+		{
+			expression = next_list[0];
+			expr_other = next_list[1];
+			cout << expression << " " << expr_other << endl;
 		}
 		// 符号优先级
 		pair<int, int> symbol_pre = con.get_operators_info()[symbol];
@@ -113,12 +120,51 @@ int parser::solveConfilct(vector<int>& next_list,int symbol)
 				break;
 			}
 		}
+
+		pair<int, vector<int>> item_other;
+		pair<int, int> item_pre_other = { 0, 0 };	// 语句优先级
+		if (expr_other != 0)	// 双归约
+		{
+			item_other = con.get_grammar()[-expr_other];
+			for (int i = item_other.second.size() - 1; i >= 0; i--) {
+				if (item_other.second[i] < 1000) {
+					item_pre = con.get_operators_info()[item_other.second[i]];
+					break;
+				}
+			}
+		}
+
 		if (item_pre.first == 0)		// 语句不存在优先级，此处不是-1，会被处理
 		{
-			// cout << expression << endl;
+			/*cout << item.first << " -->";
+			for (auto vec : item.second) {
+				cout << vec << " ";
+			}*/
 			// 移进归约冲突转移进
-			next = next_state;
-			// 归约-归约冲突转（第一个产生式）归约
+			if (expression * next_state < 0)
+			{
+				next = next_state;
+				return next;
+			}
+			else if (expr_other < 0) // 归约-归约冲突
+			{
+				if (item_pre_other.first == 0)	// 双方都无优先级，按约定产生
+				{
+					next = (expression < expr_other) ? expression : expr_other;
+					if (is_in_bool && symbol == con.get_symbols()[")"]) {
+						if (next == expression)
+							next = expr_other;
+						else if (next == expr_other)
+							next = expression;
+					}
+					cout << next << endl;
+					return next;
+				}
+				else {	// 其中一条产生式有优先级
+					next = expression;
+					return next;
+				}
+			}
 		}
 		else if (symbol_pre.first < item_pre.first) {	// 输入符号优先级高
 			next = next_state;
@@ -154,7 +200,8 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 	vector<int> status;
 	signs.push(Config::end_int);
 	status.push_back(0);//从第0个状态开始
-
+	bool is_in_bool = false;
+	int sema = 0;
     int _ = 0;
 	if(this->debug)
     	cout << "\n" << setiosflags(ios::left) << "分析过程: " << endl;
@@ -162,28 +209,34 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 	for (unsigned idx = 0; idx < tokens.size();) {
         // debug
         analysis_info(_, status, signs, this->debug);
-
+		if (tokens[idx].symbol == con.get_symbols()["if"] || tokens[idx].symbol == con.get_symbols()["while"])
+			is_in_bool = true;
+		else if (is_in_bool && tokens[idx].symbol == con.get_symbols()["("])
+			sema++;
+		else if (is_in_bool && tokens[idx].symbol == con.get_symbols()[")"]) {
+			sema--;
+			if (sema == 0)
+				is_in_bool = false;
+		}
 		vector<int> next_list = find(analysisTable, status.back(), tokens[idx].symbol, true, tokens[idx].line);
 		int next;
-		next = solveConfilct(next_list, tokens[idx].symbol);
+		next = solveConfilct(next_list, tokens[idx].symbol, is_in_bool);
 		if (next != parser_config::ERROR && next != 0){ 
 
 			// while保证能规约一直规约
 			while (true){
 				/* code */	
-				next_list = find(analysisTable, status.back(), tokens[idx].symbol, true,tokens[idx].line);
+				next_list = find(analysisTable, status.back(), tokens[idx].symbol, true, tokens[idx].line);
+				next = solveConfilct(next_list, tokens[idx].symbol, is_in_bool);
 				
-				next = solveConfilct(next_list,tokens[idx].symbol);
-
-
 				// 移进规约判断
 				if (next < 0 && next != parser_config::ERROR) {//action表里面小于0代表需要归约
 					/* code */	
 					int temp = abs(next);//找到要归约到的状态
 					int size = con.get_grammar()[temp].second.size();//找到需要出栈的字符的数目
                     analysis_info(_, status, signs, this->debug);
-					if(this->debug)
-                    	cout << "\t\t规约: 要规约的语句: "<<temp<<",  出栈个数: "<< size << endl; 
+					if (this->debug)
+						cout << "\t\t规约: 要规约的语句: " << temp << ",  出栈个数: " << size << endl;
 
                     pair<int, std::vector<int>> gram = con.get_grammar()[temp];
 
