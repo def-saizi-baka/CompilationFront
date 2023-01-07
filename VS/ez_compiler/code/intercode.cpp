@@ -347,28 +347,40 @@ void InterCode::operationExpression(const node& root) {
 // 常变量定义语句翻译
 void InterCode::defineConst(const node& root)
 {
-	// 左孩子的叶节点是变量类型
-	const node* defineTree = root.kids[0];
-	string valType = defineTree->kids[1]->leaf[0]->value; //int
-
-	// 右孩子是一个类似赋值语句的东西
-	const node* assignmentTree = defineTree->kids[2]->kids[0];
-	string valName = assignmentTree->kids[0]->value;
-
-	if (symTable.look(valName) != NULL) {
-		// cout << "重定义的变量: "<< valName << endl;
-		string msg = "symbol " + valName + " is multiply defined.";
-		throw MultipleDefinitionsException(msg, this->line);
-		//exit(-1);
+	vector<node*> leaf = root.leaf;
+	string const_str = leaf[0]->value;
+	string valType = leaf[1]->value;
+	for (uint32_t i = 2; i < leaf.size();) {
+		// 获取变量名
+		string valName = leaf[i]->value;
+		if (symTable.look(valName) != NULL) {
+			// cout << "重定义的变量: "<< valName << endl;
+			string msg = "symbol " + valName + " is multiply defined.";
+			throw MultipleDefinitionsException(msg, this->line);
+			//exit(-1);
+		}
+		// 操作符 = 
+		string op_symbol = leaf[i+1]->value;
+		// 获取值;
+		// 获取表达式的值
+		E* e = (E*)eleStack.back();
+		eleStack.pop_back();
+		// 符号表新增定义
+		symTable.enter(valName, string_type(valType), true);
+		// 增加四元式
+		this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
+		// 跳过 = 后面部分
+		while (i < leaf.size() && leaf[i]->value != ",") {
+			if (leaf[i++]->value == ",") {
+				break;
+			}
+		}
+		// 跳过逗号
+		if (i < leaf.size() && leaf[i]->value == ",") {
+			i++;
+		}
+			
 	}
-
-	// 获取表达式的值
-	E* e = (E*)eleStack.back();
-	eleStack.pop_back();
-	// 符号表新增定义
-	symTable.enter(valName, string_type(valType), true);
-	// 增加四元式
-	this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
 
 	// 转化成S
 	S* s_tmp = new S(nextquad);

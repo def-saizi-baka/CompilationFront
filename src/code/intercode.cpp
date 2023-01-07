@@ -10,7 +10,7 @@
 
 symbolTable symTable;
 
-// ËÄÔªÊ½Àà
+// å››å…ƒå¼ç±»
 Quadruple::Quadruple(const int cur,const string op, const string left_num, const string right_num, const string res)
 {
 	this->cur = cur;
@@ -34,7 +34,7 @@ ofstream& operator<<(ofstream& out, const Quadruple& t)
 	return out; 
 }
 
-// ±í´ïÊ½ÔªËØ
+// è¡¨è¾¾å¼å…ƒç´ 
 E::E(string _name):VN()
 {
 	this->name = _name;
@@ -50,46 +50,46 @@ S::S(int nextquad)
 	this->nextquad = nextquad;
 }
 
-// ·µ»ØÕæÁ´
+// è¿”å›çœŸé“¾
 vector<int>& E::getTrueList()
 {
 	return this->truelist;
 }
 
-// ·µ»Ø¼ÙÁ´
+// è¿”å›å‡é“¾
 vector<int>& E::getFalseList()
 {
 	return this->falselist;
 }
 
-// ·ÇÖÕ½á·û M 
+// éç»ˆç»“ç¬¦ M 
 M::M(int quad) :VN()
 {
 	this->quad = quad;
 }
 
-// ·µ»ØquadÊôĞÔ
+// è¿”å›quadå±æ€§
 int M::getNextquad()
 {
 	return this->quad;
 }
 
-// ·µ»Ø S.nextlist
+// è¿”å› S.nextlist
 vector<int>& S::getNextList()
 {
 	return this->nextlist;
 }
 
-// ·µ»Ø N.nextlist
+// è¿”å› N.nextlist
 vector<int>& N::getNextList()
 {
 	return this->nextlist;
 }
 
-// ÖĞ¼ä´úÂë
+// ä¸­é—´ä»£ç 
 InterCode::InterCode()
 {
-	this->nextquad = 100;	//ÆğÊ¼´ıĞ´µØÖ·ÉèÖÃÎª100
+	this->nextquad = 100;	//èµ·å§‹å¾…å†™åœ°å€è®¾ç½®ä¸º100
 	this->pst = nullptr;
 }
 
@@ -99,7 +99,7 @@ InterCode::InterCode(parserTree& pst)
 	this->pst = &pst;
 }
 
-// ºÏ²¢TrueList¡¢FalseList
+// åˆå¹¶TrueListã€FalseList
 vector<int> InterCode::merge(const vector<int>&L1,const vector<int>& L2)
 {
 	vector<int> temp;
@@ -132,7 +132,7 @@ void InterCode::merge(vector<vector<int> >L, vector<int>& res)
 	}
 }
 
-// ¸ù¾İµØÖ·ÕÒµ½¶ÔÓ¦µÄËÄÔªÊ½
+// æ ¹æ®åœ°å€æ‰¾åˆ°å¯¹åº”çš„å››å…ƒå¼
 int InterCode::findByAddr(int quad)
 {
 	int index = 0;
@@ -148,7 +148,7 @@ int InterCode::findByAddr(int quad)
 	return index;
 }
 
-// »ØÌî
+// å›å¡«
 void InterCode::backpatch(vector<int>& bpList,int quad)
 {
 	for (auto& iter : bpList)
@@ -158,7 +158,7 @@ void InterCode::backpatch(vector<int>& bpList,int quad)
 	}
 }
 
-// Êä³öËÄÔªÊ½
+// è¾“å‡ºå››å…ƒå¼
 void InterCode::emit(Quadruple temp)
 {
 	code.push_back(temp);
@@ -168,52 +168,52 @@ void InterCode::emit(Quadruple temp)
 void InterCode::assignExpression(const node& root, bool bool_flag)
 {
 	/*
-		<¸³ÖµÓï¾ä> ¡ú <±äÁ¿Ãû> <¸³Öµ·ûºÅ> <º¯Êıµ÷ÓÃ>
-		<¸³ÖµÓï¾ä> ¡ú <±äÁ¿Ãû> <¸³Öµ·ûºÅ> <±í´ïÊ½>
+		<èµ‹å€¼è¯­å¥> â†’ <å˜é‡å> <èµ‹å€¼ç¬¦å·> <å‡½æ•°è°ƒç”¨>
+		<èµ‹å€¼è¯­å¥> â†’ <å˜é‡å> <èµ‹å€¼ç¬¦å·> <è¡¨è¾¾å¼>
 	*/
-	string varName = root.kids[0]->value;	// È¡±äÁ¿Ãû
+	string varName = root.kids[0]->value;	// å–å˜é‡å
 
-	// ¼ì²é±äÁ¿ÃûÊÇ·ñÎ´¶¨Òå
+	// æ£€æŸ¥å˜é‡åæ˜¯å¦æœªå®šä¹‰
 	symbol* it = symTable.look(varName);
-	if (it == nullptr) {//´Ë´¦ÎªÎ´¶¨Òå
+	if (it == nullptr) {//æ­¤å¤„ä¸ºæœªå®šä¹‰
 		string msg = "symbol " + varName + " is undefined.";
 		throw UndefinedDefinitionsException(msg, this->line);
 	}
 
-	// ³£±äÁ¿±»¸³Öµ
-	if (it->get_const()) {//¸Ä±äÎª³£±äÁ¿
+	// å¸¸å˜é‡è¢«èµ‹å€¼
+	if (it->get_const()) {//æ”¹å˜ä¸ºå¸¸å˜é‡
 		string msg = "const symbol " + varName + " cannot be assigned";
 		throw ConstantModificationException(msg, this->line);
 	}
 
-	// ÅĞ¶ÏÊÇ<º¯Êıµ÷ÓÃ>»¹ÊÇ<±í´ïÊ½>
+	// åˆ¤æ–­æ˜¯<å‡½æ•°è°ƒç”¨>è¿˜æ˜¯<è¡¨è¾¾å¼>
 	if (root.kids[2]->symbol == 1023) {
-		// ±í´ïÊ½
+		// è¡¨è¾¾å¼
 		E* e = (E*)eleStack.back();
 		eleStack.pop_back();
-		// Éú³ÉÒ»Ìõ¸³ÖµÓï¾ä
+		// ç”Ÿæˆä¸€æ¡èµ‹å€¼è¯­å¥
 		emit(Quadruple(nextquad, root.kids[1]->leaf[0]->value, e->value, "_", varName));
-		// Éú³ÉEÑ¹Õ»
+		// ç”ŸæˆEå‹æ ˆ
 		// TODO 
 		E* e_added = new E("", symTable.get_temp());
 		eleStack.push_back(e_added);
 	}
 	else if (root.kids[2]->symbol == 1017) {
-		// º¯Êıµ÷ÓÃÎ´ÊµÏÖ
+		// å‡½æ•°è°ƒç”¨æœªå®ç°
 	}
 }
 
 void InterCode::calExpression(const node& root,bool bool_flag)
 {
-	// <¼ÆËãÓï¾ä> ¡ú <±í´ïÊ½> <¼ÆËã·ûºÅ> <±í´ïÊ½>
-	E* e_right = (E*)eleStack.back();	// ÓÒ²Ù×÷Êı
+	// <è®¡ç®—è¯­å¥> â†’ <è¡¨è¾¾å¼> <è®¡ç®—ç¬¦å·> <è¡¨è¾¾å¼>
+	E* e_right = (E*)eleStack.back();	// å³æ“ä½œæ•°
 	eleStack.pop_back();
-	E* e_left = (E*)eleStack.back();	// ×ó²Ù×÷Êı
+	E* e_left = (E*)eleStack.back();	// å·¦æ“ä½œæ•°
 	eleStack.pop_back();
-	// nextquad ²Ù×÷·û ×ó²Ù×÷Êı ÓÒ²Ù×÷Êı ÁÙÊ±±äÁ¿
+	// nextquad æ“ä½œç¬¦ å·¦æ“ä½œæ•° å³æ“ä½œæ•° ä¸´æ—¶å˜é‡
 	string temp = symTable.get_temp();
 	emit(Quadruple(nextquad, root.kids[1]->leaf[0]->value, e_left->value, e_right->value, temp));
-	// µ±Ç°±í´ïÊ½Ñ¹Õ»
+	// å½“å‰è¡¨è¾¾å¼å‹æ ˆ
 	E* e_added = new E("", temp);
 	eleStack.push_back(e_added);
 }
@@ -238,7 +238,7 @@ void InterCode::selfChangeExpression(const node& root,bool is_front)
 	string varOperator;
 	if (is_front)
 	{
-		// <µ¥Ä¿²Ù×÷> ¡ú <µ¥Ä¿²Ù×÷·û1038><±äÁ¿Ãû>
+		// <å•ç›®æ“ä½œ> â†’ <å•ç›®æ“ä½œç¬¦1038><å˜é‡å>
 		varName = root.leaf[1]->value;
 		varOperator = root.leaf[0]->value;
 	}else
@@ -247,21 +247,21 @@ void InterCode::selfChangeExpression(const node& root,bool is_front)
 		varOperator = root.leaf[1]->value;
 	}
 
-	// Î´¶¨Òå
+	// æœªå®šä¹‰
 	symbol* it = symTable.look(varName);
-	if (it == nullptr) {//´Ë´¦ÎªÎ´¶¨Òå
+	if (it == nullptr) {//æ­¤å¤„ä¸ºæœªå®šä¹‰
 		string msg = "symbol " + varName + " is undefined.";
 		throw UndefinedDefinitionsException(msg, this->line);
 	}
 
-	// ³£±äÁ¿±»¸³Öµ
-	if (it->get_const()) {//¸Ä±äÎª³£±äÁ¿
+	// å¸¸å˜é‡è¢«èµ‹å€¼
+	if (it->get_const()) {//æ”¹å˜ä¸ºå¸¸å˜é‡
 		string msg = "const symbol " + varName + " cannot be assigned";
 		throw ConstantModificationException(msg, this->line);
 	}
 	string temp = symTable.get_temp();
 	emit(Quadruple(nextquad, varOperator, "_", varName, temp));
-	if (is_front)				// Ç°×ÔÔöÁ¢¿ÌĞŞ¸ÄÖµ
+	if (is_front)				// å‰è‡ªå¢ç«‹åˆ»ä¿®æ”¹å€¼
 	{
 		emit(Quadruple(nextquad, ":=", temp,"_", varName));
 	}
@@ -271,43 +271,43 @@ void InterCode::selfChangeExpression(const node& root,bool is_front)
 
 void InterCode::operationExpression(const node& root) {
 	/*
-		<²Ù×÷Óï¾ä> ¡ú <¶şÄ¿²Ù×÷>
-		<²Ù×÷Óï¾ä> ¡ú <µ¥Ä¿²Ù×÷>
+		<æ“ä½œè¯­å¥> â†’ <äºŒç›®æ“ä½œ>
+		<æ“ä½œè¯­å¥> â†’ <å•ç›®æ“ä½œ>
 	*/
 	const node* now_1 = root.kids[0];
 	switch (root.kids[0]->symbol)
 	{
-		case 1029:	// ¶şÄ¿²Ù×÷
+		case 1029:	// äºŒç›®æ“ä½œ
 		{
 			/*
-				<¶şÄ¿²Ù×÷> ¡ú <¸³ÖµÓï¾ä>
-				<¶şÄ¿²Ù×÷> ¡ú <¼ÆËãÓï¾ä>
-				<¶şÄ¿²Ù×÷> ¡ú <¹ØÏµÓï¾ä>
-				<¶şÄ¿²Ù×÷> ¡ú <Âß¼­Óï¾ä>
+				<äºŒç›®æ“ä½œ> â†’ <èµ‹å€¼è¯­å¥>
+				<äºŒç›®æ“ä½œ> â†’ <è®¡ç®—è¯­å¥>
+				<äºŒç›®æ“ä½œ> â†’ <å…³ç³»è¯­å¥>
+				<äºŒç›®æ“ä½œ> â†’ <é€»è¾‘è¯­å¥>
 			*/
 			const node* now_2 = now_1->kids[0];	
-			// ÏÂÃæswitchµÄ¸ù½ÚµãÎª now_2 (¸³ÖµÓï¾ä1030/¼ÆËãÓï¾ä1032/¹ØÏµÓï¾ä1047/Âß¼­Óï¾ä1048)
+			// ä¸‹é¢switchçš„æ ¹èŠ‚ç‚¹ä¸º now_2 (èµ‹å€¼è¯­å¥1030/è®¡ç®—è¯­å¥1032/å…³ç³»è¯­å¥1047/é€»è¾‘è¯­å¥1048)
 			switch (now_1->kids[0]->symbol)
 			{
-				case 1030:	// <¶şÄ¿²Ù×÷1029> ¡ú <¸³ÖµÓï¾ä1030>
+				case 1030:	// <äºŒç›®æ“ä½œ1029> â†’ <èµ‹å€¼è¯­å¥1030>
 				{
 					assignExpression(*now_2);
 					break;
 				}
-				case 1032:  // <¶şÄ¿²Ù×÷1029> ¡ú <¼ÆËãÓï¾ä1032>
+				case 1032:  // <äºŒç›®æ“ä½œ1029> â†’ <è®¡ç®—è¯­å¥1032>
 				{
 					calExpression(*now_2);
 					break;
 				}					
 				case 1047:	
-					// <¶şÄ¿²Ù×÷> ¡ú <¹ØÏµÓï¾ä1047>
-					// <¹ØÏµÓï¾ä> ¡ú <±í´ïÊ½> <¹ØÏµ·ûºÅ> <±í´ïÊ½>
+					// <äºŒç›®æ“ä½œ> â†’ <å…³ç³»è¯­å¥1047>
+					// <å…³ç³»è¯­å¥> â†’ <è¡¨è¾¾å¼> <å…³ç³»ç¬¦å·> <è¡¨è¾¾å¼>
 					relopExpression(*now_2);
 					break;
 
 				case 1048:	
-					// <¶şÄ¿²Ù×÷> ¡ú <Âß¼­Óï¾ä1048>
-					// <Âß¼­Óï¾ä> ¡ú <±í´ïÊ½> <Âß¼­·ûºÅ> <±í´ïÊ½>
+					// <äºŒç›®æ“ä½œ> â†’ <é€»è¾‘è¯­å¥1048>
+					// <é€»è¾‘è¯­å¥> â†’ <è¡¨è¾¾å¼> <é€»è¾‘ç¬¦å·> <è¡¨è¾¾å¼>
 					logicExpression(now_2->kids[1]->leaf[0]->value);
 					break;
 
@@ -316,11 +316,11 @@ void InterCode::operationExpression(const node& root) {
 				}
 		}
 		break;
-		case 1037:	// µ¥Ä¿²Ù×÷1037 now_1
+		case 1037:	// å•ç›®æ“ä½œ1037 now_1
 			/*
-				<²Ù×÷Óï¾ä> ¡ú <µ¥Ä¿²Ù×÷1037>
-				<µ¥Ä¿²Ù×÷> ¡ú <µ¥Ä¿²Ù×÷·û1038><±äÁ¿Ãû> (ÕâÖÖÇé¿öÒª¿¼ÂÇnot)
-				<µ¥Ä¿²Ù×÷> ¡ú <±äÁ¿Ãû><µ¥Ä¿²Ù×÷·û>
+				<æ“ä½œè¯­å¥> â†’ <å•ç›®æ“ä½œ1037>
+				<å•ç›®æ“ä½œ> â†’ <å•ç›®æ“ä½œç¬¦1038><å˜é‡å> (è¿™ç§æƒ…å†µè¦è€ƒè™‘not)
+				<å•ç›®æ“ä½œ> â†’ <å˜é‡å><å•ç›®æ“ä½œç¬¦>
 			*/
 		{
 			if (now_1->leaf[0]->symbol == con.get_symbols()["++"]
@@ -328,7 +328,7 @@ void InterCode::operationExpression(const node& root) {
 			{
 				selfChangeExpression(*now_1, true);
 			}
-			// not ÔËËã
+			// not è¿ç®—
 			else if (now_1->kids[0]->value == "!") {
 				notExpression("!");
 			}
@@ -344,80 +344,92 @@ void InterCode::operationExpression(const node& root) {
 	}
 }
 
-// ³£±äÁ¿¶¨ÒåÓï¾ä·­Òë
+// å¸¸å˜é‡å®šä¹‰è¯­å¥ç¿»è¯‘
 void InterCode::defineConst(const node& root)
 {
-	// ×óº¢×ÓµÄÒ¶½ÚµãÊÇ±äÁ¿ÀàĞÍ
-	const node* defineTree = root.kids[0];
-	string valType = defineTree->kids[1]->leaf[0]->value; //int
-
-	// ÓÒº¢×ÓÊÇÒ»¸öÀàËÆ¸³ÖµÓï¾äµÄ¶«Î÷
-	const node* assignmentTree = defineTree->kids[2]->kids[0];
-	string valName = assignmentTree->kids[0]->value;
-
-	if (symTable.look(valName) != NULL) {
-		// cout << "ÖØ¶¨ÒåµÄ±äÁ¿: "<< valName << endl;
-		string msg = "symbol " + valName + " is multiply defined.";
-		throw MultipleDefinitionsException(msg, this->line);
-		//exit(-1);
+	vector<node*> leaf = root.leaf;
+	string const_str = leaf[0]->value;
+	string valType = leaf[1]->value;
+	for (uint32_t i = 2; i < leaf.size();) {
+		// è·å–å˜é‡å
+		string valName = leaf[i]->value;
+		if (symTable.look(valName) != NULL) {
+			// cout << "é‡å®šä¹‰çš„å˜é‡: "<< valName << endl;
+			string msg = "symbol " + valName + " is multiply defined.";
+			throw MultipleDefinitionsException(msg, this->line);
+			//exit(-1);
+		}
+		// æ“ä½œç¬¦ = 
+		string op_symbol = leaf[i+1]->value;
+		// è·å–å€¼;
+		// è·å–è¡¨è¾¾å¼çš„å€¼
+		E* e = (E*)eleStack.back();
+		eleStack.pop_back();
+		// ç¬¦å·è¡¨æ–°å¢å®šä¹‰
+		symTable.enter(valName, string_type(valType), true);
+		// å¢åŠ å››å…ƒå¼
+		this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
+		// è·³è¿‡ = åé¢éƒ¨åˆ†
+		while (i < leaf.size() && leaf[i]->value != ",") {
+			if (leaf[i++]->value == ",") {
+				break;
+			}
+		}
+		// è·³è¿‡é€—å·
+		if (i < leaf.size() && leaf[i]->value == ",") {
+			i++;
+		}
+			
 	}
 
-	// »ñÈ¡±í´ïÊ½µÄÖµ
-	E* e = (E*)eleStack.back();
-	eleStack.pop_back();
-	// ·ûºÅ±íĞÂÔö¶¨Òå
-	symTable.enter(valName, string_type(valType), true);
-	// Ôö¼ÓËÄÔªÊ½
-	this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
-
-	// ×ª»¯³ÉS
+	// è½¬åŒ–æˆS
 	S* s_tmp = new S(nextquad);
 	eleStack.push_back(s_tmp);
 }
 
-// ¶¨ÒåÓï¾ä·­Òë ²»Ö§³Ö·Ç³£Á¿
+// å®šä¹‰è¯­å¥ç¿»è¯‘ ä¸æ”¯æŒéå¸¸é‡
 void InterCode::defineVariable(const node& root)
 {
-	// ×óº¢×ÓµÄÒ¶½ÚµãÊÇ±äÁ¿ÀàĞÍ
+	// å·¦å­©å­çš„å¶èŠ‚ç‚¹æ˜¯å˜é‡ç±»å‹
 	const node* defineTree = root.kids[0];
 	string valType = defineTree->kids[0]->leaf[0]->value; //int
 
 	//if (defineTree->leaf.size() > 2) {
-		// ÓÒº¢×ÓÊÇÒ»¸öÀàËÆ¸³ÖµÓï¾äµÄ¶«Î÷
+		// å³å­©å­æ˜¯ä¸€ä¸ªç±»ä¼¼èµ‹å€¼è¯­å¥çš„ä¸œè¥¿
 		vector<node*> leaf = defineTree->leaf;
 		for (uint32_t i = 1; i < leaf.size();) {
-			// »ñÈ¡±äÁ¿Ãû
+			// è·å–å˜é‡å
 			string valName = leaf[i]->value;
 			if (symTable.look(valName) != NULL) {
-				//cout << "ÖØ¶¨ÒåµÄ±äÁ¿: "<< valName << endl;
+				//cout << "é‡å®šä¹‰çš„å˜é‡: "<< valName << endl;
 				string msg = "symbol " + valName + " is multiply defined.";
 				throw MultipleDefinitionsException(msg, this->line);
 				//exit(-1);
 			}
 			if (i+1 >= leaf.size()||leaf[i + 1]->value == ",") { // int b,
 				i+=2;
-				// ·ûºÅ±íĞÂÔöÒ»¸ö¶¨Òå
+				// ç¬¦å·è¡¨æ–°å¢ä¸€ä¸ªå®šä¹‰
 				symTable.enter(valName, string_type(valType), false);
 			}
 			else if(leaf[i + 1]->value == "=") {	// int a=0, b
-				// »ñÈ¡±í´ïÊ½µÄÖµ
+				// è·å–è¡¨è¾¾å¼çš„å€¼
 				E* e = (E*)eleStack.back();
-				// ·ûºÅ±íĞÂÔö¶¨Òå
+				// ç¬¦å·è¡¨æ–°å¢å®šä¹‰
 				symTable.enter(valName, string_type(valType), false);
-				// Ôö¼ÓËÄÔªÊ½
+				// å¢åŠ å››å…ƒå¼
 				this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
 				while (i < leaf.size() && leaf[i]->value != ",") {
 					if (leaf[i++]->value == ",") {
 						break;
 					}
 				}
-				// Ìø¹ı¶ººÅ
+				// è·³è¿‡é€—å·
 				if (i < leaf.size() && leaf[i]->value == ",") {
 					i++;
 				}
 			}
 			else {
-				cout << "Debug: ¶¨ÒåÊ½´íÎó" << endl;
+				cout << "Debug: å®šä¹‰å¼é”™è¯¯" << endl;
 				exit(-1);
 			}
 		//}
@@ -425,33 +437,33 @@ void InterCode::defineVariable(const node& root)
 	//else {
 	//	string valName = defineTree->leaf[1]->value;
 	//	if (symTable.look(valName) != NULL) {
-	//		//cout << "ÖØ¶¨ÒåµÄ±äÁ¿: " << valName << endl;
+	//		//cout << "é‡å®šä¹‰çš„å˜é‡: " << valName << endl;
 	//		string msg = "symbol " + valName + " is multiply defined.";
 	//		throw MultipleDefinitionsException(msg, this->line);
 	//		//exit(-1);
 	//	}
-	//	// ·ûºÅ±íĞÂÔöÒ»¸ö¶¨Òå
+	//	// ç¬¦å·è¡¨æ–°å¢ä¸€ä¸ªå®šä¹‰
 	//	symTable.enter(valName, string_type(valType), false);
 	//}
 
-	// ×ª»¯³ÉS
+	// è½¬åŒ–æˆS
 	S* s_tmp = new S(nextquad);
 	eleStack.push_back(s_tmp);
 
 }
 
-// ±í´ïÊ½Óï¾ä -> ±í´ïÊ½
+// è¡¨è¾¾å¼è¯­å¥ -> è¡¨è¾¾å¼
 void InterCode::expression2statment() 
 {
-	// »ñÈ¡E
+	// è·å–E
 	E* e = (E*)eleStack.back();
 	eleStack.pop_back();
-	// ×ª»¯³ÉS
+	// è½¬åŒ–æˆS
 	S* s_tmp = new S(nextquad);
 	eleStack.push_back(s_tmp);
 }
 
-// M ·­Òë
+// M ç¿»è¯‘
 void InterCode::MStatement()
 {
 	M* tmp = new M(nextquad);
@@ -459,7 +471,7 @@ void InterCode::MStatement()
 	//TFStack.push_back(vector<int>(1, cur_addr));
 }
 
-// N ·­Òë
+// N ç¿»è¯‘
 void InterCode::NStatement()
 {
 	// TFStack.push_back(vector<int>(1, cur_addr));
@@ -472,29 +484,29 @@ void InterCode::NStatement()
 	VN* vp = (VN*)tmp;
 	eleStack.push_back((VN*)tmp);
 
-	// Ñ¹Õ»£¬µØÖ·ÔÚnextlist»ØÌî
+	// å‹æ ˆï¼Œåœ°å€åœ¨nextlistå›å¡«
 	emit(Quadruple(nextquad, "j", "-", "-", ""));
 
 }
 
-// ±äÁ¿Ãû×ö±í´ïÊ½µÄ·­Òë
+// å˜é‡ååšè¡¨è¾¾å¼çš„ç¿»è¯‘
 void InterCode::valNameExpression(const node& root,bool bool_flag)
 {
 	// TODO
 	string valName = root.leaf[0]->value;
 
 	vector<node*> kids;
-	// Èç¹ûvalue ¶ÔÓ¦µÄÊÇ±äÁ¿/³£±äÁ¿
-	if (this->pst->get_kids(&root, con.get_symbols()["±êÊ¶·û"], kids)) {
+	// å¦‚æœvalue å¯¹åº”çš„æ˜¯å˜é‡/å¸¸å˜é‡
+	if (this->pst->get_kids(&root, con.get_symbols()["æ ‡è¯†ç¬¦"], kids)) {
 		for (const auto& t : kids) {
-			if (t->symbol == con.get_symbols()["±äÁ¿Ãû"]) {
+			if (t->symbol == con.get_symbols()["å˜é‡å"]) {
 				if (symTable.look(valName) == nullptr) {
 					string msg = "symbol " + valName + " is undefined.";
 					throw UndefinedDefinitionsException(msg, this->line);
 				}
 				break;
 			}
-			else if (t->symbol == con.get_symbols()["³£Á¿"]) {
+			else if (t->symbol == con.get_symbols()["å¸¸é‡"]) {
 				break;
 			}
 		}
@@ -509,23 +521,23 @@ void InterCode::valNameExpression(const node& root,bool bool_flag)
 	eleStack.push_back((VN*)e);
 }
 
-// && ·­Òë
+// && ç¿»è¯‘
 void InterCode::andExpression(bool bool_flag)
 {
 		// E1 && M E2
-		// eleStack Õ»¶¥
+		// eleStack æ ˆé¡¶
 		// E1 M E2
 		int end = eleStack.size();
 		auto E2 = eleStack[end - 1];
 		auto M = eleStack[end - 2];
 		auto E1 = eleStack[end - 3];
 
-		// ´Ë´¦´ıĞŞ¸Ä£¬¹éÔ¼½á¹ûÓ¦µ±´ÓÓï·¨·ÖÎöÖĞ»ñÈ¡
+		// æ­¤å¤„å¾…ä¿®æ”¹ï¼Œå½’çº¦ç»“æœåº”å½“ä»è¯­æ³•åˆ†æä¸­è·å–
 		// TODO
-		auto reduction = new E("xx±í´ïÊ½", "");
+		auto reduction = new E("xxè¡¨è¾¾å¼", "");
 
 		// PPT P72
-		// »ØÌî
+		// å›å¡«
 		backpatch(E1->getTrueList(), M->getNextquad());
 
 		//  E.truelist = E2.truelist
@@ -534,7 +546,7 @@ void InterCode::andExpression(bool bool_flag)
 		// E.falselist = merge(E1.falselist,E2.falselist)
 		merge(E1->getFalseList(), E2->getFalseList(), reduction->falselist);
 
-		// °Ñ E1 M E2 pop³öÈ¥
+		// æŠŠ E1 M E2 popå‡ºå»
 		for (int i = 0; i < 3; i++)
 		{
 			eleStack.pop_back();
@@ -546,7 +558,7 @@ void InterCode::andExpression(bool bool_flag)
 		eleStack.push_back((VN*)reduction);
 }
 
-// || ·­Òë
+// || ç¿»è¯‘
 void InterCode::orExpression(bool bool_flag)
 {
 	// E1 or M E2
@@ -555,8 +567,8 @@ void InterCode::orExpression(bool bool_flag)
 	auto M = eleStack[end - 2];
 	auto E1 = eleStack[end - 3];
 
-	// PPT 71Ò³
-	E* reduction = new E("xx±í´ïÊ½","");
+	// PPT 71é¡µ
+	E* reduction = new E("xxè¡¨è¾¾å¼","");
 	
 	backpatch(E1->getFalseList(), M->getNextquad());
 
@@ -564,7 +576,7 @@ void InterCode::orExpression(bool bool_flag)
 
 	reduction->falselist = E2->getFalseList();
 
-	// Ïû³ıE1 M E2
+	// æ¶ˆé™¤E1 M E2
 	for (int i = 0; i < 3; i++)
 	{
 		eleStack.pop_back();
@@ -576,7 +588,7 @@ void InterCode::orExpression(bool bool_flag)
 	eleStack.push_back((VN*)reduction);
 }
 
-// !·­Òë
+// !ç¿»è¯‘
 void InterCode::notExpression(bool bool_flag)
 {
 	// E -> not E1
@@ -584,7 +596,7 @@ void InterCode::notExpression(bool bool_flag)
 	auto E1 = eleStack[end - 1];
 
 	//PPT 73
-	E* reduction = new E("xx±í´ïÊ½", "");
+	E* reduction = new E("xxè¡¨è¾¾å¼", "");
 
 	reduction->truelist = E1->getFalseList();
 
@@ -597,8 +609,8 @@ void InterCode::notExpression(bool bool_flag)
 	eleStack.push_back((VN*)reduction);
 }
 
-// ÒÀÀµ·ûºÅ±íµÄ¾ßÌåÊµÏÖ
-// ÊµÏÖ»ù±¾ÀàËÆ¹ØÏµ±í´ïÊ½
+// ä¾èµ–ç¬¦å·è¡¨çš„å…·ä½“å®ç°
+// å®ç°åŸºæœ¬ç±»ä¼¼å…³ç³»è¡¨è¾¾å¼
 void InterCode::relopExpression(const node& root, bool bool_flag)
 {
 	string eValor = symTable.get_temp();
@@ -606,9 +618,9 @@ void InterCode::relopExpression(const node& root, bool bool_flag)
 	e_tmp->truelist.push_back(nextquad);
 	e_tmp->falselist.push_back(nextquad + 1);
 
-	E* e_right = (E*)eleStack.back();	// ÓÒ²Ù×÷Êı
+	E* e_right = (E*)eleStack.back();	// å³æ“ä½œæ•°
 	eleStack.pop_back();
-	E* e_left = (E*)eleStack.back();	// ×ó²Ù×÷Êı
+	E* e_left = (E*)eleStack.back();	// å·¦æ“ä½œæ•°
 	eleStack.pop_back();
 	string relopOperator = root.kids[1]->leaf[0]->value;
 
@@ -721,24 +733,24 @@ void InterCode::while_do_statement()
 	eleStack.push_back((VN*)(reduction));
 }
 
-// ±í´ïÊ½
+// è¡¨è¾¾å¼
 void InterCode::allExpression(const node& root, bool bool_flag)
 {
 	/*
-		<±í´ïÊ½> ¡ú <²Ù×÷Óï¾ä>
-		<±í´ïÊ½>¡ú<±êÊ¶·û>
-		<±í´ïÊ½>¡ú<(> <±í´ïÊ½> <)>
-		<±í´ïÊ½>¡ú
+		<è¡¨è¾¾å¼> â†’ <æ“ä½œè¯­å¥>
+		<è¡¨è¾¾å¼>â†’<æ ‡è¯†ç¬¦>
+		<è¡¨è¾¾å¼>â†’<(> <è¡¨è¾¾å¼> <)>
+		<è¡¨è¾¾å¼>â†’
 	*/
 	switch (root.kids[0]->symbol)
 	{
-		case 1026:	// <±í´ïÊ½> ¡ú <²Ù×÷Óï¾ä1026>
+		case 1026:	// <è¡¨è¾¾å¼> â†’ <æ“ä½œè¯­å¥1026>
 			operationExpression(*(root.kids[0]));
 			break;
-		case 1008:	// <±í´ïÊ½>¡ú<±êÊ¶·û1008>
+		case 1008:	// <è¡¨è¾¾å¼>â†’<æ ‡è¯†ç¬¦1008>
 			valNameExpression(root, bool_flag);
 			break;
-		case 100:	// <±í´ïÊ½>¡ú<(> <±í´ïÊ½> < )>
+		case 100:	// <è¡¨è¾¾å¼>â†’<(> <è¡¨è¾¾å¼> < )>
 			break;
 		default:
 			break;
@@ -746,10 +758,10 @@ void InterCode::allExpression(const node& root, bool bool_flag)
 }
 
 
-// Óï¾ä¿éList
+// è¯­å¥å—List
 void InterCode::statemmentList(const node& root)
 {
-	if (root.kids[0]->symbol == con.get_symbols()["Óï¾äList"])
+	if (root.kids[0]->symbol == con.get_symbols()["è¯­å¥List"])
 	{
 		int end = eleStack.size();
 		auto S1 = eleStack[end - 1];
@@ -768,7 +780,7 @@ void InterCode::statemmentList(const node& root)
 
 		eleStack.push_back((VN*)(reduction));
 	}
-	else if (root.kids[0]->symbol == con.get_symbols()["Óï¾ä"])
+	else if (root.kids[0]->symbol == con.get_symbols()["è¯­å¥"])
 	{
 		int end = eleStack.size();
 		auto S1 = eleStack[end - 1];
@@ -783,18 +795,18 @@ void InterCode::statemmentList(const node& root)
 	}
 }
 
-// Óï¾ä¿éÉú³É
+// è¯­å¥å—ç”Ÿæˆ
 void InterCode::statementBlock(const node& root)
 {
 	
-	if (root.kids.size() == 2) //< Óï¾ä¿é > ¡ú < { > < } >
+	if (root.kids.size() == 2) //< è¯­å¥å— > â†’ < { > < } >
 	{
 		S* S1 = new S(nextquad);
 		eleStack.push_back((VN*)S1);
 	}
-	else  // <Óï¾ä¿é> ¡ú <{><Óï¾äList><}>
+	else  // <è¯­å¥å—> â†’ <{><è¯­å¥List><}>
 	{
-		// ²»ĞèÒª×ö¶îÍâ²Ù×÷
+		// ä¸éœ€è¦åšé¢å¤–æ“ä½œ
 	}
 }
 
@@ -804,35 +816,35 @@ void InterCode::genCode(const node& root,int line)
 	this->line = line;
 	switch (root.symbol)
 	{
-		case 1034: // ±äÁ¿¶¨ÒåÓï¾ä
+		case 1034: // å˜é‡å®šä¹‰è¯­å¥
 			defineVariable(root);
 			break;
-		case 1042:	// ³£±äÁ¿¶¨ÒåÓï¾ä
+		case 1042:	// å¸¸å˜é‡å®šä¹‰è¯­å¥
 			defineConst(root);
 			break;
-		case 1023: // ±í´ïÊ½·­Òë(°üº¬¸³Öµ¡¢¼ÆËã¡¢¹ØÏµ¡¢Âß¼­ÔËËã)
+		case 1023: // è¡¨è¾¾å¼ç¿»è¯‘(åŒ…å«èµ‹å€¼ã€è®¡ç®—ã€å…³ç³»ã€é€»è¾‘è¿ç®—)
 			allExpression(root);
 			break;
-		case 1051:	// ²¼¶û±í´ïÊ½
+		case 1051:	// å¸ƒå°”è¡¨è¾¾å¼
 			allExpression(root, true);
 			break;
-		case 1019:	// ±í´ïÊ½Óï¾ä
+		case 1019:	// è¡¨è¾¾å¼è¯­å¥
 			expression2statment();
-		case 1016:	// Óï¾ä
+		case 1016:	// è¯­å¥
 			break;
-		case 1015:	// Óï¾äList
+		case 1015:	// è¯­å¥List
 			statemmentList(root);
 			break;
-		case 1014:	// Óï¾ä¿é:
+		case 1014:	// è¯­å¥å—:
 			statementBlock(root);
 			break;
-		case 1020:	// Ñ¡ÔñÓï¾ä
+		case 1020:	// é€‰æ‹©è¯­å¥
 			if (root.kids.size() > 6)
 				if_else_statement();
 			else
 				if_then_statement();
 			break;
-		case 1021:  // Ñ­»·Óï¾ä
+		case 1021:  // å¾ªç¯è¯­å¥
 			while_do_statement();
 			break;
 		case 1049:	// M
@@ -866,7 +878,7 @@ void InterCode::outputCode(const char* filename)
 	}
 	else 
 	{
-		// Êä³öµ½ÎÄ¼ş
+		// è¾“å‡ºåˆ°æ–‡ä»¶
 		ofstream fout(filename, ios::out);
 		// TODO
 		fout << "                 InterCode                  " << endl;
