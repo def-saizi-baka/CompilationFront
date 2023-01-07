@@ -393,8 +393,8 @@ void InterCode::defineVariable(const node& root)
 	// 左孩子的叶节点是变量类型
 	const node* defineTree = root.kids[0];
 	string valType = defineTree->kids[0]->leaf[0]->value; //int
-
-	//if (defineTree->leaf.size() > 2) {
+	vector<string> name_arr;
+	vector<string> value_arr;
 		// 右孩子是一个类似赋值语句的东西
 		vector<node*> leaf = defineTree->leaf;
 		for (uint32_t i = 1; i < leaf.size();) {
@@ -412,12 +412,12 @@ void InterCode::defineVariable(const node& root)
 				symTable.enter(valName, string_type(valType), false);
 			}
 			else if(leaf[i + 1]->value == "=") {	// int a=0, b
+				name_arr.push_back(valName);
 				// 获取表达式的值
 				E* e = (E*)eleStack.back();
-				// 符号表新增定义
-				symTable.enter(valName, string_type(valType), false);
-				// 增加四元式
-				this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
+				eleStack.pop_back();
+				value_arr.push_back(e->value);
+				
 				while (i < leaf.size() && leaf[i]->value != ",") {
 					if (leaf[i++]->value == ",") {
 						break;
@@ -432,8 +432,15 @@ void InterCode::defineVariable(const node& root)
 				cout << "Debug: 定义式错误" << endl;
 				exit(-1);
 			}
-		//}
-	}
+		}
+		for (auto name : name_arr) {
+			string val = value_arr.back();
+			value_arr.pop_back();
+			// 符号表新增定义
+			symTable.enter(val, string_type(valType), false);
+			// 增加四元式
+			this->emit(Quadruple{ nextquad,":=", val, "_", name });
+		}
 	//else {
 	//	string valName = defineTree->leaf[1]->value;
 	//	if (symTable.look(valName) != NULL) {
