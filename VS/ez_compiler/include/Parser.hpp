@@ -103,7 +103,7 @@ int parser::solveConfilct(vector<int>& next_list, int symbol, bool is_in_bool)
 		{
 			expression = next_list[0];
 			expr_other = next_list[1];
-			cout << expression << " " << expr_other << endl;
+			// cout << expression << " " << expr_other << endl;
 		}
 		// 符号优先级
 		pair<int, int> symbol_pre = con.get_operators_info()[symbol];
@@ -157,7 +157,7 @@ int parser::solveConfilct(vector<int>& next_list, int symbol, bool is_in_bool)
 						else if (next == expr_other)
 							next = expression;
 					}
-					cout << next << endl;
+					//cout << next << endl;
 					return next;
 				}
 				else {	// 其中一条产生式有优先级

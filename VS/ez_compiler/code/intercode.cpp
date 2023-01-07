@@ -825,8 +825,8 @@ void InterCode::genCode(const node& root,int line)
 			return;
 	}
 
-	 this->outputCode();
-	 cout << endl;
+	 /*this->outputCode();
+	 cout << endl;*/
 }
 
 
