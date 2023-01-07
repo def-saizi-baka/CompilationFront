@@ -23,6 +23,7 @@ struct cmdOptions{
     string inFile;
     string outFile;
     string lexOutFile;
+    string codeOutFile;
 
 
     cmdOptions()
@@ -59,8 +60,10 @@ void help()
     cout << "                                                   [filepath] the path of input file"<<endl;
     cout << "-go / --gram_outfile [filepath]                : output the grammar parse result as json format"<<endl;
     cout << "                                                   [filepath] the path where the result saved"<<endl;
-    cout << "-lo / --lex_outfile [filepath]                 : output the lexical parse result as json format"<<endl;
-    cout << "                                                   [filepath] the path where the result saved"<<endl;
+    cout << "-lo / --lex_outfile [filepath]                 : output the lexical parse result as json format" << endl;
+    cout << "                                                   [filepath] the path where the result saved" << endl;
+    cout << "-co / --code_outfile [filepath]                 : output the intercode result as txt format" << endl;
+    cout << "                                                   [filepath] the path where the result saved" << endl;
     cout << "-d / --debug                                   : get all the debug info" << endl;
     cout << "-pk / --path_keywords [filepath]               : set the path of the keywords configuration file"<<endl;
     cout << "                                                   [filepath] the path where the file saved"<<endl;
@@ -140,6 +143,9 @@ void cmdParse(int argc,char** argv,cmdOptions& ops)
         }
         else if(Option == "-lo" || Option == "--lex_outfile"){
             ops.lexOutFile = string(argv[++i]);
+        }
+        else if (Option == "-co" || Option == "--code_outfile") {
+            ops.codeOutFile = string(argv[++i]);
         }
         else if(Option == "--lex"){
             ops.processType = ONLY_LEX;
@@ -237,7 +243,7 @@ void lexParse(FA& dfa,string inFile,string outFile,vector<token>& tokens,int isD
     }
 }
 
-void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDebug)
+void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, string codeOutFile, int isDebug)
 {
     //int sys_idx, err_idx;
 
@@ -269,7 +275,7 @@ void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDeb
     Pa.setDebug(isDebug);
     cout << endl;
     cout << "Analysing the C-like code..."<<endl;
-    Pa.analysis(tokens, analysisTable);
+    Pa.analysis(tokens, analysisTable, codeOutFile);
     Pa.get_tree().to_json(outFile);
     cout << "Analyse the C-like code successfully!"<<endl;
     cout << "The grammar tree has been saved in " + outFile << endl;
@@ -303,13 +309,17 @@ void optionEXE(cmdOptions& ops)
         //
         if(ops.inFile == ""){
             ops.inFile= "./test_in.txt";
-        }else if(ops.outFile == ""){
+        }
+        if(ops.outFile == ""){
             ops.outFile = "tree.json";
+        }
+        if (ops.codeOutFile == "") {
+            ops.codeOutFile = "interCode.txt";
         }
 
         if(ops.processType == LEX_GRAMMER){
             // Ö´ÐÐÓï·¨·ÖÎö
-            gramParse(dfa,ops.inFile,ops.outFile,ops.lexOutFile,ops.isDebug);
+            gramParse(dfa,ops.inFile,ops.outFile,ops.lexOutFile, ops.codeOutFile,ops.isDebug);
         }else{
             lexParse(dfa,ops.inFile,ops.lexOutFile);
         }

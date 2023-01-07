@@ -48,13 +48,21 @@
     <div id="inputBlock">
         <div class="textInput">
             <textarea id="sourceInput" rows="20" cols="50" placeholder="请输入待分析代码"></textarea>
-            <button id="submitButt" onclick="submitSource()">点击分析语法</button>
+            <div class="uploadBtt">
+                <button id="submitButt" onclick="submitSource()">点击分析语法</button>
+            </div>
         </div>
+
         <div style="width: 1%;"></div>
+
         <div class="textInput">
             <textarea id="hignLightInput" rows="20" cols="50" placeholder="文法分析结果" readonly
-            ></textarea>    
-            <button id="submitButt" onclick="generateTree()">查看语法生成树</button>
+            ></textarea>   
+            <div class="uploadBtt">
+                <button id="resultButt" onclick="generateLex()">查看词法分析结果</button>
+                <button id="resultButt" onclick="generateCode()">查看四元式</button>
+                <button id="resultButt" onclick="generateTree()">查看语法生成树</button>                
+            </div> 
         </div>
     </div>
 

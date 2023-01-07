@@ -4,9 +4,11 @@ int main()
 	int b = 1;
 	int c;
 	int d;
-	if((a < b))
-	{
-		c++;
+	while(1){
+		if((a < b))
+		{
+			c++;
+		}	
 	}
 	return 0;
 }

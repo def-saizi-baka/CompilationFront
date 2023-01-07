@@ -23,14 +23,15 @@ using namespace std;
 #define IF_ENDSTATE 73
 #define ELSE_END_STATE 74
 #define WHILE_ENDSTATE 80
+#define AND_ENDSTATE 32
+#define OR_ENDSTATE 33
+
 // {
 #define LEFT_BLOCK_STATE 103
 // M
 #define M_String "{__M__}"
-#define M_STATE 10001
 // N
 #define N_String "{__N__}" 
-#define N_STATE 10002
 
 
 
@@ -71,7 +72,7 @@ class FA{
         void readFile(string& filename);
         void readSymolTable();
         void _findEpsilonSet(set<int>& find_res, int node_index);
-
+        int last_M_state = NONE_ENDSTATE;
     public:
         FA();
         FA(string& s,int type = READ_REGNEX, int endType = -1);

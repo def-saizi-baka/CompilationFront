@@ -1,4 +1,6 @@
 var cache_tree = null
+var cache_lex = null
+var cache_code = null
 var now_id = 0
 
 const app = document.querySelector('#app')
@@ -210,13 +212,14 @@ function submitSource(){
             var jsonData = JSON.parse(httpRequest.response)
             var status = jsonData["status"];    // 解析结果
             var json_tree = jsonData["res"];    //获取到json字符串，还需解析
-            var lex_data = jsonData["lexres"];
+            cache_lex = jsonData["lexres"];
+            cache_code = jsonData["coderes"];
             console.log(typeof(status))
             // 解析成功
             if(status == 0){
                 cache_tree = JSON.parse(json_tree)  //保存当前树
                 var hignLightInput = document.getElementById("hignLightInput");
-                hignLightInput.value = lex_data
+                hignLightInput.value = cache_lex
                 alert("语法分析成功! 点击右侧按钮查看语法生成树")
                 // 输出语法高亮
             }
@@ -249,4 +252,25 @@ function generateTree(){
     // console.log(subWin.cache_tree)
     // console.log(subWin.root_index)
     // subWin.root_index = false
+}
+
+// 这里虽然是generate，但是在submitSource就已经拿到数据了，只是这里拿一下上一函数的结果
+// 生成词法分析结果
+function generateLex(){
+    if(!cache_lex){
+        alert("请先进行语法分析!")
+        return
+    }
+    var hignLightInput = document.getElementById("hignLightInput");
+    hignLightInput.value = cache_lex
+}
+
+// 生成四元式
+function generateCode(){
+    if(!cache_code){
+        alert("请先进行语法分析!")
+        return
+    }
+    var hignLightInput = document.getElementById("hignLightInput");
+    hignLightInput.value = cache_code
 }

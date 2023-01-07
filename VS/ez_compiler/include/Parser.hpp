@@ -20,7 +20,9 @@ class parser
 {
 public:
 	void analysis(const vector<token>& tokens
-		,const map<int,vector<pair<int, int>>>& analysisTable);
+		,const map<int,vector<pair<int, int>>>& analysisTable
+		,const string & codeOutFile);
+
 	vector<int> find_action(const map<int, vector<pair<int, int>>>& action, int status, int sign,int line);
 	vector<int> find_goto(const map<int, vector<pair<int, int>>>& _goto, int status, int sign,int line);
 	vector<int> find(const map<int, vector<pair<int, int>>>& action, int status, int sign, bool prime,int line);
@@ -193,7 +195,7 @@ int parser::solveConfilct(vector<int>& next_list, int symbol, bool is_in_bool)
 /// <param name="action"></param> action表
 /// <param name="_goto"></param> goto表，为了避免goto关键字冲突
 /// <returns></returns> 返回右值引用，是一个分析得到的状态序列
-void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<int, int>>>& analysisTable)
+void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<int, int>>>& analysisTable, const string& codeOutFile)
 {
 	InterCode interCode(this->tree);
 	stack<int> signs;
@@ -293,7 +295,7 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 				this->tree.end();//结束，建树
 				con.log("[INFO] 移进归约成功完成");
 
-				interCode.outputCode();
+				interCode.outputCode(codeOutFile.c_str());
 				con.log("[INFO] 中间代码生成完成");
 				return;
 			}
@@ -306,6 +308,8 @@ void parser::analysis(const vector<token>& tokens, const map<int, vector<pair<in
 
         _++;
 	}
+
+	//interCode.g
 }
 
 /// <summary>

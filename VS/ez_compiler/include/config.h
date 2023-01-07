@@ -85,7 +85,7 @@ static void get_phases_list(vector<int>& res, config& con, string input)
 				string temp = input.substr(i + 1, j - i - 1);//µÃµ½×´Ì¬Ãû
 				temp.erase(0, temp.find_first_not_of(" "));
 				temp.erase(temp.find_last_not_of(" ") + 1);
-				int t = temp.find("large");
+				size_t t = temp.find("large");
 				while(true){
 					if(t != string::npos){
 						string temp_2 = temp.substr(t + 5);

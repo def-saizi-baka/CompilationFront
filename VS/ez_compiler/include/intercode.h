@@ -91,7 +91,7 @@ class M : public VN
 {
 protected:
 	int quad;
-
+	vector<int> null_vec;	// 仅为虚函数返回补充接口，无意义
 public:
 	friend InterCode;
 	M(int quad);
@@ -99,18 +99,15 @@ public:
 	int getNextquad();
 
 	vector<int>& getTrueList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 
 	vector<int>& getFalseList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 
 	vector<int>& getNextList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 };
 
@@ -119,18 +116,18 @@ class N : public VN
 {
 protected:
 	vector<int> nextlist;
+	vector<int> null_vec;	// 仅为虚函数返回补充接口，无意义
+
 public:
 	friend InterCode;
 	//N() {};
 	vector<int>& getNextList();
 
 	vector<int>& getTrueList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 	vector<int>& getFalseList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 
 	int getNextquad() { return 0; }

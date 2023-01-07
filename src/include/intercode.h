@@ -3,6 +3,7 @@
 
 #pragma once
 #include "parserTree.h"
+#include "Exception.h" 
 #include <string>
 #include <vector>
 
@@ -24,16 +25,14 @@ private:
 public:
 	friend InterCode;
 	Quadruple(const int cur, const string op, const string left_num, const string right_num, const string res);
-
+	friend ostream& operator<<(ostream& out, const Quadruple& t);
+	friend ofstream& operator<<(ofstream& out, const Quadruple& t);
 };
 
 // 非终结符基类
 class VN
 {
-protected:
-	int type;
 public:
-	VN();
 	virtual vector<int>& getTrueList() = 0;
 	virtual vector<int>& getFalseList() = 0;
 	virtual vector<int>& getNextList() = 0;
@@ -49,7 +48,6 @@ protected:
 
 	vector<int> truelist;
 	vector<int> falselist;
-	vector<int> nextlist;
 public:
 	friend InterCode;
 	E(string name);
@@ -70,8 +68,10 @@ class S : public VN
 {
 protected:
 	vector<int> nextlist;
+	int nextquad;
 public:
 	friend InterCode;
+	S(int nextquad = 0);
 
 	vector<int>& getNextList();
 
@@ -83,7 +83,7 @@ public:
 		return this->nextlist;
 	}
 
-	int getNextquad() { return 0; }
+	int getNextquad() { return this->nextquad; }
 };
 
 // 非终结符 M 
@@ -91,7 +91,7 @@ class M : public VN
 {
 protected:
 	int quad;
-
+	vector<int> null_vec;	// 仅为虚函数返回补充接口，无意义
 public:
 	friend InterCode;
 	M(int quad);
@@ -99,18 +99,15 @@ public:
 	int getNextquad();
 
 	vector<int>& getTrueList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 
 	vector<int>& getFalseList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 
 	vector<int>& getNextList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 };
 
@@ -119,18 +116,18 @@ class N : public VN
 {
 protected:
 	vector<int> nextlist;
+	vector<int> null_vec;	// 仅为虚函数返回补充接口，无意义
+
 public:
 	friend InterCode;
 	//N() {};
 	vector<int>& getNextList();
 
 	vector<int>& getTrueList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 	vector<int>& getFalseList() {
-		vector<int> a;
-		return a;
+		return null_vec;
 	}
 
 	int getNextquad() { return 0; }
@@ -142,11 +139,15 @@ class InterCode
 {
 private:
 	vector<Quadruple> code;
-	int nextquad;			// 当前待写地址
-	vector<VN*> eleStack;     // E栈
+	int nextquad;				// 当前待写地址
+	vector<VN*> eleStack;		// E栈
 	vector<int> operand;		// 操作数栈
+	int line;					// 当前对应的输入代码行
+	parserTree* pst;			// 引用传入
 public:
 	InterCode();
+
+	InterCode(parserTree& pst);
 	
 	vector<int> merge(const vector<int>& L1,const vector<int>& L2); // 合并两条链
 	void merge(const vector<int>& L1, const vector<int>& L2, vector<int>& L3);
@@ -155,25 +156,45 @@ public:
 	int findByAddr(int quad);
 	void emit(Quadruple temp);		// 	
 
-	// 生成表达式
-	void expression_statement(const node& root);
+	// 表达式翻译
+	void allExpression(const node& root,bool bool_flag = false);
+
 	// 操作表达式
-	void operationStatement(const node& root);
-	void defineConst();
+	void operationExpression(const node& root);
+
+	// 布尔表达式
+	// void bool_expression(const node& root);
+	
+	// 赋值表达式
+	void assignExpression(const node& root, bool bool_flag = false);
+
+	// 计算表达式
+	void calExpression(const node& root, bool bool_flag = false);
+
+	// 逻辑表达式
+	void logicExpression(string logicOp, bool bool_flag = false);
+	void andExpression(bool bool_flag = false);
+	void orExpression(bool bool_flag = false);
+	void notExpression(bool bool_flag = false);
+
+	// 关系表达式
+	void relopExpression(const node& root, bool bool_flag = false);
+
+	// 自增自减表达式
+	void selfChangeExpression(const node& root,bool is_front);
+
+	// 变量定义语句
+	void defineConst(const node& root);
 	void defineVariable(const node& root);
 
-	void assignStatement();
+	// 表达式语句
+	void expression2statment();
 
 	void MStatement();	// 改写产生式后的辅助符号M
 	void NStatement();	// 改写产生式后的辅助符号N
 
-	// 逻辑表达式
-	void andStatement();
-	void orStatement();
-	void notStatement();
-	void relopStatement();
-
-	void boolExpr();	// 此处应该特指关系表达式
+	// 变量名 -> 表达式
+	void valNameExpression(const node& root,bool bool_flag = false);
 
 	// 选择语句
 	void if_then_statement();
@@ -182,8 +203,17 @@ public:
 	// 循环语句
 	void while_do_statement();
 
-	void genCode(const node& root);
+	// 生成语句List
+	void statemmentList(const node& root);
 
+	// 生成语句块
+	void statementBlock(const node& root);
+
+	void genCode(const node& root,int line);
+
+	void outputCode(const char* filename=NULL);
+	
+	
 };
 #endif // !INTRERCODE_H
 

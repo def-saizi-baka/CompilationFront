@@ -382,37 +382,57 @@ void InterCode::defineVariable(const node& root)
 	const node* defineTree = root.kids[0];
 	string valType = defineTree->kids[0]->leaf[0]->value; //int
 
-	if (defineTree->leaf.size() > 2) {
+	//if (defineTree->leaf.size() > 2) {
 		// 右孩子是一个类似赋值语句的东西
-		const node* assignmentTree = defineTree->kids[1]->kids[0];
-		string valName = assignmentTree->kids[0]->value;
-
-		if (symTable.look(valName) != NULL) {
-			//cout << "重定义的变量: "<< valName << endl;
-			string msg = "symbol " + valName + " is multiply defined.";
-			throw MultipleDefinitionsException(msg, this->line);
-			//exit(-1);
-		}
-
-		// 获取表达式的值
-		E* e = (E*)eleStack.back();
-		eleStack.pop_back();
-		// 符号表新增定义
-		symTable.enter(valName, string_type(valType), false);
-		// 增加四元式
-		this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
+		vector<node*> leaf = defineTree->leaf;
+		for (uint32_t i = 1; i < leaf.size();) {
+			// 获取变量名
+			string valName = leaf[i]->value;
+			if (symTable.look(valName) != NULL) {
+				//cout << "重定义的变量: "<< valName << endl;
+				string msg = "symbol " + valName + " is multiply defined.";
+				throw MultipleDefinitionsException(msg, this->line);
+				//exit(-1);
+			}
+			if (i+1 >= leaf.size()||leaf[i + 1]->value == ",") { // int b,
+				i+=2;
+				// 符号表新增一个定义
+				symTable.enter(valName, string_type(valType), false);
+			}
+			else if(leaf[i + 1]->value == "=") {	// int a=0, b
+				// 获取表达式的值
+				E* e = (E*)eleStack.back();
+				// 符号表新增定义
+				symTable.enter(valName, string_type(valType), false);
+				// 增加四元式
+				this->emit(Quadruple{ nextquad,":=", e->value, "_", valName });
+				while (i < leaf.size() && leaf[i]->value != ",") {
+					if (leaf[i++]->value == ",") {
+						break;
+					}
+				}
+				// 跳过逗号
+				if (i < leaf.size() && leaf[i]->value == ",") {
+					i++;
+				}
+			}
+			else {
+				cout << "Debug: 定义式错误" << endl;
+				exit(-1);
+			}
+		//}
 	}
-	else {
-		string valName = defineTree->leaf[1]->value;
-		if (symTable.look(valName) != NULL) {
-			//cout << "重定义的变量: " << valName << endl;
-			string msg = "symbol " + valName + " is multiply defined.";
-			throw MultipleDefinitionsException(msg, this->line);
-			//exit(-1);
-		}
-		// 符号表新增一个定义
-		symTable.enter(valName, string_type(valType), false);
-	}
+	//else {
+	//	string valName = defineTree->leaf[1]->value;
+	//	if (symTable.look(valName) != NULL) {
+	//		//cout << "重定义的变量: " << valName << endl;
+	//		string msg = "symbol " + valName + " is multiply defined.";
+	//		throw MultipleDefinitionsException(msg, this->line);
+	//		//exit(-1);
+	//	}
+	//	// 符号表新增一个定义
+	//	symTable.enter(valName, string_type(valType), false);
+	//}
 
 	// 转化成S
 	S* s_tmp = new S(nextquad);
@@ -832,22 +852,31 @@ void InterCode::genCode(const node& root,int line)
 
 void InterCode::outputCode(const char* filename)
 {
-	cout << "********************************************" << endl;
-	cout << "          InterCode                         " << endl;
 	if (filename == NULL)
 	{
+		cout << "********************************************" << endl;
+		cout << "          InterCode                         " << endl;
 		int i = code.size() - 1;
 		for (uint32_t i = 0; i < code.size();i++)
 		{
 			cout << code[i] << endl;
 		}
 		//code = vector<Quadruple>();
+		cout << "********************************************" << endl;
 	}
 	else 
 	{
 		// 输出到文件
 		ofstream fout(filename, ios::out);
 		// TODO
+		fout << "                 InterCode                  " << endl;
+		fout << "********************************************" << endl;
+		int i = code.size() - 1;
+		for (uint32_t i = 0; i < code.size(); i++)
+		{
+			fout << code[i] << endl;
+		}
+		fout << "********************************************" << endl;
+		fout.close();
 	}
-	cout << "********************************************" << endl;
 }

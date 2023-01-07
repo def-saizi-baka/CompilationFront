@@ -519,7 +519,7 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
     string nowBuffer;
     int end_state = -1;
     unsigned int index = 0;
-	int last_M_state = NONE_ENDSTATE; // M回填
+	//int last_M_state = NONE_ENDSTATE; // M回填
 
     while(index <= in.length()){
         // 判断是否存在转移函数
@@ -567,7 +567,7 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
 			}
 			else if (end_state == ELSE_END_STATE) {
 				// else 需要在前面多加一个 N 
-				res.push_back(pair<string, int>{N_String, N_STATE});
+				res.push_back(pair<string, int>{N_String, con.get_symbols()[N_String]});
 				last_M_state = ELSE_END_STATE;
 			}
 
@@ -576,17 +576,17 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
 				switch (last_M_state){
 					// IF E then M S
 					case IF_ENDSTATE: {
-						res.push_back(pair<string, int>{M_String, M_STATE});
+						res.push_back(pair<string, int>{M_String, con.get_symbols()[M_String]});
 						break;
 					}
 					
 					// IF E then M1 S1 N else M2 S2
 					case ELSE_END_STATE: {
-						res.push_back(pair<string, int>{M_String, M_STATE});
+						res.push_back(pair<string, int>{M_String, con.get_symbols()[M_String]});
 						break;
 					}
 					case WHILE_ENDSTATE: {
-						res.push_back(pair<string, int>{M_String, M_STATE});
+						res.push_back(pair<string, int>{M_String, con.get_symbols()[M_String]});
 						break;
 					}
 					default:
@@ -597,13 +597,18 @@ vector<token> FA::checkStr(const string& in,int& sym_idx,int& err_t,int line){
 			}
 
             res.push_back(pair<string, int>{nowBuffer, end_state});
+			// 在读到 && 和 || 的操作
+			if (end_state == AND_ENDSTATE || end_state == OR_ENDSTATE) {
+				res.push_back(pair<string, int>{M_String, con.get_symbols()[M_String]});
+			}
+
             cur = this->begNode;
             nowBuffer = "";
 
 			if (end_state == WHILE_ENDSTATE) {
 				// while 的第一个 M要加在循环条件前
 				last_M_state = IF_ENDSTATE;
-				res.push_back(pair<string, int>{M_String, M_STATE});
+				res.push_back(pair<string, int>{M_String, con.get_symbols()[M_String]});
 			}
         }
         else{

@@ -40,7 +40,7 @@ void parserTree::reduction(pair<int, vector<int>> grammar)
 		}
 		node* root = new node;
 		root->symbol = grammar.first;
-		for (int i = grammar.second.size() - 1; i >= 0; i--) {
+		for (int i = (int)grammar.second.size() - 1; i >= 0; i--) {
 			node* temp = this->roots.back();
 
 			if (grammar.second[i] == temp->symbol) {//这里就是对应上了
@@ -157,11 +157,12 @@ Json::Value parserTree::build_tree(node* tree)
 /// 该函数只允许获得目前栈里面最顶端的归约节点的叶节点序列
 /// </summary>
 /// <returns></returns>
+vector<node*> null_node;	// 空节点，仅为消除warning
 const vector<node*>& parserTree::get_back_leaf()
 {
 	if (this->roots.size() == 0) {
 		con.log("[ERROR] 当前还未开始归约，不可获取当前栈顶子树的叶节点");
-		return vector<node*>();
+		return null_node;
 	}
 	return this->roots.back()->leaf;
 }
