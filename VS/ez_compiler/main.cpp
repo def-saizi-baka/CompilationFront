@@ -252,8 +252,10 @@ void gramParse(FA& dfa,string inFile,string outFile,string lexOutFile, int isDeb
     }
     cout << endl;
     cout << "building the ACTION table and GOTO table"<<endl;
+    
     // ¼ÓÔØACTIONºÍGOTO±í
     cfg.load(true);
+
     map<int, std::vector<std::pair<int, int>>> analysisTable = cfg.getAnalysisTable();
     cout << "build the ACTION table and GOTO table successfully!" << endl;
 
@@ -321,6 +323,7 @@ int main(int argc,char** argv)
         cmdOptions ops;
         cmdParse(argc,argv,ops);
         con.init();
+        //ops.isDebug = true;
         optionEXE(ops);
         return 0;
     }

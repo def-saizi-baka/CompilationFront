@@ -72,8 +72,10 @@ class S : public VN
 {
 protected:
 	vector<int> nextlist;
+	int nextquad;
 public:
 	friend InterCode;
+	S(int nextquad = 0);
 
 	vector<int>& getNextList();
 
@@ -85,7 +87,7 @@ public:
 		return this->nextlist;
 	}
 
-	int getNextquad() { return 0; }
+	int getNextquad() { return this->nextquad; }
 };
 
 // 非终结符 M 
@@ -161,25 +163,45 @@ public:
 	int findByAddr(int quad);
 	void emit(Quadruple temp);		// 	
 
-	// 生成表达式
-	void expression_statement(const node& root);
+	// 表达式翻译
+	void allExpression(const node& root,bool bool_flag = false);
+
 	// 操作表达式
-	void operationStatement(const node& root);
-	void defineConst();
+	void operationExpression(const node& root);
+
+	// 布尔表达式
+	// void bool_expression(const node& root);
+	
+	// 赋值表达式
+	void assignExpression(const node& root, bool bool_flag = false);
+
+	// 计算表达式
+	void calExpression(const node& root, bool bool_flag = false);
+
+	// 逻辑表达式
+	void logicExpression(string logicOp, bool bool_flag = false);
+	void andExpression(bool bool_flag = false);
+	void orExpression(bool bool_flag = false);
+	void notExpression(bool bool_flag = false);
+
+	// 关系表达式
+	void relopExpression(const node& root, bool bool_flag = false);
+
+	// 自增自减表达式
+	void selfChangeExpression(const node& root,bool is_front);
+
+	// 变量定义语句
+	void defineConst(const node& root);
 	void defineVariable(const node& root);
 
-	void assignStatement();
+	// 表达式语句
+	void expression2statment();
 
 	void MStatement();	// 改写产生式后的辅助符号M
 	void NStatement();	// 改写产生式后的辅助符号N
 
-	// 逻辑表达式
-	void andStatement();
-	void orStatement();
-	void notStatement();
-	void relopStatement();
-
-	void boolExpr();	// 此处应该特指关系表达式
+	// 变量名 -> 表达式
+	void valNameExpression(const node& root,bool bool_flag = false);
 
 	// 选择语句
 	void if_then_statement();
@@ -187,6 +209,12 @@ public:
 
 	// 循环语句
 	void while_do_statement();
+
+	// 生成语句List
+	void statemmentList(const node& root);
+
+	// 生成语句块
+	void statementBlock(const node& root);
 
 	void genCode(const node& root,int line);
 

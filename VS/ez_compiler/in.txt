@@ -1,6 +1,14 @@
 int main()
 {
 	int a = 1;
-	a = b;
-
+	int b = 1;
+	if(a)
+	{
+		int f = 1;
+		b++;
+	}else
+	{
+		b++;
+	}
+	return 0;
 }

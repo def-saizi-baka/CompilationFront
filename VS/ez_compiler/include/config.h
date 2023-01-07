@@ -7,20 +7,22 @@
 #include <vector>
 #include "const.h"
 #include <iostream>
+#define FROM_LEFT_TO_RIGHT 0
+#define FROM_RIGHT_TO_LEFT 1
 using namespace std;
 
 
-struct token{
+struct token {
 	int line = 0;
 	string value = "";
 	int symbol = -1;
 };
 
-struct regex_exp{
+struct regex_exp {
 	string regex;
 	int endType = -1;
 	bool raw = false;
-} ;
+};
 
 class config
 {
@@ -35,17 +37,18 @@ public:
 	const map<string, int>& get_operators()const;
 	const map<string, int>& get_delimiters()const;
 	const vector<regex_exp>& get_regex() const;
+	map<int, pair<int, int>> get_operators_info();
 	string get_name(int value);
 	const vector<pair<int, vector<int>>>& get_grammar()const { return this->grammar; };
 	map<string, int>& get_symbols() { return this->dic_symbols.symbols; };
-	map<int, string>& get__symbols(){ return this->dic_symbols._symbols; };
+	map<int, string>& get__symbols() { return this->dic_symbols._symbols; };
 
-	string path_keyword		= "config/keywords.txt";
-	string path_operator	= "config/operator_symbol.txt";
-	string path_delimiter	= "config/delimiter.txt";
-	string path_unstop		= "config/unstop.txt";
-	string log_path			= "config/parser.log";
-	string grammar_path		= "config/grammar.txt";
+	string path_keyword = "config/keywords.txt";
+	string path_operator = "config/operator_symbol.txt";
+	string path_delimiter = "config/delimiter.txt";
+	string path_unstop = "config/unstop.txt";
+	string log_path = "config/parser.log";
+	string grammar_path = "config/grammar.txt";
 
 private:
 	struct {
@@ -56,8 +59,9 @@ private:
 		map<string, int> delimiters;
 		map<string, int> symbols;
 		map<int, string> _symbols;
-		string end = Config::end; //用作归约的终止符
-	}dic_symbols; //符号字典，把每一个符号映射到一个int值 
+		map<int, pair<int, int>> operators_info;
+		string end = Config::end;//用作归约的终止符
+	}dic_symbols; ///符号字典，把每一个符号映射到一个int值 
 	vector<pair<int, vector<int>>> grammar;//所有文法表
 	ofstream logFile;
 	vector<regex_exp> regexList;
@@ -81,15 +85,16 @@ static void get_phases_list(vector<int>& res, config& con, string input)
 				string temp = input.substr(i + 1, j - i - 1);//得到状态名
 				temp.erase(0, temp.find_first_not_of(" "));
 				temp.erase(temp.find_last_not_of(" ") + 1);
-				//以上这些操作是避免去除空格
+				int t = temp.find("large");
 				while(true){
-					int t = temp.find("large");
 					if(t != string::npos){
-						temp = temp.substr(t + 5);
-						temp = ">" + temp;	
+						string temp_2 = temp.substr(t + 5);
+						string temp_1 = temp.substr(0, t);
+						temp = temp_1 + ">" + temp_2;	
 					}
 					else
 						break;
+					t = temp.find("large");
 				}
 				auto iter_stop = con.get_stop_symbols().find(temp);
 				if (iter_stop != con.get_stop_symbols().end())

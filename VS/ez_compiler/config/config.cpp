@@ -2,7 +2,7 @@
 
 config::config()
 {
-	;	
+	;
 }
 
 void config::init()
@@ -66,6 +66,9 @@ void config::init()
 		ssm << temp;//全部放下去
 		ssm >> content;
 		ssm >> id;
+		int priority, binding;
+		ssm >> priority;
+		ssm >> binding;
 		ssm >> raw;
 		ssm >> regex;
 		if (raw == 0)
@@ -77,6 +80,7 @@ void config::init()
 		this->dic_symbols.operators[content] = id;
 		this->dic_symbols.symbols[content] = id;
 		this->dic_symbols._symbols[id] = content;
+		this->dic_symbols.operators_info[id] = make_pair(priority, binding);
 		this->regexList.push_back(regex_exp{ regex,id,raw == 1 });
 	}
 	fin.close();
@@ -102,7 +106,7 @@ void config::init()
 
 	fin.open(grammar_path, ios::in);
 	assert(fin.is_open());
-	while (fin.peek()!= EOF){
+	while (fin.peek() != EOF) {
 		getline(fin, temp);
 		auto pos = temp.find("→");
 		if (pos == string::npos) {
@@ -115,7 +119,7 @@ void config::init()
 		vector<int> src_list, des_list;
 		get_phases_list(src_list, *this, src);
 		get_phases_list(des_list, *this, des);
-		if (src_list.size() != 1) 
+		if (src_list.size() != 1)
 			log("[ERROR] 起始状态集合应该有且只能有1个");
 		this->grammar.push_back(make_pair(src_list[0], des_list));
 		log(string("[INFO] 成功导入语法表达式" + temp));
@@ -174,5 +178,10 @@ const vector<regex_exp>& config::get_regex() const
 {
 	return this->regexList;
 	// TODO: 在此处插入 return 语句
+}
+
+map<int, pair<int, int>> config::get_operators_info()
+{
+	return this->dic_symbols.operators_info;
 }
 

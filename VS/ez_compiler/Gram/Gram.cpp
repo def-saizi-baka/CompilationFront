@@ -316,6 +316,13 @@ void CFG::buildAnalysisTable(){
         // 检查规约和acc
         for(auto item : closures[i].getFamily()){
             if(item.getType() == ACTION_REDUCE){
+				bool is_conflick = false;
+				for (auto par : this->analysisTable[i]) {
+					if (par.first == item.getForward()) {
+						is_conflick = true;
+						break;
+					}
+				}
                 // 先判断是否为acc
                 if(item.left == 1000){
                     this->analysisTable[i].push_back({item.getForward(), parser_config::ACCEPT});
@@ -323,6 +330,11 @@ void CFG::buildAnalysisTable(){
                 else{
                     this->analysisTable[i].push_back({item.getForward(), -1*item.getId()});
                 }
+				// 打印冲突语句
+				if (is_conflick) {
+					cout << item.getForward() << " " << con.get__symbols()[item.getForward()];
+					item.showItem();
+				}
             }
         }
     }
