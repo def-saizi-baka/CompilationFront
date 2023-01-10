@@ -52,6 +52,7 @@
     <Text Include="config\parser.log" />
     <Text Include="config\unstop.txt" />
     <Text Include="in.txt" />
+    <Text Include="interCode.txt" />
     <Text Include="lex.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -68,7 +69,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">

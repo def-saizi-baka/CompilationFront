@@ -437,7 +437,7 @@ void InterCode::defineVariable(const node& root)
 			string val = value_arr.back();
 			value_arr.pop_back();
 			// 符号表新增定义
-			symTable.enter(val, string_type(valType), false);
+			symTable.enter(name, string_type(valType), false);
 			// 增加四元式
 			this->emit(Quadruple{ nextquad,":=", val, "_", name });
 		}

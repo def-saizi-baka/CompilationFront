@@ -109,6 +109,9 @@
     <Text Include="lex.txt">
       <Filter>资源文件</Filter>
     </Text>
+    <Text Include="interCode.txt">
+      <Filter>资源文件</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <None Include="gram.json">

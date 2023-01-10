@@ -3,6 +3,10 @@
 
 https://github.com/def-saizi-baka/Lexical_analyzer
 
+## 视频演示
+
+https://space.bilibili.com/22761084
+
 ## 命令行
 
 编译运行
@@ -27,6 +31,8 @@ usage :
                                                    [filepath] 输出文件路径
 -lo / --lex_outfile [filepath]                 : 输出的词法分析结果文件
                                                     [filepath] 输出文件路径
+-co / --code_outfile [filepath]				   : 输出的中间代码生成文件
+													[filepath] 输出文件路径
 -d / --debug                                   : 启动debug模式，会在命令行输出有效的中间数据
 -pk / --path_keywords [filepath]               : 设置关键字的配置文件路径
                                                    [filepath] 的配置文件路径
@@ -48,4 +54,6 @@ main.exe --lex -i test_in.txt -lo lex_res.txt
 # 语法分析，将结果输出
 main.exe -i test_in.txt -go grammar.json
 main.exe -i test_in.txt -go grammar.json -lo lex_res.txt
+# 中间代码生成
+main.exe -i test_in.txt -go grammar.json -lo lex_res.txt -co interCode.txt
 ```
